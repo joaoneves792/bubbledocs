@@ -1,6 +1,108 @@
-abc
-def
-ghi
-zxw
-qwerty
-coco
+package pt.ulisboa.tecnico.bubbledocs.domain;
+
+class Bubbledocs {
+	Integer _idGenerator;
+}
+
+relation DomainRootHasBubbledocsApplication {
+	.pt.ist.fenixframework.DomainRoot playsRole root {
+		multiplicity 0..1;
+	}
+	Bubbledocs playsRole bubledocs {
+		multiplicity 0..1;
+	}
+}
+
+class User {
+	String _name;
+	String _passwd;
+	String _username;
+}
+
+class Root extends User;
+
+class Spreadsheet {
+	String  _author;
+	String  _name;
+	Integer _lines;
+	Integer _Columns;
+	Integer _id;
+	String _creationDate;
+}
+
+class Cell {
+	Integer _column;
+	Integer _line;
+	Boolean _protected;
+}
+
+class Content;
+
+class Function extends Content;
+
+class Literal extends Content {
+	Integer _value;
+}
+
+class Reference extends Content {
+	String _value;
+}
+
+class Binary extends Function;
+
+class Range extends Function {
+	Integer _column1;
+	Integer _column2;
+	Integer _line1;
+	Integer _line2;
+}
+
+class Add extends Binary;
+
+class Sub extends Binary;
+
+class Mul extends Binary;
+
+class Div extends Binary; 
+
+class Avg extends Range;
+
+class Prd extends Range;
+
+relation BubbledocsHasUsers {
+	Bubbledocs playsRole bubbledocs;
+	User playsRole user {
+		multiplicity *;
+	}
+}
+
+relation BubbledocsHasSpreadsheets {
+	Bubbledocs playsRole bubbledocs;
+	Spreadsheet playsRole spreadsheet {
+		multiplicity *;
+	}
+}
+
+relation SpreadsheetHasCells {
+	Spreadsheet playsRole spreadsheet;
+	Cell playsRole cell {
+		multiplicity 1..*;
+	}
+}
+
+relation CellHasContent {
+	Cell playsRole cell;
+	Content playsRole content;
+}
+
+relation BinaryHasCells {
+	Binary playsRole binary;
+	Cell playsRole cells {
+		multiplicity 2;
+	}
+}
+
+relation ReferenceHasCell {
+	Reference playsRole reference;
+	Cell playsRole cell;
+}
