@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
-public class Content extends Content_Base {
+public abstract class Content extends Content_Base {
     
     public Content() {
         super();
@@ -8,6 +8,6 @@ public class Content extends Content_Base {
     
     public abstract String toString();
     
-    public abstract int getvalue();
+    public abstract int getValue();
     
 }
