@@ -4,6 +4,7 @@ class Bubbledocs {
 	Integer _idGenerator;
 }
 
+
 relation DomainRootHasBubbledocsApplication {
 	.pt.ist.fenixframework.DomainRoot playsRole root {
 		multiplicity 0..1;
@@ -12,6 +13,19 @@ relation DomainRootHasBubbledocsApplication {
 		multiplicity 0..1;
 	}
 }
+
+class Permission {
+	String _username;
+	Integer _docId;
+	Boolean _writePermission;
+}
+
+relation BubbledocsHasPermissions {
+	Bubbledocs playsRole permissionManager;
+	Permission playsRole permission {
+		multiplicity *;
+	}
+}	
 
 class User {
 	String _name;
