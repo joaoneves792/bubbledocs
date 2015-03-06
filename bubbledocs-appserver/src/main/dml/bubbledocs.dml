@@ -16,7 +16,7 @@ relation DomainRootHasBubbledocsApplication {
 
 class Permission {
 	String _username;
-	Integer _docId;
+	Integer _spreadsheetId;
 	Boolean _writePermission;
 }
 
