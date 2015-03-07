@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 //This is an abstract class!!
 public class Content extends Content_Base {
@@ -18,7 +19,7 @@ public class Content extends Content_Base {
     }    
     public Integer getValue() throws BubbleCellException{
         //Just a stub
-        //TODO RETURN -oo
-        return 0;
+        throws new InvalidCellException("Override of getValue() not working in Content.java");
+        return Integer.MIN_VALUE;
     }
 }
