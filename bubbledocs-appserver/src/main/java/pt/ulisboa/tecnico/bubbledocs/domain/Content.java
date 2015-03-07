@@ -14,7 +14,7 @@ public class Content extends Content_Base {
     public String toString(){
         return get_text();
     }    
-    public int getvalue(){
+    public Integer getValue(){
         //Just a stub
         //TODO RETURN -oo
         return 0;
