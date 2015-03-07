@@ -25,7 +25,9 @@ public class Root extends Root_Base {
     public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException {
     	try {
     		User user = Bubbledocs.getBubbledocs().getUserByUsername(username);
-    		throw new UserAlreadyExistsException("User with usaname " + username + " already exists.");
+    		if(null != user) {
+    			throw new UserAlreadyExistsException("User with usaname " + username + " already exists.");
+    		}
     	} catch (UserNotFoundException e) {
     		Bubbledocs.getBubbledocs().addUser(new User(name, username, passwd));
     	}
