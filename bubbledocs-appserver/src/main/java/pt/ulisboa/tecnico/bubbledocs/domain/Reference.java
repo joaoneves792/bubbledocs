@@ -7,7 +7,7 @@ public class Reference extends Reference_Base {
         init(value, referencedCell);
     }
     protected void init(String value, Cell referencedCell){
-        set_value(value);
+        super.init(value);
         setReferenceCell(referencedCell);
     }
 
@@ -17,10 +17,6 @@ public class Reference extends Reference_Base {
         if(cell == null)
                 return null;
         return cell.getValue();
-    }
-
-    public String toString(){
-        return get_value();
     }
 
 }

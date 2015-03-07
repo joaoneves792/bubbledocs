@@ -50,7 +50,9 @@ class Cell {
 	Boolean _protected;
 }
 
-class Content;
+class Content{
+        String _text;
+}
 
 class Function extends Content;
 
@@ -58,11 +60,12 @@ class Literal extends Content {
 	Integer _value;
 }
 
-class Reference extends Content {
-	String _value;
-}
+class Reference extends Content; 
 
-class Binary extends Function;
+class Binary extends Function{
+        Integer _argument1;
+        Integer _argument2;
+}
 
 class Range extends Function {
 	Integer _column1;
