@@ -20,7 +20,7 @@ public class Reference extends Reference_Base {
     }
 
     public String toString(){
-        return value;
+        return get_value();
     }
 
 }
