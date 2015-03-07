@@ -18,7 +18,7 @@ public class Cell extends Cell_Base {
         content = getContent();
         if(content == null)
                 return null;
-        return content.getValue();
+        return content.get_value();
     }
 
     public String toString(){
