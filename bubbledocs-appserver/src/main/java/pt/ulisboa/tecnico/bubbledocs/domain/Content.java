@@ -17,9 +17,8 @@ public class Content extends Content_Base {
     public String toString(){
         return get_text();
     }    
-    public Integer getValue() throws BubbleCellException{
+    public Integer getValue() {
         //Just a stub
-        throws new InvalidCellException("Override of getValue() not working in Content.java");
         return Integer.MIN_VALUE;
     }
 }
