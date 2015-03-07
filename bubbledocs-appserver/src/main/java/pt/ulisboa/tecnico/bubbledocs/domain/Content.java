@@ -6,7 +6,10 @@ public abstract class Content extends Content_Base {
         super();
     }
     
-//    public abstract String toString();
-    
-//    public abstract int getvalue();
+    public String toString(){
+        //Just a stub
+    }    
+    public int getvalue(){
+        //Just a stub
+    }
 }
