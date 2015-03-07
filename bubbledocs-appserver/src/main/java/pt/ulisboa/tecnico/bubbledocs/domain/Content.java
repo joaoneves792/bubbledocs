@@ -6,8 +6,7 @@ public abstract class Content extends Content_Base {
         super();
     }
     
-    public abstract String toString();
+//    public abstract String toString();
     
-    public abstract int getValue();
-    
+//    public abstract int getvalue();
 }
