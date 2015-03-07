@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+
 public class Cell extends Cell_Base {
 
     public Cell(int column, int line, boolean prot) {
@@ -13,12 +15,12 @@ public class Cell extends Cell_Base {
         set_protected(prot);
     }
 
-    public Integer getValue(){
+    public Integer getValue() throws BubbleCellException{
         Content content;
         content = getContent();
         if(content == null)
                 return null;
-        return content.get_value();
+        return content.getValue();
     }
 
     public String toString(){

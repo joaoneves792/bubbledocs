@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import java.util.Set;
 import java.util.Iterator;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+
 public class Add extends Add_Base {
     
     public Add(String text, Cell arg1, Cell arg2) {
@@ -23,7 +25,7 @@ public class Add extends Add_Base {
         super.init(text, arg1, arg2);
     }
    
-    public Integer getValue(){
+    public Integer getValue() throws BubbleCellException{
         Integer val1;
         Integer val2;
         Set<Cell> cellSet;

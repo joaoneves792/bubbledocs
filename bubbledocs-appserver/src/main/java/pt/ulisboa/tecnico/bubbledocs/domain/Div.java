@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.DivisionByZeroException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -26,7 +27,7 @@ public class Div extends Div_Base {
     }
     
     @Override
-    public Integer getValue(){
+    public Integer getValue() throws BubbleCellException{
     	
     	Integer arg1;
     	Integer arg2;

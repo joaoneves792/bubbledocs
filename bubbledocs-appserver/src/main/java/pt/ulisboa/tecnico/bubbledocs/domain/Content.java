@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+
 //This is an abstract class!!
 public class Content extends Content_Base {
     
@@ -14,7 +16,7 @@ public class Content extends Content_Base {
     public String toString(){
         return get_text();
     }    
-    public Integer getValue(){
+    public Integer getValue() throws BubbleCellException{
         //Just a stub
         //TODO RETURN -oo
         return 0;

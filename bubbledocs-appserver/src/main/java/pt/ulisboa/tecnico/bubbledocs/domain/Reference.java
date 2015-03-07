@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
@@ -14,7 +15,7 @@ public class Reference extends Reference_Base {
         setReferenceCell(referencedCell);
     }
 
-    public Integer getValue(){
+    public Integer getValue() throws BubbleCellException{
         Cell cell;
         Content content;
         cell = getReferenceCell();

@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import java.util.Iterator;
 import java.util.Set;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+
 public class Mul extends Mul_Base {
 
     public Mul(String text, Cell arg1, Cell arg2) {
@@ -24,7 +26,7 @@ public class Mul extends Mul_Base {
     }
     
     @Override
-    public Integer getValue(){
+    public Integer getValue() throws BubbleCellException{
     	
     	Integer arg1;
     	Integer arg2;
