@@ -11,7 +11,7 @@ public class Literal extends Literal_Base {
         super.init(value);
     }
 
-    public int getValue(){
+    public Integer getValue(){
         return get_value();
     }
 }
