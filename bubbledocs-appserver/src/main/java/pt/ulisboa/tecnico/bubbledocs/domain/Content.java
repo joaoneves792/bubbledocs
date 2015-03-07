@@ -1,15 +1,15 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
-public abstract class Content extends Content_Base {
+public class Content extends Content_Base {
     
     public Content() {
         super();
     }
     
     public String toString(){
-        //Just a stub
+        return "banana";
     }    
-    public int getvalue(){
-        //Just a stub
+    public Integer getValue(){
+        return 1;
     }
 }
