@@ -5,7 +5,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 //This is an abstract class!!
 public class Content extends Content_Base {
     
-    public Content() {
+    protected Content() { 
         super();
     }
 
