@@ -30,4 +30,12 @@ public class Cell extends Cell_Base {
                 return null;
         return content.toString();
     }
+
+	org.jdom2.Element export() {
+		org.jdom2.Element cellElement = new org.jdom2.Element("Cell");
+		cellElement.setAttribute("Line", get_line().toString());
+		cellElement.setAttribute("Column", get_column().toString());
+		cellElement.addContent(getContent().export());
+		return cellElement;
+	}
 }

@@ -285,5 +285,9 @@ public class Bubbledocs extends Bubbledocs_Base {
     		}
     	}
     }
+    
+    public String export(Spreadsheet spreadsheet) {
+    	return spreadsheet.export();    	
+    }
         
 }

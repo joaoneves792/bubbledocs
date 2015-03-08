@@ -28,5 +28,7 @@ public class Binary extends Binary_Base {
             addCells(reference2);
             super.init(text);
     }
+    
+    
 
 }

@@ -27,5 +27,16 @@ public class Reference extends Reference_Base {
 
         return content.getValue();
     }
+    
+    @Override
+    public org.jdom2.Element export() {
+    	org.jdom2.Element refElement = new org.jdom2.Element("Ref");
+    	if(getCell() != null) {
+    		org.jdom2.Element cell = new org.jdom2.Element("Cell");
+    		refElement.addContent(cell);
+    		cell.addContent(getCell().export());    		
+    	}
+    	return refElement;
+    }
 
 }

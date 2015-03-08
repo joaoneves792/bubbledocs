@@ -14,4 +14,11 @@ public class Literal extends Literal_Base {
     public Integer getValue(){
         return get_value();
     }
+    
+    @Override
+    public org.jdom2.Element export() {
+    	org.jdom2.Element litElement = new org.jdom2.Element("Lit");
+    	litElement.setAttribute("value", get_value().toString());
+    	return litElement;
+    }
 }

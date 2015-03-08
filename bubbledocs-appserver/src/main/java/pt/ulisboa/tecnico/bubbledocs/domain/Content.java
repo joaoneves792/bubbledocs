@@ -20,4 +20,8 @@ public class Content extends Content_Base {
         //Just a stub
         return Integer.MIN_VALUE;
     }
+
+	public org.jdom2.Element export() {
+		return new org.jdom2.Element("Content");
+	}
 }

@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jdom2.output.XMLOutputter;
+
 public class Spreadsheet extends Spreadsheet_Base {
     
     public Spreadsheet(String name, String author, Integer id, Integer lines, Integer columns) {
@@ -46,5 +48,19 @@ public class Spreadsheet extends Spreadsheet_Base {
     	}
     	return null;
     }
+
+	public String export() {
+		org.jdom2.Document document = new org.jdom2.Document();
+		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
+		document.setRootElement(spreadsheet);
+		for(Cell cell : getCellSet()) {
+			spreadsheet.addContent(cell.export());
+		}
+		
+		org.jdom2.output.XMLOutputter xml =
+				new org.jdom2.output.XMLOutputter(org.jdom2.output.Format.getPrettyFormat());
+		
+		return xml.outputString(document);
+	}
 
 }
