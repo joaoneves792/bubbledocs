@@ -19,7 +19,6 @@ public class Reference extends Reference_Base {
         Cell cell;
         Content content;
         cell = getReferenceCell();
-        Integer value;
         if(cell == null)
                 throw new InvalidCellException("A Reference is trying to access a Cell that does not exist!");
         content = cell.getContent();
