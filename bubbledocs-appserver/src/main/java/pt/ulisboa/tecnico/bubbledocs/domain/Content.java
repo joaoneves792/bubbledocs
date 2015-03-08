@@ -17,7 +17,7 @@ public class Content extends Content_Base {
     public String toString(){
         return get_text();
     }    
-    public Integer getValue() {
+    public Integer getValue() throws BubbleCellException{
         //Just a stub
         return Integer.MIN_VALUE;
     }
