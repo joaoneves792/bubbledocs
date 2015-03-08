@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
@@ -45,11 +46,11 @@ public class User extends User_Base {
     	Bubbledocs.getBubbledocs().deleteSpreadsheet(this, spreadsheetId);
     }
     
-    public void protectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException {
+    public void protectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException {
     	Bubbledocs.getBubbledocs().protectSpreadsheetCell(this, spreadSheetId, line, column);
     }
     
-    public void unProtectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException {
+    public void unProtectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException {
     	Bubbledocs.getBubbledocs().unProtectSpreadsheetCell(this, spreadSheetId, line, column);
     }
 }

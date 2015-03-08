@@ -1,8 +1,9 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
-public class Cell extends Cell_Base {
+public class Cell extends Cell_Base implements Comparable {
 
     public Cell(int column, int line, boolean prot) {
         super();
@@ -37,5 +38,12 @@ public class Cell extends Cell_Base {
 		cellElement.setAttribute("Column", get_column().toString());
 		cellElement.addContent(getContent().export());
 		return cellElement;
+	}
+	
+	@Override
+	public int compareTo(Object other) {
+		int linDiff = ((Cell)other).get_line() - get_line();
+		int colDiff = ((Cell)other).get_column() - get_column();
+		return linDiff == 0 ? colDiff : linDiff;
 	}
 }

@@ -6,6 +6,8 @@ import java.util.TreeSet;
 
 import org.jdom2.output.XMLOutputter;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+
 public class Spreadsheet extends Spreadsheet_Base {
     
     public Spreadsheet(String name, String author, Integer id, Integer lines, Integer columns) {
@@ -30,7 +32,9 @@ public class Spreadsheet extends Spreadsheet_Base {
         }
     }
     
-    public Set<Cell> getCellsByLine(int line) {
+    public Set<Cell> getCellsByLine(int line) throws InvalidCellException {
+    	if(get_lines() < line)
+    		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + line + ".");
     	Set<Cell> cellSet = new TreeSet<Cell>();
     	for(Cell cell : getCellSet()) {
     		if(cell.get_line() == line)
@@ -39,7 +43,11 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return Collections.unmodifiableSet(cellSet);
     }
     
-    public Cell getCell(int line, int column) {
+    public Cell getCell(int line, int column) throws InvalidCellException {
+    	if(get_lines() < line)
+    		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + line + ".");
+    	else if(get_Columns() < line)
+    		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + column + ".");
     	Set<Cell> cellSet = getCellsByLine(line);
     	for(Cell cell : cellSet) {
     		if(column == cell.get_column()) {
