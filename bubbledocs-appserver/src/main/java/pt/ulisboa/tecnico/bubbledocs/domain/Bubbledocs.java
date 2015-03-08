@@ -9,15 +9,21 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 
+import pt.ist.fenixframework.FenixFramework;
+
 public class Bubbledocs extends Bubbledocs_Base {
-	private Bubbledocs() {
-        super();
+    private Bubbledocs() {
+         FenixFramework.getDomainRoot().setBubbledocs(this);
     }
 	
-    private static Bubbledocs theBubbledocs = new Bubbledocs();	
+    //private static Bubbledocs theBubbledocs = new Bubbledocs();	
 	    
     public static Bubbledocs getBubbledocs() {
-    	return theBubbledocs;
+        Bubbledocs bubble = FenixFramework.getDomainRoot().getBubbledocs();
+        if( null == bubble )
+            bubble = new Bubbledocs();
+
+        return bubble;
     }
     
     private int generateId() {
@@ -81,7 +87,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     public Set<Permission> getPermissionsByUser(String username) {
     	Set<Permission>	permissionSet = new TreeSet<Permission>();
     	for(Permission permission : getPermissionSet()) {
-    		if(permission.get_username() == username)
+    		if(permission.get_username().equals(username))
     			permissionSet.add(permission);
     	}
     	return Collections.unmodifiableSet(permissionSet);
