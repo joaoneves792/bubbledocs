@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -9,7 +11,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
-
 import pt.ist.fenixframework.FenixFramework;
 
 public class Bubbledocs extends Bubbledocs_Base {
@@ -220,6 +221,14 @@ public class Bubbledocs extends Bubbledocs_Base {
     	return spreadsheet;
     }
     
+    /* This is the XML import */
+    public Spreadsheet createSpreadsheet(org.jdom2.Document document) {
+    	Spreadsheet spreadsheet = new Spreadsheet(document);
+    	addSpreadsheet(spreadsheet);
+        addPermission(new Permission(spreadsheet.get_id(), spreadsheet.get_author(), true));
+    	return spreadsheet;
+    }
+    
    
     public void deleteSpreadsheet(User requestUser, int spreadsheetId)
     		throws UnauthorizedUserException, SpreadsheetNotFoundException {
@@ -288,8 +297,18 @@ public class Bubbledocs extends Bubbledocs_Base {
     	}
     }
     
+    public List<Spreadsheet> getSpreadsheetsByAuthor(String author) {
+    	List<Spreadsheet> spreadsheets = new ArrayList<Spreadsheet>();
+    	for(Spreadsheet sheet : getSpreadsheetSet()) {
+    		if(author.equals(sheet.get_author()))
+    			spreadsheets.add(sheet);
+    	}
+    	return spreadsheets;
+    }
+    
     public String export(Spreadsheet spreadsheet) {
     	return spreadsheet.export();    	
     }
+    
         
 }

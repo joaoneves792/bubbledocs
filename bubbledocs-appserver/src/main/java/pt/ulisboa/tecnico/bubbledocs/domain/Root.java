@@ -11,6 +11,7 @@ public class Root extends Root_Base {
     private Root(String name, String username, String passwd) {
         super();
         init(name, username, passwd);
+        Bubbledocs.getBubbledocs().addUser(this);
     }
     
     private static Root theRoot = null;
