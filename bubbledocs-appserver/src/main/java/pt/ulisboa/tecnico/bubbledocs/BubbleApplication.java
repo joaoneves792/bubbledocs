@@ -3,6 +3,11 @@ package pt.ulisboa.tecnico.bubbledocs;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
+import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.ulisboa.tecnico.bubbledocs.domain.Cell;
+import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
+
+import pt.ulisboa.tecnico.bubbledocs.exceptions.*;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.TransactionManager;
@@ -39,9 +44,26 @@ public class BubbleApplication{
     }
 
     private static void populateBubble(Bubbledocs bubble){
+        User user1;
+        Spreadsheet spreadsheet1;
+        Cell cell;
+
         System.out.println("Populating Bubbledocs");    
-        User user1 = new User("Joao Neves", "joaon", "12345");
-        bubble.addUser(user1);
-        bubble.createSpreadsheet(user1, "myDoc.doc", 5, 5);
+
+        try{
+            user1 = new User("Joao Neves", "joaon", "12345");
+            bubble.addUser(user1);
+            spreadsheet1 = bubble.createSpreadsheet(user1, "myDoc.doc", 5, 5);
+            cell = spreadsheet1.getCell(1,1);
+
+            cell.setContent(new Literal("99"));
+
+            System.out.println(cell.getValue());
+
+            //bubble.addWritePermission(user1, "joaon", spreadsheet1.get_id());
+        //}catch( InvalidCellException | UnauthorizedUserException | SpreadsheetNotFoundException | UserNotFoundException e){
+        }catch( BubbleCellException e){
+            System.out.println(e.getMessage());
+        }
     }
 }

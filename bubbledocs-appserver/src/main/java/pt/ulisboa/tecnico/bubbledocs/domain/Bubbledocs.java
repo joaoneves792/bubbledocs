@@ -8,6 +8,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 import pt.ist.fenixframework.FenixFramework;
 
@@ -215,6 +216,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     public Spreadsheet createSpreadsheet(User author, String name, int lines, int columns) {
     	Spreadsheet spreadsheet = new Spreadsheet(name, author.get_username(), generateId(), lines, columns);
     	addSpreadsheet(spreadsheet);
+        addPermission(new Permission(spreadsheet.get_id(), author.get_username(), true));
     	return spreadsheet;
     }
     
@@ -245,7 +247,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     }
         
     public void protectSpreadsheetCell(User requestUser, int spreadsheetId, int line, int column)
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException {
+    		throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException{
     	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
     	if(null == spreadsheet) {
     		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
@@ -266,7 +268,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     }
     
     public void unProtectSpreadsheetCell(User requestUser, int spreadsheetId, int line, int column) 
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException {
+    		throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException{
     	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
     	if(null == spreadsheet) {
     		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
