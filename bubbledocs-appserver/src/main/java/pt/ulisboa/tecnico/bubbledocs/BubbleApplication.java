@@ -20,7 +20,10 @@ public class BubbleApplication{
             tm.begin();
             Bubbledocs bubble = Bubbledocs.getBubbledocs();
 
-            //populateDomain();
+            //Assuming that if we dont have users then everything is empty
+            if(bubble.getUserSet().isEmpty())
+                    populateBubble(bubble);
+
             tm.commit();
             committed = true;
         }catch (SystemException| NotSupportedException | RollbackException| HeuristicMixedException | HeuristicRollbackException ex) {
@@ -35,11 +38,10 @@ public class BubbleApplication{
         }
     }
 
-    /*private void populateBubble(Bubbledocs bubble){
-         User user1 = new User(
-
-     
-         bubble.createSpreadsheet( 
-        //public Spreadsheet createSpreadsheet(User author, String name, int lines, int columns) {
-    }*/
+    private static void populateBubble(Bubbledocs bubble){
+        System.out.println("Populating Bubbledocs");    
+        User user1 = new User("Joao Neves", "joaon", "12345");
+        bubble.addUser(user1);
+        bubble.createSpreadsheet(user1, "myDoc.doc", 5, 5);
+    }
 }

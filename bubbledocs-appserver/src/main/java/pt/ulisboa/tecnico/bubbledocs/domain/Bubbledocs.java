@@ -14,6 +14,7 @@ import pt.ist.fenixframework.FenixFramework;
 public class Bubbledocs extends Bubbledocs_Base {
     private Bubbledocs() {
          FenixFramework.getDomainRoot().setBubbledocs(this);
+         set_idGenerator(new Integer(0));
     }
 	
     //private static Bubbledocs theBubbledocs = new Bubbledocs();	
