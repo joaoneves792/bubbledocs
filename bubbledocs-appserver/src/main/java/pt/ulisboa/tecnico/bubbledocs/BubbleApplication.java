@@ -20,9 +20,11 @@ import pt.ist.fenixframework.TransactionManager;
 
 import javax.transaction.*;
 import java.util.Set;
+import java.util.List;
 
 public class BubbleApplication{
     public static void main(String[] args){
+        Spreadsheet spreadsheet;
         System.out.println("Started BubbleApllication...");
         
         TransactionManager tm = FenixFramework.getTransactionManager();
@@ -36,7 +38,49 @@ public class BubbleApplication{
             if(bubble.getUserSet().isEmpty())
                     populateBubble(bubble);
 
+            //Print all users names, usernames, and passords
             printAllUsersInfo(bubble);
+
+            //Print which documents each user owns (owns as in author)
+            try{
+                printUsersDocuments(bubble, "pf");
+                printUsersDocuments(bubble, "ra");
+            }catch(UserNotFoundException e){
+                System.out.println(e.getMessage());
+            }
+
+            //Export to XML all documents belonging to "pf"
+            exportUsersDocuments(bubble, "pf");
+
+            //Remove pf's "Notas ES" spreadsheet from storage
+            //TODO This is not actually removing the data from the database!!!!!
+            spreadsheet = getSpreadsheetByName("Notas ES", bubble.getSpreadsheetsByAuthor("pf"));
+            if(null == spreadsheet)
+                System.out.println("User pf doesnt have a document named Notas ES");
+            else{
+                bubble.removeSpreadsheet(spreadsheet);
+                spreadsheet = null;
+            }
+
+
+            //Print all the documents owned by "pf" 
+            try{
+                printUsersDocuments(bubble, "pf");
+            }catch(UserNotFoundException e){
+                System.out.println(e.getMessage());
+            }
+
+            //TODO: Import the spreadsheet we just exported
+ 
+            //Print all the documents owned by "pf" again...
+            try{
+                printUsersDocuments(bubble, "pf");
+            }catch(UserNotFoundException e){
+                System.out.println(e.getMessage());
+            }   
+
+            //Export to XML the document again...        
+            exportUsersDocuments(bubble, "pf");
 
             tm.commit();
             committed = true;
@@ -50,6 +94,8 @@ public class BubbleApplication{
                  System.err.println("Error in roll back of transaction: " + ex);
              }
         }
+
+        FenixFramework.shutdown();
     }
 
     private static void populateBubble(Bubbledocs bubble){
@@ -93,6 +139,39 @@ public class BubbleApplication{
         usersSet = bubble.getUserSet();
         for(User u : usersSet)
             System.out.println(u.get_name() + " | " + u.get_username() + " | " + u.get_passwd());
+
+    }
+
+    private static Spreadsheet getSpreadsheetByName(String name, List<Spreadsheet> spreadsheets){
+        for(Spreadsheet s : spreadsheets)
+                if(s.get_name().equals(name))
+                        return s;
+        return null;
+    }
+
+    private static void exportUsersDocuments(Bubbledocs bubble, String user)throws UserNotFoundException{
+        List<Spreadsheet> spreadsheets;
+       
+        spreadsheets = bubble.getSpreadsheetsByAuthor(user);
+        if(spreadsheets.isEmpty())
+            System.out.println("<This user has no documents>");
+        else
+            for(Spreadsheet s : spreadsheets)
+                    bubble.export(s);
+        
+    }
+
+    private static void printUsersDocuments(Bubbledocs bubble, String user)throws UserNotFoundException {
+        List<Spreadsheet> spreadsheets;
+       
+        spreadsheets = bubble.getSpreadsheetsByAuthor(user);
+
+        System.out.println(user + "'s documents:");
+        if(spreadsheets.isEmpty())
+            System.out.println("<This user has no documents>");
+        else
+            for(Spreadsheet s : spreadsheets)
+                System.out.println(s.get_name() + " | id: " + s.get_id());
 
     }
 }
