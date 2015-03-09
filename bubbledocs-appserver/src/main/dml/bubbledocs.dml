@@ -4,7 +4,6 @@ class Bubbledocs {
 	Integer _idGenerator;
 }
 
-
 relation DomainRootHasBubbledocsApplication {
 	.pt.ist.fenixframework.DomainRoot playsRole root {
 		multiplicity 0..1;
@@ -50,29 +49,23 @@ class Cell {
 	Boolean _protected;
 }
 
-class Content{
-        String _text;
-}
+class Content;
 
 class Function extends Content;
 
-class Literal extends Content {
+class SimpleContent extends Content;
+
+class Literal extends SimpleContent {
 	Integer _value;
 }
 
-class Reference extends Content; 
-
-class Binary extends Function{
-        Integer _argument1;
-        Integer _argument2;
+class Reference extends SimpleContent {
+	String _value;
 }
 
-class Range extends Function {
-	Integer _column1;
-	Integer _column2;
-	Integer _line1;
-	Integer _line2;
-}
+class Binary extends Function;
+
+class Range extends Function;
 
 class Add extends Binary;
 
@@ -112,9 +105,16 @@ relation CellHasContent {
 	Content playsRole content;
 }
 
-relation BinaryHasCells {
+relation BinaryHasSimpleContents {
 	Binary playsRole binary;
-	Cell playsRole cells {
+	SimpleContent playsRole arguments {
+		multiplicity 2;
+	}
+}
+
+relation RangeHasReferences {
+	Range playsRole range;
+	Reference playsRole reference {
 		multiplicity 2;
 	}
 }
@@ -123,3 +123,4 @@ relation ReferenceHasCell {
 	Reference playsRole reference;
 	Cell playsRole referenceCell;
 }
+
