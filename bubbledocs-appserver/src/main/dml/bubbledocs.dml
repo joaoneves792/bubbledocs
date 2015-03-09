@@ -38,9 +38,9 @@ class Spreadsheet {
 	String  _author;
 	String  _name;
 	Integer _lines;
-	Integer _Columns;
+	Integer _columns;
 	Integer _id;
-	String _creationDate;
+	String  _date;
 }
 
 class Cell {

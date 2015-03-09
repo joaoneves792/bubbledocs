@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+
 //abstract class
 //this should not be instanced
 public abstract class Binary extends Binary_Base {
@@ -34,4 +36,26 @@ public abstract class Binary extends Binary_Base {
      * Defines XML element for this class
      */
     protected abstract org.jdom2.Element export();
+    
+    /**
+     * pseudo-constructor for initializing a content from an XML element
+     * @param XML JDOM element for this content
+     */
+	//FIXME REVIEW THIS FOR ARGUMENT ORDER
+    protected final void init(org.jdom2.Element binElement) throws InvalidImportException {
+    	for(org.jdom2.Element el : binElement.getChildren()) {
+    		String contentName = el.getName();
+    		if(contentName.equals("Reference")) {
+    			Reference ref = new Reference();
+    			ref.init(el);
+    			addArgument(ref);
+    		} else if(contentName.equals("Literal")) {
+    			Literal lit = new Literal();
+    			lit.init(el);
+    			addArgument(lit);
+    		} else {
+    			throw new InvalidImportException("Attempted to Import Invalid Cell Content.");
+    		}
+    	}
+    }
 }

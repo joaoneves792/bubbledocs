@@ -39,5 +39,18 @@ public class Reference extends Reference_Base {
     	}
     	return refElement;
     }
+    
+    /**
+     * pseudo-constructor for initializing a content from an XML element
+     * @param XML JDOM element for this content
+     */
+    protected final void init(org.jdom2.Element el) {
+    	org.jdom2.Element cellElement = el.getChild("Cell");
+		int line = Integer.parseInt(cellElement.getAttribute("line").getValue());
+		int column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+		boolean protectd = Boolean.parseBoolean(cellElement.getAttribute("protected").getValue());
+		 //FIXME FINISH THIS
+		
+    }
 
 }

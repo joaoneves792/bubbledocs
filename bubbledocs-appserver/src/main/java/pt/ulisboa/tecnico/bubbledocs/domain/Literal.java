@@ -24,5 +24,13 @@ public class Literal extends Literal_Base {
     	litElement.setAttribute("value", get_value().toString());
     	return litElement;
     }
+
+    /**
+     * pseudo-constructor for initializing a content from an XML element
+     * @param XML JDOM element for this content
+     */
+    protected final void init(org.jdom2.Element el) {
+    	set_value(Integer.parseInt(el.getAttribute("value").getValue()));
+    }
     
 }

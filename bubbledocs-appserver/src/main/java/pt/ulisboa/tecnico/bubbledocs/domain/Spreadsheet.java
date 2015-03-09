@@ -4,7 +4,10 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.jdom2.Document;
+
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 public class Spreadsheet extends Spreadsheet_Base {
     
@@ -13,6 +16,19 @@ public class Spreadsheet extends Spreadsheet_Base {
         init(name, author, id, lines, columns);
     }
 
+	public Spreadsheet(Document document) throws InvalidImportException {
+		org.jdom2.Element spreadsheet = document.getRootElement();
+		set_id(Integer.parseInt(spreadsheet.getAttribute("id").getValue()));
+		set_lines(Integer.parseInt(spreadsheet.getAttribute("lines").getValue()));
+		set_columns(Integer.parseInt(spreadsheet.getAttribute("columns").getValue()));
+		set_author(spreadsheet.getAttribute("author").getValue());
+		set_name(spreadsheet.getAttribute("name").getValue());
+		set_date(spreadsheet.getAttribute("date").getValue());
+		
+		for(org.jdom2.Element cellElement : spreadsheet.getChildren())
+			addCell(new Cell(cellElement, get_lines(), get_columns()));	
+	}
+
 	protected void init(String name, String author, Integer id, Integer lines, Integer columns) {
         Cell newCell;
 
@@ -20,18 +36,18 @@ public class Spreadsheet extends Spreadsheet_Base {
         set_author(author);
         set_id(id);
         set_lines(lines);
-        set_Columns(columns);
+        set_columns(columns);
         
         for(int i=1 ; i<=lines; i++){
                 for(int j=1 ; j<=columns; j++){
-                        newCell = new Cell(j, i, false);
+                        newCell = new Cell(i, j, false);
                         addCell(newCell);
                 }
         }
     }
     
     public Set<Cell> getCellsByLine(int line) throws InvalidCellException {
-    	if(get_lines() < line)
+    	if(get_lines() < line || line < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + line + ".");
     	Set<Cell> cellSet = new TreeSet<Cell>();
     	for(Cell cell : getCellSet()) {
@@ -42,9 +58,9 @@ public class Spreadsheet extends Spreadsheet_Base {
     }
     
     public Cell getCell(int line, int column) throws InvalidCellException {
-    	if(get_lines() < line)
+    	if(get_lines() < line || line < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + line + ".");
-    	else if(get_Columns() < line)
+    	else if(get_columns() < column || column < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + column + ".");
     	Set<Cell> cellSet = getCellsByLine(line);
     	for(Cell cell : cellSet) {
@@ -60,10 +76,10 @@ public class Spreadsheet extends Spreadsheet_Base {
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
 		spreadsheet.setAttribute("id", get_id().toString());
 		spreadsheet.setAttribute("lines", get_lines().toString());
-		spreadsheet.setAttribute("columns", get_Columns().toString());
+		spreadsheet.setAttribute("columns", get_columns().toString());
 		spreadsheet.setAttribute("author", get_author());
 		spreadsheet.setAttribute("name", get_name());
-		spreadsheet.setAttribute("date", get_creationDate());
+		spreadsheet.setAttribute("date", get_date());
 		document.setRootElement(spreadsheet);
 		for(Cell cell : getCellSet()) {
 			spreadsheet.addContent(cell.export());
