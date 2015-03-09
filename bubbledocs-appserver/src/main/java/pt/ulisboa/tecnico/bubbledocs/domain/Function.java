@@ -1,9 +1,20 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
-public class Function extends Function_Base {
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
+
+//an abstract class
+public abstract class Function extends Function_Base {
     
-    public Function() {
+	/**
+	 * This constructor should never be called
+	 */
+    Function() {
         super();
     }
     
+    /**
+     * To be defined by the concrete subclasses
+     */
+    protected abstract int __getValue__() throws InvalidCellException, InvalidReferenceException;    
 }

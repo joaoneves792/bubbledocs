@@ -107,7 +107,7 @@ relation CellHasContent {
 
 relation BinaryHasSimpleContents {
 	Binary playsRole binary;
-	SimpleContent playsRole arguments {
+	SimpleContent playsRole argument {
 		multiplicity 2;
 	}
 }
@@ -121,6 +121,6 @@ relation RangeHasReferences {
 
 relation ReferenceHasCell {
 	Reference playsRole reference;
-	Cell playsRole referenceCell;
+	Cell playsRole referencedCell;
 }
 

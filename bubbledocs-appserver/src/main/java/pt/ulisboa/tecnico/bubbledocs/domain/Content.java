@@ -1,27 +1,43 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 
-//This is an abstract class!!
-public class Content extends Content_Base {
+//an abstract class
+public abstract class Content extends Content_Base {
     
-    protected Content() { 
+	
+	/**
+	 * This constructor should never be called
+	 */
+    Content() { 
         super();
     }
 
-    protected void init(String text){
-        set_text(text);
+    /**
+     * Template Method for getting a value of a Content
+     * @return the Value of the content, null if a Invalid Reference was found
+     */
+    protected final Integer getValue() {
+    	Integer value;
+    	try {
+    		value = __getValue__();
+    	} catch (InvalidCellException e) {
+    		return null;
+    	} catch (InvalidReferenceException e) {
+			return null;
+		}
+    	return value;
     }
-
-    public String toString(){
-        return get_text();
-    }    
-    public Integer getValue() throws BubbleCellException {
-        //Just a stub
-        return Integer.MIN_VALUE;
-    }
-
-	public org.jdom2.Element export() {
+    
+    /**
+     * To be defined by the concrete subclasses
+     * @throws InvalidCellException 
+     * @throws InvalidReferenceException 
+     */
+    protected abstract int __getValue__() throws InvalidCellException, InvalidReferenceException;
+    
+	org.jdom2.Element export() {
 		return new org.jdom2.Element("Content");
 	}
 }

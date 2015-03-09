@@ -1,34 +1,32 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
-public class Binary extends Binary_Base {
+//abstract class
+//this should not be instanced
+public abstract class Binary extends Binary_Base {
     
-    public Binary() {
+	/**
+	 * This constructor should never be called
+	 */
+    Binary() {
         super();
     }
-    protected void init(String text, Integer int1, Integer int2){
-            set_argument1(int1);
-            set_argument2(int2);
-            super.init(text);
-    }
-
-    protected void init(String text, Integer int1, Cell reference2){
-            set_argument1(int1);
-            addCells(reference2);
-            super.init(text);
-    }
-
-    protected void init(String text, Cell reference1, Integer int2){
-            set_argument2(int2);
-            addCells(reference1);
-            super.init(text);
-    }
-
-    protected void init(String text, Cell reference1, Cell reference2){
-            addCells(reference1);
-            addCells(reference2);
-            super.init(text);
+    
+    /** These references guarantee the ordering of arguments */
+    protected SimpleContent arg1;
+    protected SimpleContent arg2;
+    
+    /**
+     * This method is only to be inherited by the Reference or Literal Subclasses
+     * @param Instanceof Literal or Reference
+     * @param Instanceof Literal or Reference
+     */
+    protected final void init(SimpleContent arg1, SimpleContent arg2) {
+    	addArgument(arg1); this.arg1 = arg1;
+    	addArgument(arg2); this.arg2 = arg2;
     }
     
-    
-
+    /**
+     * To be defined by the concrete subclasses
+     */
+    protected abstract int __getValue__();
 }
