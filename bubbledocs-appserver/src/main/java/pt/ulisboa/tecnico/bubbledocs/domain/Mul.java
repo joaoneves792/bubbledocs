@@ -11,7 +11,19 @@ public class Mul extends Mul_Base {
 		return arg1.getValue() * arg2.getValue();	
 	}	
 	
-    /* FIXME REVIEW THIS METHOD FOR NEW DOMAIN MODEL
+	/**
+	 * Defines XML element for this class
+	 */
+	@Override
+	protected org.jdom2.Element export() {
+		org.jdom2.Element el = new org.jdom2.Element("Mul");
+		el.addContent(arg1.export());
+		el.addContent(arg2.export());
+		return el;
+	}
+
+	
+    /* 
     @Override
     public org.jdom2.Element export() {
     	org.jdom2.Element mulElement = new org.jdom2.Element("Mul");

@@ -25,26 +25,19 @@ public class Reference extends Reference_Base {
     }
     
     
-    //FIXME review line 35!!
+    /**
+     * Defines XML element for this class
+     */
     @Override
-    public org.jdom2.Element export() {
-    	org.jdom2.Element refElement = new org.jdom2.Element("Ref");
-    	if(getReferencedCell() != null) {
+    public final org.jdom2.Element export() {
+    	org.jdom2.Element refElement = new org.jdom2.Element("Reference");
+    	Cell referencedCell = getReferencedCell();
+		if(referencedCell != null) {
     		org.jdom2.Element cell = new org.jdom2.Element("Cell");
     		refElement.addContent(cell);
-    		cell.addContent(getReferencedCell().export());
+    		cell.addContent(referencedCell.export());
     	}
     	return refElement;
     }
-
-    /*
-    public Reference(org.jdom2.Element e) {
-    	super();
-    	String u = e.getAttributeValue("line");
-    	String v = e.getAttributeValue("column");
-    	set_text("=" + u + ";" + v);
-    	setReferenceCell(new Cell(e));
-    }
-    */
 
 }

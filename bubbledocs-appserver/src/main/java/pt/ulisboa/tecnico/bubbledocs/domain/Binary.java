@@ -29,4 +29,9 @@ public abstract class Binary extends Binary_Base {
      * To be defined by the concrete subclasses
      */
     protected abstract int __getValue__();
+    
+    /**
+     * Defines XML element for this class
+     */
+    protected abstract org.jdom2.Element export();
 }

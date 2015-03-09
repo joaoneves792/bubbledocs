@@ -3,13 +3,9 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 
-//an abstract class
 public abstract class SimpleContent extends SimpleContent_Base {
 
-	/**
-	 * This constructor should never be called
-	 */
-    SimpleContent() {
+    protected SimpleContent() {
         super();
     }
     
@@ -19,5 +15,9 @@ public abstract class SimpleContent extends SimpleContent_Base {
      * @throws InvalidReferenceException 
      */
     protected abstract int __getValue__() throws InvalidCellException, InvalidReferenceException;
-        
+ 
+    /**
+     * Defines XML element for this class
+     */
+    protected abstract org.jdom2.Element export();
 }

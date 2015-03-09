@@ -11,7 +11,19 @@ public class Add extends Add_Base {
 		return arg1.getValue() + arg2.getValue();		
 	}
 
-    /* FIXME REVIEW THIS METHOD FOR NEW DOMAIN MODEL
+	/**
+	 * Defines XML element for this class
+	 */
+	//FIXME REVIEW THIS FOR SERIALIZATION
+	@Override
+	protected org.jdom2.Element export() {
+		org.jdom2.Element el = new org.jdom2.Element("Add");
+		el.addContent(arg1.export());
+		el.addContent(arg2.export());
+		return el;
+	}
+
+    /* 
     @Override
     public org.jdom2.Element export() {
     	org.jdom2.Element addElement = new org.jdom2.Element("Add");

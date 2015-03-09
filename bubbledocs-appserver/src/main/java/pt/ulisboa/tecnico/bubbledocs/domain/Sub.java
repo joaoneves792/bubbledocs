@@ -11,8 +11,19 @@ public class Sub extends Sub_Base {
 		return arg1.getValue() - arg2.getValue();	
 	}
 	
+	/**
+	 * Defines XML element for this class
+	 */
+	@Override
+	protected org.jdom2.Element export() {
+		org.jdom2.Element el = new org.jdom2.Element("Sub");
+		el.addContent(arg1.export());
+		el.addContent(arg2.export());
+		return el;
+	}
+	
     
-    /* FIXME REVIEW THIS METHOD FOR NEW DOMAIN
+    /*
     @Override
     public org.jdom2.Element export() {
     	org.jdom2.Element subElement = new org.jdom2.Element("Sub");

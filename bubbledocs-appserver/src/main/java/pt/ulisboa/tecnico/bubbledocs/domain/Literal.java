@@ -15,10 +15,14 @@ public class Literal extends Literal_Base {
     	return get_value();
     }
     
+    /**
+     * Defines XML element for this class
+     */
     @Override
-    public org.jdom2.Element export() {
-    	org.jdom2.Element litElement = new org.jdom2.Element("Lit");
+    public final org.jdom2.Element export() {
+    	org.jdom2.Element litElement = new org.jdom2.Element("Literal");
     	litElement.setAttribute("value", get_value().toString());
     	return litElement;
     }
+    
 }

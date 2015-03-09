@@ -221,14 +221,14 @@ public class Bubbledocs extends Bubbledocs_Base {
     	return spreadsheet;
     }
     
-    /* This is the XML import */
+    /* This is the XML import
     public Spreadsheet createSpreadsheet(org.jdom2.Document document) {
     	Spreadsheet spreadsheet = new Spreadsheet(document);
     	addSpreadsheet(spreadsheet);
         addPermission(new Permission(spreadsheet.get_id(), spreadsheet.get_author(), true));
     	return spreadsheet;
     }
-    
+    */
    
     public void deleteSpreadsheet(User requestUser, int spreadsheetId)
     		throws UnauthorizedUserException, SpreadsheetNotFoundException {

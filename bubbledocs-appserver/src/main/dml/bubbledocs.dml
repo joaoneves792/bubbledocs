@@ -59,9 +59,7 @@ class Literal extends SimpleContent {
 	Integer _value;
 }
 
-class Reference extends SimpleContent {
-	String _value;
-}
+class Reference extends SimpleContent;
 
 class Binary extends Function;
 

@@ -37,7 +37,9 @@ public abstract class Content extends Content_Base {
      */
     protected abstract int __getValue__() throws InvalidCellException, InvalidReferenceException;
     
-	org.jdom2.Element export() {
-		return new org.jdom2.Element("Content");
-	}
+    
+    /**
+     * Defines XML element for this class
+     */
+    protected abstract org.jdom2.Element export();
 }
