@@ -54,11 +54,11 @@ public class Reference extends Reference_Base {
     protected final void init(org.jdom2.Element el) throws InvalidImportException {
     	set_line(Integer.parseInt(el.getAttribute("line").getValue()));
     	set_column(Integer.parseInt(el.getAttribute("column").getValue()));
-    	try {
+    	/*try {
     		getReferencedCell();
     	} catch(InvalidCellException e) {
     		throw new InvalidImportException("Attempted to import reference to outside of spreadsheet");
-    	}    	
+    	} */   	
     }
  
     /**
