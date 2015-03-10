@@ -9,7 +9,12 @@ public class Reference extends Reference_Base {
         super();
     }
 
-    public final void init(Cell cell) {
+    public Reference(Cell cell) {
+    	super();
+    	setReferencedCell(cell);
+	}
+
+	public final void init(Cell cell) {
     	setReferencedCell(cell);
     }
     

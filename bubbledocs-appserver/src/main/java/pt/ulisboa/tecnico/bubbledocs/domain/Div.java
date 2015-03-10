@@ -6,6 +6,11 @@ public class Div extends Div_Base {
 		super();
 	}
 	
+    public Div(SimpleContent arg1, SimpleContent arg2) {
+    	super();
+    	init(arg1, arg2);
+    }
+	
 	@Override
 	protected int __getValue__() {
 		return arg1.getValue() / arg2.getValue();	

@@ -90,4 +90,9 @@ public class Spreadsheet extends Spreadsheet_Base {
 		
 		return xml.outputString(document);
 	}
+    
+    @Override
+    public String toString() {
+    	return "<< ID: " + get_id() + " || NAME: " + get_name() + " || AUTHOR: " + get_author() + " || LINES: " + get_lines() + " || " + get_columns() + " >>";
+    }
 }

@@ -10,6 +10,10 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
         init(column, line, prot);
       }
 
+    public int myHashCode() {
+    	return ( (get_line() + get_column()) * (get_line() + get_column() + 1) + get_column() ) / 2;
+    }
+    
     protected void init(int line, int column, boolean prot) {
         set_column(column);
         set_line(line);

@@ -6,7 +6,12 @@ public class Literal extends Literal_Base {
         super();
     }
 
-    public final void init(Integer value) {
+    public Literal(int i) {
+		super();
+		set_value(i);
+	}
+
+	public final void init(Integer value) {
     	set_value(value);
     }
     

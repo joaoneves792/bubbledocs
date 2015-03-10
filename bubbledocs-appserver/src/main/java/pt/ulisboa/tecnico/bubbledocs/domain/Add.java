@@ -6,6 +6,13 @@ public class Add extends Add_Base {
         super();
     }
 
+    
+    public Add(SimpleContent arg1, SimpleContent arg2) {
+    	super();
+    	init(arg1, arg2);
+    }
+    
+    
 	@Override
 	protected final int __getValue__() {
 		return arg1.getValue() + arg2.getValue();		

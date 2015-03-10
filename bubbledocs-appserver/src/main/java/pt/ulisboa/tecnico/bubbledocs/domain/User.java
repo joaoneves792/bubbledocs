@@ -1,5 +1,8 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
@@ -38,7 +41,7 @@ public class User extends User_Base {
     	Bubbledocs.getBubbledocs().revokeWritePermission(this, granted, spreadsheetId);
     }
     
-    public Spreadsheet createSpreadsheet(String author, String name, int lines, int columns) {
+    public Spreadsheet createSpreadsheet(String name, int lines, int columns) {
     	return Bubbledocs.getBubbledocs().createSpreadsheet(this, name, lines, columns);
     }
     
@@ -53,4 +56,20 @@ public class User extends User_Base {
     public void unProtectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException {
     	Bubbledocs.getBubbledocs().unProtectSpreadsheetCell(this, spreadSheetId, line, column);
     }
+
+	public List<Spreadsheet> findSpreadsheetsByName(String str) {
+		List <Spreadsheet> mySpreadsheets = Bubbledocs.getBubbledocs().getSpreadsheetsByAuthor(get_name());
+		List <Spreadsheet> mySpreadsheetsWithThisName = new ArrayList<Spreadsheet>();
+		for(Spreadsheet s : mySpreadsheets) {
+			if(s.get_name().equals(str)) {
+				mySpreadsheetsWithThisName.add(s);
+			}
+		}
+		return mySpreadsheetsWithThisName;
+	}
+	
+	@Override
+	public String toString() {
+		return "<< USERNAME: " + get_username() + " || NAME: " + get_name() + " || PASSWORD: " + get_passwd() + " >>";
+	}
 }

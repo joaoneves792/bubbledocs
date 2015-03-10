@@ -23,11 +23,4 @@ public class Avg extends Avg_Base {
 		return el;
 	}
  
-    /**
-     * pseudo-constructor for initializing a content from an XML element
-     * @param XML JDOM element for this content
-     */
-    protected final void init(org.jdom2.Element el) {
-    	//FIXME FINISH THIS
-    }
 }

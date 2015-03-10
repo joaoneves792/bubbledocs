@@ -9,7 +9,7 @@ public abstract class Binary extends Binary_Base {
 	/**
 	 * This constructor should never be called
 	 */
-    Binary() {
+    public Binary() {
         super();
     }
     
@@ -22,9 +22,14 @@ public abstract class Binary extends Binary_Base {
      * @param Instanceof Literal or Reference
      * @param Instanceof Literal or Reference
      */
-    protected final void init(SimpleContent arg1, SimpleContent arg2) {
+    public final void init(SimpleContent arg1, SimpleContent arg2) {
     	addArgument(arg1); this.arg1 = arg1;
     	addArgument(arg2); this.arg2 = arg2;
+    }
+    
+    public Binary(SimpleContent arg1, SimpleContent arg2) {
+    	super();
+    	init(arg1, arg2);
     }
     
     /**
