@@ -16,4 +16,8 @@ public class Permission extends Permission_Base {
     	set_username(username);
     	set_writePermission(writePermission);
 	}
+
+    public void clean(){
+        super.deleteDomainObject();
+    }
 }

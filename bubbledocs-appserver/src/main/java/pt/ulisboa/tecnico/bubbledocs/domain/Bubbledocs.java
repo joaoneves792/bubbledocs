@@ -246,6 +246,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     				//remove all permissions for this spreadsheet
     				for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
     					removePermission(permission_it);
+                                        permission_it.clean();
     				}
     			} else {
     				throw new UnauthorizedUserException

@@ -29,6 +29,7 @@ public class BubbleApplication{
         
         TransactionManager tm = FenixFramework.getTransactionManager();
         boolean committed = false;
+        Spreadsheet spreadsheet;
 
         try{
         	tm.begin();
@@ -61,8 +62,20 @@ public class BubbleApplication{
         		}
         	}
         	
-        	//FIXME REMOVER DO ESTADO PERSISTENTE A FOLHA NOTAS ES DO UTILIZADOR PF
-        	
+                //Remove pf's "Notas ES" spreadsheet from storage
+                try{
+                    spreadsheet = getSpreadsheetByName("Notas ES", bubble.getSpreadsheetsByAuthor("pf"));
+                    if(null == spreadsheet)
+                        System.out.println("User pf doesnt have a document named Notas ES");
+                    else{
+                        bubble.deleteSpreadsheet(bubble.getUserByUsername("pf"), spreadsheet.get_id());
+                        spreadsheet = null;
+                    }
+                }catch(UserNotFoundException | UnauthorizedUserException | SpreadsheetNotFoundException e){  
+                    System.out.println("Failed to delete Document: " + e.getMessage());
+                }
+
+
         	System.out.println("Spreadsheets from user 'pf' [after removing 'Notas ES']:"); 
         	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
         		if(sheet.get_author().equals("pf")) {
