@@ -2,6 +2,8 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
+import java.util.Set;
+
 //abstract class
 //this should not be instanced
 public abstract class Binary extends Binary_Base {
@@ -77,5 +79,20 @@ public abstract class Binary extends Binary_Base {
 		} else {
 			throw new InvalidImportException("Attempted to Import Invalid Cell Content: " + contentName);
 		}		
+    }
+    
+    /**
+      * Method to erase this Binary Function (from persistence)
+      */
+    public void clean(){
+        Set<SimpleContent> arguments;
+
+        arguments = getArgumentSet();
+        for(SimpleContent a : arguments){
+                removeArgument(a);
+                a.clean();
+        }
+        
+        super.deleteDomainObject();   
     }
 }

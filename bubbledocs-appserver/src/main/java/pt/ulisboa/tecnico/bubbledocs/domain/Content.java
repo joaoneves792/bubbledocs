@@ -51,4 +51,10 @@ public abstract class Content extends Content_Base {
      * @throws InvalidImportException 
      */
     protected abstract void init(org.jdom2.Element el) throws InvalidImportException;
+
+
+    /**
+     * Method to erase this Content (from persistence)
+     */
+    public abstract void clean();
 }

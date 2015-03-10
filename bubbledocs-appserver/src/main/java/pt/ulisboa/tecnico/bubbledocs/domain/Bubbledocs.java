@@ -240,6 +240,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     		} else {
     			if(permission.get_writePermission()) {
     				removeSpreadsheet(spreadsheet);
+                                spreadsheet.clean();
     				//remove all permissions for this spreadsheet
     				for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
     					removePermission(permission_it);

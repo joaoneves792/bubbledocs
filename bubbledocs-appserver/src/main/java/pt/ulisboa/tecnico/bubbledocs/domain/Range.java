@@ -51,4 +51,10 @@ public abstract class Range extends Range_Base {
 		return el;
 	}
  
+    /**
+     * Method to clean a range (from persistence)
+     */
+    public void clean(){
+        //TODO IMPLEMENT ME
+    }
 }

@@ -37,5 +37,13 @@ public class Literal extends Literal_Base {
     protected final void init(org.jdom2.Element el) {
     	set_value(Integer.parseInt(el.getAttribute("value").getValue()));
     }
-    
+
+
+    /**
+      * Method to erase this Literal (from persistence)
+      */
+    public void clean(){
+        super.deleteDomainObject();
+    }
+
 }

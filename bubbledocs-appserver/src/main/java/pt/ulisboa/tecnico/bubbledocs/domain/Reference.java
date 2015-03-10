@@ -62,5 +62,13 @@ public class Reference extends Reference_Base {
 		
 		
     }
+ 
+    /**
+      * Method to erase this Reference (from persistence)
+      */
+    public void clean(){
+        setReferencedCell(null);
+        super.deleteDomainObject();
+    }
 
 }

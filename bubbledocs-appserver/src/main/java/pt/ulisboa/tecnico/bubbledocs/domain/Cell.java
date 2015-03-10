@@ -115,4 +115,22 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 				}
 			}
 	}
+
+        /**
+         * Method to erase this Cells contents (from persistence)
+         */
+        public void cleanContents(){
+            Content content = getContent();
+            if(null != content){
+                setContent(null);
+                content.clean();
+            }
+        }
+        
+        /**
+         * Method to erase this Cell (from persistence)
+         */
+        public void clean(){
+            super.deleteDomainObject();
+        }
 }

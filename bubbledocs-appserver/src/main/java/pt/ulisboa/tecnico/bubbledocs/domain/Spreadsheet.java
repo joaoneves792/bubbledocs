@@ -96,8 +96,24 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return "<< ID: " + get_id() + " || NAME: " + get_name() + " || AUTHOR: " + get_author() + " || LINES: " + get_lines() + " || " + get_columns() + " >>";
     }
     
-    public void delete() {
-    	//desligar relações 
-    	super.deleteDomainObject();
-    }
+     /**
+      ** Method to recursively erase this spreadsheet (from persistence)
+      **/
+      public void clean(){
+          Set<Cell> cells;
+          cells = getCellSet();
+
+          //We need to do two passes to avoid deleting cells that are referenced by other cells 
+          for(Cell c : cells){
+              c.cleanContents();
+          }
+
+          for(Cell c : cells){
+              removeCell(c);
+              c.clean();
+          }
+          super.deleteDomainObject();
+      }
 }
+
+
