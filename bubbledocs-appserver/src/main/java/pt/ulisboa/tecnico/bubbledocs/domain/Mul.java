@@ -8,18 +8,7 @@ public class Mul extends Mul_Base {
 	
 	@Override
 	protected int __getValue__() {
-		return arg1.getValue() * arg2.getValue();	
+		return getArgumentOne().getValue() * getArgumentTwo().getValue();	
 	}	
 	
-	/**
-	 * Defines XML element for this class
-	 */
-	@Override
-	protected org.jdom2.Element export() {
-		org.jdom2.Element el = new org.jdom2.Element("Mul");
-		el.addContent(arg1.export());
-		el.addContent(arg2.export());
-		return el;
-	}
-
 }

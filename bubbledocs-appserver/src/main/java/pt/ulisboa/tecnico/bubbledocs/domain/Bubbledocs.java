@@ -3,9 +3,6 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
@@ -88,22 +85,22 @@ public class Bubbledocs extends Bubbledocs_Base {
     	}
     }
     
-    public Set<Permission> getPermissionsByUser(String username) {
-    	Set<Permission>	permissionSet = new TreeSet<Permission>();
+    public List<Permission> getPermissionsByUser(String username) {
+    	List<Permission>	permissions = new ArrayList<Permission>();
     	for(Permission permission : getPermissionSet()) {
     		if(permission.get_username().equals(username))
-    			permissionSet.add(permission);
+    			permissions.add(permission);
     	}
-    	return Collections.unmodifiableSet(permissionSet);
+    	return Collections.unmodifiableList(permissions);
     }
     
-    public Set<Permission> getPermissionsBySpreadsheet(int spreadsheetId) {
-    	Set<Permission>	permissionSet = new TreeSet<Permission>();
+    public List<Permission> getPermissionsBySpreadsheet(int spreadsheetId) {
+    	List<Permission>	permissions = new ArrayList<Permission>();
     	for(Permission permission : getPermissionSet()) {
     		if(permission.get_spreadsheetId() == spreadsheetId)
-    			permissionSet.add(permission);
+    			permissions.add(permission);
     	}
-    	return Collections.unmodifiableSet(permissionSet);
+    	return Collections.unmodifiableList(permissions);
     }
  
     //FIXME REFACTOR THESE METHODS!!!!! 

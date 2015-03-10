@@ -95,4 +95,9 @@ public class Spreadsheet extends Spreadsheet_Base {
     public String toString() {
     	return "<< ID: " + get_id() + " || NAME: " + get_name() + " || AUTHOR: " + get_author() + " || LINES: " + get_lines() + " || " + get_columns() + " >>";
     }
+    
+    public void delete() {
+    	//desligar relações 
+    	super.deleteDomainObject();
+    }
 }

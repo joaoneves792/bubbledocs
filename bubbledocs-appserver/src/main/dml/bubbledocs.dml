@@ -103,18 +103,24 @@ relation CellHasContent {
 	Content playsRole content;
 }
 
-relation BinaryHasSimpleContents {
-	Binary playsRole binary;
-	SimpleContent playsRole argument {
-		multiplicity 2;
-	}
+relation BinaryHasArgumentOne {
+	Binary playsRole binaryOne;
+	SimpleContent playsRole argumentOne;
 }
 
-relation RangeHasReferences {
+relation BinaryHasArgumentTwo {
+	Binary playsRole binaryTwo;
+	SimpleContent playsRole argumentTwo;
+}
+
+relation RangeHasReferenceOne {
 	Range playsRole range;
-	Reference playsRole reference {
-		multiplicity 2;
-	}
+	Reference playsRole referenceOne;
+}
+
+relation RangeHasReferenceTwo {
+	Range playsRole range;
+	Reference playsRole referenceTwo;
 }
 
 relation ReferenceHasCell {

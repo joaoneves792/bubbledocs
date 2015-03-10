@@ -38,9 +38,10 @@ public class Reference extends Reference_Base {
     	org.jdom2.Element refElement = new org.jdom2.Element("Reference");
     	Cell referencedCell = getReferencedCell();
 		if(referencedCell != null) {
-    		org.jdom2.Element cell = new org.jdom2.Element("Cell");
-    		refElement.addContent(cell);
-    		cell.addContent(referencedCell.export());
+    		org.jdom2.Element cellElement = new org.jdom2.Element("ReferencedCell");
+    		cellElement.setAttribute("line", referencedCell.get_line().toString());
+    		cellElement.setAttribute("column", referencedCell.get_column().toString());
+    		refElement.addContent(cellElement);
     	}
     	return refElement;
     }
@@ -50,11 +51,15 @@ public class Reference extends Reference_Base {
      * @param XML JDOM element for this content
      */
     protected final void init(org.jdom2.Element el) {
-    	org.jdom2.Element cellElement = el.getChild("Cell");
+    	org.jdom2.Element cellElement = el.getChild("ReferencedCell");
+    	if(null == cellElement) {
+    		setReferencedCell(null);
+    		return;
+    	}
+    	
 		int line = Integer.parseInt(cellElement.getAttribute("line").getValue());
 		int column = Integer.parseInt(cellElement.getAttribute("column").getValue());
-		boolean protectd = Boolean.parseBoolean(cellElement.getAttribute("protected").getValue());
-		 //FIXME FINISH THIS
+		
 		
     }
 

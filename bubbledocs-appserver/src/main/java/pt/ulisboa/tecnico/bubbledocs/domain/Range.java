@@ -27,10 +27,6 @@ public abstract class Range extends Range_Base {
      */
     protected abstract int __getValue__();
     
-    /**
-     * Defines XML element for this class
-     */
-    protected abstract org.jdom2.Element export();
     
     /**
      * pseudo-constructor for initializing a content from an XML element
@@ -43,4 +39,16 @@ public abstract class Range extends Range_Base {
     		addReference(ref);
     	}
     }
+    
+	/**
+	 * @return JDOM element for this class
+	 */
+	protected final org.jdom2.Element export() {
+		org.jdom2.Element el = new org.jdom2.Element(this.getClass().getName());
+		for(Reference ref : getReferenceSet()) {
+			el.addContent(ref.export());
+		}
+		return el;
+	}
+ 
 }
