@@ -42,8 +42,9 @@ public abstract class Content extends Content_Base {
     
     /**
      * Defines XML element for this class
+     * @throws InvalidCellException 
      */
-    protected abstract org.jdom2.Element export();
+    protected abstract org.jdom2.Element export() throws InvalidCellException;
     
     /**
      * pseudo-constructor for initializing a content from an XML element

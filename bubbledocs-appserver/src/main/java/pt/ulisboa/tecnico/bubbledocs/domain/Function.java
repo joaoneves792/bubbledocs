@@ -22,7 +22,7 @@ public abstract class Function extends Function_Base {
     /**
      * Defines XML element for this class
      */    
-    protected abstract org.jdom2.Element export();
+    protected abstract org.jdom2.Element export() throws InvalidCellException;
     
     /**
      * pseudo-constructor for initializing a content from an XML element

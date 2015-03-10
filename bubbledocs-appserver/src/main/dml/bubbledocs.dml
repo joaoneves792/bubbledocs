@@ -59,7 +59,10 @@ class Literal extends SimpleContent {
 	Integer _value;
 }
 
-class Reference extends SimpleContent;
+class Reference extends SimpleContent {
+	Integer _line;
+	Integer _column;
+}
 
 class Binary extends Function;
 
@@ -121,10 +124,5 @@ relation RangeHasReferenceOne {
 relation RangeHasReferenceTwo {
 	Range playsRole rangeTwo;
 	Reference playsRole referenceTwo;
-}
-
-relation ReferenceHasCell {
-	Reference playsRole reference;
-	Cell playsRole referencedCell;
 }
 

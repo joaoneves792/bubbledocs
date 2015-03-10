@@ -1,37 +1,35 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 public class Cell extends Cell_Base implements Comparable<Cell> {
 
-    public Cell(Spreadsheet spreadsheet, int line, int column, boolean prot) {
+    public Cell(int line, int column, boolean prot) {
         super();
-        init(spreadsheet, column, line, prot);
+        init(column, line, prot);
       }
 
     public int myHashCode() {
     	return ( (get_line() + get_column()) * (get_line() + get_column() + 1) + get_column() ) / 2;
     }
     
-    protected void init(Spreadsheet spreadsheet, int line, int column, boolean prot) {
+    protected void init(int line, int column, boolean prot) {
         set_column(column);
         set_line(line);
         set_protected(prot);
-        setSpreadsheet(spreadsheet);
     }
 
-    public Integer getValue() throws BubbleCellException{
-        Content content;
-        content = getContent();
+    public Integer getValue() throws BubbleCellException {
+        Content content = getContent();
         if(content == null)
                 return null;
         return content.getValue();
     }
 
     public String toString(){
-        Content content;
-        content = getContent();
+        Content content = getContent();
         if(content == null)
                 return null;
         return content.toString();
@@ -40,8 +38,9 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
     /**
      * 
      * @return XML element for this cell
+     * @throws InvalidCellException 
      */
-	org.jdom2.Element export() {
+	org.jdom2.Element export() throws InvalidCellException {
 		org.jdom2.Element cellElement = new org.jdom2.Element("Cell");
 		cellElement.setAttribute("line", get_line().toString());
 		cellElement.setAttribute("column", get_column().toString());
@@ -120,7 +119,7 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
         /**
          * Method to erase this Cells contents (from persistence)
          */
-        private void cleanContents(){
+        public void cleanContents(){
             Content content = getContent();
             if(null != content){
                 setContent(null);
@@ -132,7 +131,6 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
          * Method to erase this Cell (from persistence)
          */
         public void clean(){
-        	cleanContents();
             super.deleteDomainObject();
         }
 }

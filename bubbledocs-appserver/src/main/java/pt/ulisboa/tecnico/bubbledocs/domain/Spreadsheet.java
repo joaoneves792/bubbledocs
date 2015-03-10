@@ -71,7 +71,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return null;
     }
 
-    public String export() {
+    public String export() throws InvalidCellException {
 		org.jdom2.Document document = new org.jdom2.Document();
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
 		spreadsheet.setAttribute("id", get_id().toString());

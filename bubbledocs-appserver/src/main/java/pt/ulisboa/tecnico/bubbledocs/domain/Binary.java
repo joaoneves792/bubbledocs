@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 //abstract class
@@ -30,8 +31,9 @@ public abstract class Binary extends Binary_Base {
     
     /**
      * @return JDOM element for this class
+     * @throws InvalidCellException 
      */
-    protected final org.jdom2.Element export() {
+    protected final org.jdom2.Element export() throws InvalidCellException {
     	org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getName()),
     			argumentOneElement   = new org.jdom2.Element("ArgumentOne"),
     			argumentTwoElement   = new org.jdom2.Element("ArgumentTwo");
