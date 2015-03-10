@@ -1,8 +1,11 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
@@ -221,14 +224,35 @@ public class Bubbledocs extends Bubbledocs_Base {
     	return spreadsheet;
     }
     
-    /* This is the XML import */
-    public Spreadsheet createSpreadsheet(org.jdom2.Document document) throws InvalidImportException {
-    	Spreadsheet spreadsheet = new Spreadsheet(document);
+    /**
+     *  This is the XML import 
+     *  @param JDOM Document
+     *  @return the new spreadsheet
+     * @throws IOException 
+     * @throws JDOMException 
+     */    
+    public Spreadsheet createSpreadsheet(User requestUser, String XMLString) throws InvalidImportException, JDOMException, IOException {
+    	Spreadsheet spreadsheet = new Spreadsheet(requestUser.get_name(), XMLString);
+    	spreadsheet.set_id(generateId());
     	addSpreadsheet(spreadsheet);
         addPermission(new Permission(spreadsheet.get_id(), spreadsheet.get_author(), true));
     	return spreadsheet;
     }
+    
+    /*
+     * private static org.jdom2.Document useDOMParser(String fileName)
+            throws ParserConfigurationException, SAXException, IOException {
+        //creating DOM Document
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder;
+        dBuilder = dbFactory.newDocumentBuilder();
+        Document doc = dBuilder.parse(new File(fileName));
+        DOMBuilder domBuilder = new DOMBuilder();
+        return domBuilder.build(doc);
+     */
    
+    
+    
     public void deleteSpreadsheet(User requestUser, int spreadsheetId)
     		throws UnauthorizedUserException, SpreadsheetNotFoundException {
     	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
@@ -242,11 +266,11 @@ public class Bubbledocs extends Bubbledocs_Base {
     		} else {
     			if(permission.get_writePermission()) {
     				removeSpreadsheet(spreadsheet);
-                                spreadsheet.clean();
+                    spreadsheet.clean();
     				//remove all permissions for this spreadsheet
     				for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
     					removePermission(permission_it);
-                                        permission_it.clean();
+                        permission_it.clean();
     				}
     			} else {
     				throw new UnauthorizedUserException

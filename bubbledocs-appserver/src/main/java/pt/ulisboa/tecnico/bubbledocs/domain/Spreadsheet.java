@@ -1,10 +1,13 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.jdom2.Document;
+
+
+import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
@@ -17,17 +20,29 @@ public class Spreadsheet extends Spreadsheet_Base {
         init(name, author, id, lines, columns);
     }
 
-	public Spreadsheet(Document document) throws InvalidImportException {
+	Spreadsheet(String Username, String XMLString) throws InvalidImportException, JDOMException, IOException {
+		
+		org.jdom2.Document document = __makeDocument__(XMLString);
+		
 		org.jdom2.Element spreadsheet = document.getRootElement();
-		set_id(Integer.parseInt(spreadsheet.getAttribute("id").getValue()));
+		//set_id(Integer.parseInt(spreadsheet.getAttribute("id").getValue()));
 		set_lines(Integer.parseInt(spreadsheet.getAttribute("lines").getValue()));
 		set_columns(Integer.parseInt(spreadsheet.getAttribute("columns").getValue()));
-		set_author(spreadsheet.getAttribute("author").getValue());
+		
+		String XMLAuthor = spreadsheet.getAttribute("author").getValue();
+		if(!XMLAuthor.equals(Username))
+			throw new InvalidImportException("Attempted to import spreadsheet from another user");
+		
+		set_author(XMLAuthor);
 		set_name(spreadsheet.getAttribute("name").getValue());
 		set_date(spreadsheet.getAttribute("date").getValue());
 		
 		for(org.jdom2.Element cellElement : spreadsheet.getChildren())
 			addCell(new Cell(cellElement, get_lines(), get_columns()));	
+	}
+	
+	private org.jdom2.Document __makeDocument__(String XMLString) throws JDOMException, IOException {	
+		return new org.jdom2.input.SAXBuilder().build(new java.io.StringReader(XMLString));
 	}
 
 	protected void init(String name, String author, Integer id, Integer lines, Integer columns) {
@@ -75,7 +90,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return null;
     }
 
-    public String export() throws InvalidExportException {
+    private org.jdom2.Document __export__() throws InvalidExportException {
 		org.jdom2.Document document = new org.jdom2.Document();
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
 		spreadsheet.setAttribute("id", get_id().toString());
@@ -93,11 +108,16 @@ public class Spreadsheet extends Spreadsheet_Base {
 			}
 		}
 		
+		return document;
+    }
+
+	public String export() throws InvalidExportException {
 		org.jdom2.output.XMLOutputter xml =
 				new org.jdom2.output.XMLOutputter(org.jdom2.output.Format.getPrettyFormat());
 		
-		return xml.outputString(document);
+		return xml.outputString(__export__());
 	}
+    
     
     @Override
     public String toString() {

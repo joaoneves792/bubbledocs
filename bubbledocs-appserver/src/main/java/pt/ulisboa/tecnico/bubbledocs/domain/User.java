@@ -1,9 +1,13 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdom2.JDOMException;
+
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
@@ -71,5 +75,9 @@ public class User extends User_Base {
 	@Override
 	public String toString() {
 		return "<< USERNAME: " + get_username() + " || NAME: " + get_name() + " || PASSWORD: " + get_passwd() + " >>";
+	}
+
+	public void createSpreadsheet(String ss) throws InvalidImportException, JDOMException, IOException {
+		Bubbledocs.getBubbledocs().createSpreadsheet(this, ss);		
 	}
 }
