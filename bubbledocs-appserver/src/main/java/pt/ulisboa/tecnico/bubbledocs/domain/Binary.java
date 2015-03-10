@@ -2,8 +2,6 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
-import java.util.Set;
-
 //abstract class
 //this should not be instanced
 public abstract class Binary extends Binary_Base {
@@ -84,15 +82,13 @@ public abstract class Binary extends Binary_Base {
     /**
       * Method to erase this Binary Function (from persistence)
       */
-    public void clean(){
-        Set<SimpleContent> arguments;
-
-        arguments = getArgumentSet();
-        for(SimpleContent a : arguments){
-                removeArgument(a);
-                a.clean();
-        }
-        
+    public final void clean(){
+    	SimpleContent arg1 = getArgumentOne(),
+    			      arg2 = getArgumentTwo();
+    	
+    	setArgumentOne(null); arg1.clean();
+    	setArgumentTwo(null); arg2.clean();   	
+    	
         super.deleteDomainObject();   
     }
 }

@@ -5,19 +5,20 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 public class Cell extends Cell_Base implements Comparable<Cell> {
 
-    public Cell(int line, int column, boolean prot) {
+    public Cell(Spreadsheet spreadsheet, int line, int column, boolean prot) {
         super();
-        init(column, line, prot);
+        init(spreadsheet, column, line, prot);
       }
 
     public int myHashCode() {
     	return ( (get_line() + get_column()) * (get_line() + get_column() + 1) + get_column() ) / 2;
     }
     
-    protected void init(int line, int column, boolean prot) {
+    protected void init(Spreadsheet spreadsheet, int line, int column, boolean prot) {
         set_column(column);
         set_line(line);
         set_protected(prot);
+        setSpreadsheet(spreadsheet);
     }
 
     public Integer getValue() throws BubbleCellException{
@@ -119,7 +120,7 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
         /**
          * Method to erase this Cells contents (from persistence)
          */
-        public void cleanContents(){
+        private void cleanContents(){
             Content content = getContent();
             if(null != content){
                 setContent(null);
@@ -131,6 +132,7 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
          * Method to erase this Cell (from persistence)
          */
         public void clean(){
+        	cleanContents();
             super.deleteDomainObject();
         }
 }

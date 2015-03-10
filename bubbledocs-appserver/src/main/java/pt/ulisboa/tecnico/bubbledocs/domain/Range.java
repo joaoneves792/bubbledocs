@@ -18,8 +18,8 @@ public abstract class Range extends Range_Base {
      * @param A corner of the Submatrix of this range
      */
     void init(Reference ref1, Reference ref2) {
-    	addReference(ref1);
-    	addReference(ref2);
+    	setReferenceOne(ref1);
+    	setReferenceOne(ref2);
     }
     
     /**
@@ -33,10 +33,11 @@ public abstract class Range extends Range_Base {
      * @param XML JDOM element for this content
      */
     protected final void init(org.jdom2.Element rangeElement) throws InvalidImportException {
+    	//FIXME LOLOLOLOL
     	for(org.jdom2.Element el : rangeElement.getChildren()) {
     		Reference ref = new Reference();
     		ref.init(el);
-    		addReference(ref);
+    		setReference(ref);
     	}
     }
     
@@ -45,10 +46,9 @@ public abstract class Range extends Range_Base {
 	 */
 	protected final org.jdom2.Element export() {
 		org.jdom2.Element el = new org.jdom2.Element(this.getClass().getName());
-		for(Reference ref : getReferenceSet()) {
-			el.addContent(ref.export());
-		}
-		return el;
+		el.addContent(getReferenceOne().export());
+		el.addContent(getReferenceTwo().export());
+		return el;		
 	}
  
     /**
