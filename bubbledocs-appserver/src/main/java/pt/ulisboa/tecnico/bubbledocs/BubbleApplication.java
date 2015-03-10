@@ -1,7 +1,7 @@
-
 package pt.ulisboa.tecnico.bubbledocs;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
@@ -17,120 +17,136 @@ import javax.transaction.*;
 import org.jdom2.JDOMException;
 
 import java.io.IOException;
-import java.util.Set;
 import java.util.List;
 
 public class BubbleApplication{
-    public static void main(String[] args) throws IOException, UserNotFoundException {
+    public static void main(String[] args) {
         System.out.println("Welcome to the BubbleDocs application!");
         
         TransactionManager tm = FenixFramework.getTransactionManager();
         boolean committed = false;
-        Spreadsheet spreadsheet;
 
         try{
         	tm.begin();
+        	
         	Bubbledocs bubble = Bubbledocs.getBubbledocs();
         	populateDomain(bubble);
         	User pf = bubble.getUserByUsername("pf");
         	String ss = null;
             
-        	System.out.println("Registered users are:");
-        	for(User user : bubble.getUserSet()) {
-        		System.out.println(user.toString());
-        	}
+        	printRegisteredUsers();
 
-        	System.out.println("Spreadsheets from user 'pf':"); 
-        	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
-        		if(sheet.get_author().equals("pf")) {
-        			System.out.println(sheet.toString());
-        		}
-        	}
+        	printSpreadsheetsByUsername("pf");
+        	printSpreadsheetsByUsername("ra");        	
         	
-        	System.out.println("Spreadsheets from user 'ra':"); 
-        	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
-        		if(sheet.get_author().equals("ra")) {
-        			System.out.println(sheet.toString());
-        		}
-        	}
+        	ss = printSpreadsheetsAsXMLByUsername("pf");
         	
-        	System.out.println("XML for Spreadsheets from user 'pf':"); 
-        	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
-        		if(sheet.get_author().equals("pf")) {
-        			ss = sheet.export();
-        			System.out.println(ss);
-        		}
-        	}
-        	/*
-            //Remove pf's "Notas ES" spreadsheet from storage
-        	spreadsheet = getSpreadsheetByName("Notas ES", bubble.getSpreadsheetsByAuthor("pf"));
-        	if(null == spreadsheet)
-        		System.out.println("User pf doesnt have a document named Notas ES");
-        	else{
-        		bubble.deleteSpreadsheet(bubble.getUserByUsername("pf"), spreadsheet.get_id());
-        		spreadsheet = null;
-        	}
-        	*/	                
-
-        	System.out.println("Spreadsheets from user 'pf' [after removing 'Notas ES']:"); 
-        	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
-        		if(sheet.get_author().equals("pf")) {
-        			System.out.println(sheet.toString());
-        		}
-        	}
+        	deleteSpreadsheetByNameAndUsername("Notas ES", pf);     
+        	System.out.println("====================== AFTER DELETING NOTAS ES ===========================");
         	
-        	//Import spreadsheet from XML String ss
-        	System.out.println("Importing back 'Notas ES'");
-        	pf.createSpreadsheet(ss);        	
+        	printSpreadsheetsByUsername("pf");
         	
-        	System.out.println("Spreadsheets from user 'pf' [after importing back 'Notas ES']:"); 
-        	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
-        		if(sheet.get_author().equals("pf")) {
-        			System.out.println(sheet.toString());
-        		}
-        	}
+        	System.out.println("====================== IMPORTING NOTAS ES ===========================");
+        	importSpreadsheetForUser(pf, ss);    
+        	System.out.println("====================== AFTER IMPORTING NOTAS ES ===========================");
+        	        	
+        	printSpreadsheetsByUsername("pf");
         	
-        	System.out.println("XML for Spreadsheets from user 'pf' [after importing back 'Notas ES':"); 
-        	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
-        		if(sheet.get_author().equals("pf")) {
-        			System.out.println(sheet.export());
-        		}
-        	}
+        	printSpreadsheetsAsXMLByUsername("pf");
         	
             tm.commit();
-            committed = true;
-            
+           committed = true;
+           
         } catch (SystemException| NotSupportedException | RollbackException| HeuristicMixedException | HeuristicRollbackException ex) {
-                 System.err.println("Error in execution of transaction: " + ex);
+            System.err.println("Error in execution of transaction: " + ex);
         } catch (InvalidExportException e) {
 			System.err.println(e.getMessage());
+			e.printStackTrace();
 		} catch (InvalidImportException e) {
-			// TODO Auto-generated catch block
+			System.err.println(e.getMessage());
 			e.printStackTrace();
 		} catch (JDOMException e) {
-			// TODO Auto-generated catch block
+			System.err.println(e.getMessage());
 			e.printStackTrace();
-		//} catch (UnauthorizedUserException e) {
-			// TODO Auto-generated catch block
+		} catch (UnauthorizedUserException e) {
+			System.err.println(e.getMessage());
 			e.printStackTrace();
-//		} catch (SpreadsheetNotFoundException e) {
-			// TODO Auto-generated catch block
+		} catch (SpreadsheetNotFoundException e) {
+			System.err.println(e.getMessage());
 			e.printStackTrace();
-		} finally {
+		} catch (UserNotFoundException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace(); 
+		}  finally {
              if (!committed)
              try {
                  tm.rollback();
              } catch (SystemException ex) {
                  System.err.println("Error in roll back of transaction: " + ex);
              }
-        }
-
+		}
+        	
         //FenixFramework.shutdown();
-    }
+    }		
 
+    //@Atomic
+	public static void importSpreadsheetForUser(User pf, String ss)
+			throws InvalidImportException, JDOMException, IOException {
+		System.out.println("Importing back 'Notas ES'");
+		pf.createSpreadsheet(ss);
+	}
+
+	//@Atomic
+	public static void deleteSpreadsheetByNameAndUsername(String spreadsheetName, User pf)
+			throws UnauthorizedUserException, SpreadsheetNotFoundException {
+		List<Spreadsheet> pfSpreadsheets = pf.findSpreadsheetsByName(spreadsheetName);
+		for(Spreadsheet sheet : pfSpreadsheets) {
+			pf.deleteSpreadsheet(sheet.get_id());
+		}
+	}
+
+	//@Atomic
+	public static String printSpreadsheetsAsXMLByUsername(String username)
+			throws InvalidExportException {
+		String ss = null;
+		System.out.println("XML for Spreadsheets from user '" + username + "' :"); 
+		for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
+			if(sheet.get_author().equals(username)) {
+				ss = sheet.export();
+				System.out.println(ss);
+			}
+		}
+		return ss;
+	}
+
+	//@Atomic
+	public static void printSpreadsheetsByUsername(String username) {
+		System.out.println("Spreadsheets from user '" + username + "' :"); 
+		for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
+			if(sheet.get_author().equals(username)) {
+				System.out.println(sheet.toString());
+			}
+		}
+	}
+
+	//@Atomic
+	public static void printRegisteredUsers() {
+		System.out.println("Registered users are:");
+		for(User user : Bubbledocs.getBubbledocs().getUserSet()) {
+			System.out.println(user.toString());
+		}
+	}
+
+   //@Atomic
     private static void populateDomain(Bubbledocs bubble) {
     	if(!bubble.getUserSet().isEmpty()) 
     		return;
+    	
+    	Root root = Root.getRoot();
+    	bubble.addUser(root);
     	
     	User pf = new User("Paul Door", "pf", "sub");
     	User ra = new User("Step Rabbit", "ra", "cor");
@@ -150,140 +166,5 @@ public class BubbleApplication{
 		}
     	return;
 	}
-/*
-	public static void testThings(Bubbledocs bubble){
-    	/*
-        try{
-            Spreadsheet notasEs = bubble.getSpreadsheetById(0);
-
-            System.out.println("Cell 1;1 : " + notasEs.getCell(1,1).getValue() );   
-            System.out.println("Cell 2;2 : " + notasEs.getCell(2,2).getValue() );   
-            System.out.println("Cell 3;4 : " + notasEs.getCell(3,4).getValue() );   
-            System.out.println("Cell 5;6 : " + notasEs.getCell(5,6).getValue() );   
-        }catch(BubbleCellException | SpreadsheetNotFoundException e){
-            System.out.println(e.getMessage());
-        } 
-        *//*
-    	try {
-			System.out.println(bubble.export(bubble.getSpreadsheetById(0)));
-		} catch (SpreadsheetNotFoundException e) {
-			e.printStackTrace();
-		}
-    	return;
-    }
-
-    private static void populateBubble(Bubbledocs bubble){
-        Root root;
-        Spreadsheet notasEs;
-        Cell cell1;
-        Cell cell2;
-        Cell cell3;
-        Cell cell4;
-
-        //Get the root user
-        root = Root.getRoot();
-
-        //Add two users
-        try{
-            root.addUser("Paul Door", "pf", "sub");
-            root.addUser("Step Rabbit", "ra", "cor");
-        }catch(UserAlreadyExistsException e){
-            System.out.println(e.getMessage());
-        }
-
-        //Create a Spreadsheet belonging to pf and add content to it
-        try{
-            Literal lit;
-            Literal lit2;
-            Reference ref;
-            Reference ref2;
-            Reference ref3;
-            Reference ref4;
-            Add add;
-            Div div;
-   
-            notasEs = bubble.createSpreadsheet(bubble.getUserByUsername("pf"), "Notas ES", 300, 20);
-            
-            //Literal 5 in 3;4
-            cell1 = notasEs.getCell(3,4);
-            lit = new Literal();
-            lit.init(5);
-            cell1.setContent(lit);
-            
-            //Reference to 5;6 IN 1;1
-            cell2 = notasEs.getCell(1,1);
-            ref = new Reference();
-            ref.init(notasEs.getCell(3,4));
-            cell2.setContent(ref);
     
-            //Add 2 and 3;4 in 5;6
-            cell3 = notasEs.getCell(5,6);
-            add = new Add();
-            lit2 = new Literal();
-            lit2.init(2);
-            ref2 = new Reference();
-            ref2.init(notasEs.getCell(3,4));
-            add.init(lit2, ref2);
-            cell3.setContent(add);
-            
-            //Div 1;1 by 3;4 in 2;2
-            cell4 = notasEs.getCell(2,2);
-            div = new Div();
-            ref3 = new Reference();
-            ref3.init(notasEs.getCell(1,1));
-            ref4 = new Reference();
-            ref4.init(notasEs.getCell(3,4));
-            div.init(ref3, ref4);
-            cell4.setContent(div);   
-    
-        }catch(UserNotFoundException | InvalidCellException e){ 
-            System.out.println(e.getMessage());
-        }
-    }
-*/
-    private static void printAllUsersInfo(Bubbledocs bubble){
-        Set<User> usersSet;
-
-        System.out.println("Users on this bubbledocs instance:");
-        System.out.println("Name | Username | Password");
-
-        usersSet = bubble.getUserSet();
-        for(User u : usersSet)
-            System.out.println(u.get_name() + " | " + u.get_username() + " | " + u.get_passwd());
-
-    }
-
-    private static Spreadsheet getSpreadsheetByName(String name, List<Spreadsheet> spreadsheets){
-        for(Spreadsheet s : spreadsheets)
-                if(s.get_name().equals(name))
-                        return s;
-        return null;
-    }
-
-    /*
-    private static void exportUsersDocuments(Bubbledocs bubble, String user)throws UserNotFoundException{
-        List<Spreadsheet> spreadsheets;
-       
-        spreadsheets = bubble.getSpreadsheetsByAuthor(user);
-        if(spreadsheets.isEmpty())
-            System.out.println("<This user has no documents>");
-        else
-            for(Spreadsheet s : spreadsheets)
-                    bubble.export(s);
-        
-    }
-*/
-    private static void printUsersDocuments(Bubbledocs bubble, String user)throws UserNotFoundException {
-        List<Spreadsheet> spreadsheets;
-       
-        spreadsheets = bubble.getSpreadsheetsByAuthor(user);
-
-        System.out.println(user + "'s documents:");
-        if(spreadsheets.isEmpty())
-            System.out.println("<This user has no documents>");
-        else
-            for(Spreadsheet s : spreadsheets)
-                System.out.println(s.get_name() + " | id: " + s.get_id());
-
-    }
-}
+}	

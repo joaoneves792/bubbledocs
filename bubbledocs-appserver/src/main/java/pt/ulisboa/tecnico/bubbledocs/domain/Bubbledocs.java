@@ -20,6 +20,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     private Bubbledocs() {
          FenixFramework.getDomainRoot().setBubbledocs(this);
          set_idGenerator(new Integer(0));
+         //addUser(Root.getRoot()); FIXME WTF???
     }
 	
     //private static Bubbledocs theBubbledocs = new Bubbledocs();	
@@ -239,20 +240,6 @@ public class Bubbledocs extends Bubbledocs_Base {
     	return spreadsheet;
     }
     
-    /*
-     * private static org.jdom2.Document useDOMParser(String fileName)
-            throws ParserConfigurationException, SAXException, IOException {
-        //creating DOM Document
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder;
-        dBuilder = dbFactory.newDocumentBuilder();
-        Document doc = dBuilder.parse(new File(fileName));
-        DOMBuilder domBuilder = new DOMBuilder();
-        return domBuilder.build(doc);
-     */
-   
-    
-    
     public void deleteSpreadsheet(User requestUser, int spreadsheetId)
     		throws UnauthorizedUserException, SpreadsheetNotFoundException {
     	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
@@ -325,8 +312,10 @@ public class Bubbledocs extends Bubbledocs_Base {
     public List<Spreadsheet> getSpreadsheetsByAuthor(String author) {
     	List<Spreadsheet> spreadsheets = new ArrayList<Spreadsheet>();
     	for(Spreadsheet sheet : getSpreadsheetSet()) {
-    		if(author.equals(sheet.get_author()))
+    		System.out.println(sheet.toString());
+    		if(author.equals(sheet.get_author())) {    			
     			spreadsheets.add(sheet);
+    		}    			
     	}
     	return spreadsheets;
     }

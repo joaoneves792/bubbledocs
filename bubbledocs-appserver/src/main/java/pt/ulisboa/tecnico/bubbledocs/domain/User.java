@@ -62,7 +62,7 @@ public class User extends User_Base {
     }
 
 	public List<Spreadsheet> findSpreadsheetsByName(String str) {
-		List <Spreadsheet> mySpreadsheets = Bubbledocs.getBubbledocs().getSpreadsheetsByAuthor(get_name());
+		List <Spreadsheet> mySpreadsheets = Bubbledocs.getBubbledocs().getSpreadsheetsByAuthor(get_username());
 		List <Spreadsheet> mySpreadsheetsWithThisName = new ArrayList<Spreadsheet>();
 		for(Spreadsheet s : mySpreadsheets) {
 			if(s.get_name().equals(str)) {
