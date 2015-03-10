@@ -91,7 +91,9 @@ public class BubbleApplication{
             
         } catch (SystemException| NotSupportedException | RollbackException| HeuristicMixedException | HeuristicRollbackException ex) {
                  System.err.println("Error in execution of transaction: " + ex);
-        } finally {
+        } catch (InvalidExportException e) {
+			System.err.println(e.getMessage());
+		} finally {
              if (!committed)
              try {
                  tm.rollback();
@@ -117,15 +119,15 @@ public class BubbleApplication{
     	
     	try {
 			ss.getCell(3, 4).setContent(new Literal(5));
-			ss.getCell(1, 1).setContent(new Reference(ss.getCell(5, 6)));
-			ss.getCell(5, 6).setContent(new Add(new Literal(2), new Reference(ss.getCell(3, 4))));
-			ss.getCell(2, 2).setContent(new Div(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(3, 4))));
+			ss.getCell(1, 1).setContent(new Reference(5, 6));
+			ss.getCell(5, 6).setContent(new Add(new Literal(2), new Reference(3, 4)));
+			ss.getCell(2, 2).setContent(new Div(new Reference(1, 1), new Reference(3, 4)));
 		} catch (InvalidCellException e) {
 			e.printStackTrace();
 		}
     	return;
 	}
-
+/*
 	public static void testThings(Bubbledocs bubble){
     	/*
         try{
@@ -138,7 +140,7 @@ public class BubbleApplication{
         }catch(BubbleCellException | SpreadsheetNotFoundException e){
             System.out.println(e.getMessage());
         } 
-        */
+        *//*
     	try {
 			System.out.println(bubble.export(bubble.getSpreadsheetById(0)));
 		} catch (SpreadsheetNotFoundException e) {
@@ -215,7 +217,7 @@ public class BubbleApplication{
             System.out.println(e.getMessage());
         }
     }
-
+*/
     private static void printAllUsersInfo(Bubbledocs bubble){
         Set<User> usersSet;
 
@@ -235,6 +237,7 @@ public class BubbleApplication{
         return null;
     }
 
+    /*
     private static void exportUsersDocuments(Bubbledocs bubble, String user)throws UserNotFoundException{
         List<Spreadsheet> spreadsheets;
        
@@ -246,7 +249,7 @@ public class BubbleApplication{
                     bubble.export(s);
         
     }
-
+*/
     private static void printUsersDocuments(Bubbledocs bubble, String user)throws UserNotFoundException {
         List<Spreadsheet> spreadsheets;
        

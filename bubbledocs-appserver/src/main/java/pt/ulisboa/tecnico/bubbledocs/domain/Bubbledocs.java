@@ -3,6 +3,8 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
@@ -103,7 +105,7 @@ public class Bubbledocs extends Bubbledocs_Base {
     	return Collections.unmodifiableList(permissions);
     }
  
-    //FIXME REFACTOR THESE METHODS!!!!! 
+    //TODO REFACTOR THESE METHODS!!!!! 
     
     public void addReadPermission(User requestUser, String granted, int spreadsheetId) 
     		throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
@@ -304,12 +306,8 @@ public class Bubbledocs extends Bubbledocs_Base {
     	return spreadsheets;
     }
     
-    public String export(Spreadsheet spreadsheet) {
-    	try {
-			return spreadsheet.export();
-		} catch (InvalidCellException e) {
-			return "<<< INVALID SPREADSHEET MATRIX >>>";
-		}    	
+    public String export(Spreadsheet spreadsheet) throws InvalidExportException {
+    	return spreadsheet.export();    	
     }
     
     

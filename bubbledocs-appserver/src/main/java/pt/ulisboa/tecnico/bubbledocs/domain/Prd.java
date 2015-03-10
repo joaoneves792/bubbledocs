@@ -8,7 +8,7 @@ public class Prd extends Prd_Base {
 
 	@Override
 	protected int __getValue__() {
-		// FIXME calculate product of submatrix
+		// TODO calculate product of submatrix
 		return 0;
 	}
 

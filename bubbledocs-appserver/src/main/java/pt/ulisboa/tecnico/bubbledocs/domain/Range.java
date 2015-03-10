@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 //an abstract class
@@ -33,16 +34,15 @@ public abstract class Range extends Range_Base {
      * @param XML JDOM element for this content
      */
     protected final void init(org.jdom2.Element rangeElement) throws InvalidImportException {
-    	//FIXME LOLOLOLOL
-    	org.jdom2.Element el = binElement.getChild("ReferenceOne").getChildren().get(0);
+    	org.jdom2.Element el = rangeElement.getChild("ReferenceOne").getChildren().get(0);
     	String contentName = el.getName();
 		if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
 			ref.init(el);
 			setReferenceOne(ref);
 		}
-		el = binElement.getChild("ReferenceTwo").getChildren().get(0);
-	    String contentName = el.getName();
+		el = rangeElement.getChild("ReferenceTwo").getChildren().get(0);
+	    contentName = el.getName();
 		if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
 			ref.init(el);
@@ -52,9 +52,10 @@ public abstract class Range extends Range_Base {
     
 	/**
 	 * @return JDOM element for this class
+	 * @throws InvalidCellException 
 	 */
-	protected final org.jdom2.Element export() {
-		org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getName()),
+	protected final org.jdom2.Element export() throws InvalidCellException {
+		org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getSimpleName()),
     			referenceOneElement   = new org.jdom2.Element("ReferenceOne"),
     			referenceTwoElement   = new org.jdom2.Element("ReferenceTwo");
     	

@@ -8,7 +8,7 @@ public class Avg extends Avg_Base {
 
 	@Override
 	protected int __getValue__() {
-		// FIXME calculate average of submatrix
+		// TODO calculate average of submatrix
 		return 0;
 	}
 

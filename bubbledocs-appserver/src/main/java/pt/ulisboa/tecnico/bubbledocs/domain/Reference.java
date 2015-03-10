@@ -34,8 +34,7 @@ public class Reference extends Reference_Base {
 	private Cell getReferencedCell() throws InvalidCellException {
 		return getCell().getSpreadsheet().getCell(get_line(), get_column());
 	}
-    
-    
+        
     /**
      * Defines XML element for this class
      * @throws InvalidCellException 
@@ -43,11 +42,8 @@ public class Reference extends Reference_Base {
     @Override
     public final org.jdom2.Element export() throws InvalidCellException {
     	org.jdom2.Element refElement = new org.jdom2.Element("Reference");
-    	Cell referencedCell = getReferencedCell();
-		if(referencedCell != null) {
-    		refElement.setAttribute("line", referencedCell.get_line().toString());
-    		refElement.setAttribute("column", referencedCell.get_column().toString());
-    	}
+    	refElement.setAttribute("line", get_line().toString());
+    	refElement.setAttribute("column", get_column().toString());
     	return refElement;
     }
     
@@ -58,7 +54,6 @@ public class Reference extends Reference_Base {
     protected final void init(org.jdom2.Element el) throws InvalidImportException {
     	set_line(Integer.parseInt(el.getAttribute("line").getValue()));
     	set_column(Integer.parseInt(el.getAttribute("column").getValue()));
-    	
     	try {
     		getReferencedCell();
     	} catch(InvalidCellException e) {

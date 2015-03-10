@@ -34,7 +34,7 @@ public abstract class Binary extends Binary_Base {
      * @throws InvalidCellException 
      */
     protected final org.jdom2.Element export() throws InvalidCellException {
-    	org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getName()),
+    	org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getSimpleName()),
     			argumentOneElement   = new org.jdom2.Element("ArgumentOne"),
     			argumentTwoElement   = new org.jdom2.Element("ArgumentTwo");
     	

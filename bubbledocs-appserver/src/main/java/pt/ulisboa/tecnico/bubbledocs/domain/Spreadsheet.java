@@ -7,6 +7,7 @@ import java.util.TreeSet;
 import org.jdom2.Document;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 public class Spreadsheet extends Spreadsheet_Base {
@@ -37,6 +38,9 @@ public class Spreadsheet extends Spreadsheet_Base {
         set_id(id);
         set_lines(lines);
         set_columns(columns);
+        
+        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+        set_date(dateFormat.format(new java.util.Date()));
         
         for(int i=1 ; i<=lines; i++){
                 for(int j=1 ; j<=columns; j++){
@@ -71,7 +75,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return null;
     }
 
-    public String export() throws InvalidCellException {
+    public String export() throws InvalidExportException {
 		org.jdom2.Document document = new org.jdom2.Document();
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
 		spreadsheet.setAttribute("id", get_id().toString());
@@ -82,7 +86,11 @@ public class Spreadsheet extends Spreadsheet_Base {
 		spreadsheet.setAttribute("date", get_date());
 		document.setRootElement(spreadsheet);
 		for(Cell cell : getCellSet()) {
-			spreadsheet.addContent(cell.export());
+			try {
+				spreadsheet.addContent(cell.export());
+			} catch (InvalidCellException e) {
+				throw new InvalidExportException("Attempted to export invalid matrix for spreadsheet");
+			}
 		}
 		
 		org.jdom2.output.XMLOutputter xml =
@@ -93,7 +101,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     
     @Override
     public String toString() {
-    	return "<< ID: " + get_id() + " || NAME: " + get_name() + " || AUTHOR: " + get_author() + " || LINES: " + get_lines() + " || " + get_columns() + " >>";
+    	return "<< ID: " + get_id() + " || NAME: " + get_name() + " || AUTHOR: " + get_author() + "|| DATE :" + get_date() + " || LINES: " + get_lines() + " || " + get_columns() + " >>";
     }
     
      /**
