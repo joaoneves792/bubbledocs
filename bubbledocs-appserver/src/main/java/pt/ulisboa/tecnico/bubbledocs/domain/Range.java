@@ -34,21 +34,37 @@ public abstract class Range extends Range_Base {
      */
     protected final void init(org.jdom2.Element rangeElement) throws InvalidImportException {
     	//FIXME LOLOLOLOL
-    	for(org.jdom2.Element el : rangeElement.getChildren()) {
-    		Reference ref = new Reference();
-    		ref.init(el);
-    		setReference(ref);
-    	}
+    	org.jdom2.Element el = binElement.getChild("ReferenceOne").getChildren().get(0);
+    	String contentName = el.getName();
+		if(contentName.equals("Reference")) {
+			Reference ref = new Reference();
+			ref.init(el);
+			setReferenceOne(ref);
+		}
+		el = binElement.getChild("ReferenceTwo").getChildren().get(0);
+	    String contentName = el.getName();
+		if(contentName.equals("Reference")) {
+			Reference ref = new Reference();
+			ref.init(el);
+			setReferenceTwo(ref);
+		}
     }
     
 	/**
 	 * @return JDOM element for this class
 	 */
 	protected final org.jdom2.Element export() {
-		org.jdom2.Element el = new org.jdom2.Element(this.getClass().getName());
-		el.addContent(getReferenceOne().export());
-		el.addContent(getReferenceTwo().export());
-		return el;		
+		org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getName()),
+    			referenceOneElement   = new org.jdom2.Element("ReferenceOne"),
+    			referenceTwoElement   = new org.jdom2.Element("ReferenceTwo");
+    	
+		referenceOneElement.addContent(getReferenceOne().export());
+		referenceTwoElement.addContent(getReferenceTwo().export());
+    	
+    	binElement.addContent(referenceOneElement);
+    	binElement.addContent(referenceTwoElement);
+    	
+    	return binElement;
 	}
  
     /**
