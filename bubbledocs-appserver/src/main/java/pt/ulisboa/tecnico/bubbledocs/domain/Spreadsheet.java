@@ -31,13 +31,13 @@ public class Spreadsheet extends Spreadsheet_Base {
 		
 		String XMLAuthor = spreadsheet.getAttribute("author").getValue();
 		if(!XMLAuthor.equals(Username))
-			throw new InvalidImportException("Attempted to import spreadsheet from another user");
+			throw new InvalidImportException("Attempted to import spreadsheet from another user. AUTHOR: " + XMLAuthor + " RESQUESTED : " + Username);
 		
 		set_author(XMLAuthor);
 		set_name(spreadsheet.getAttribute("name").getValue());
 		set_date(spreadsheet.getAttribute("date").getValue());
 		
-		for(org.jdom2.Element cellElement : spreadsheet.getChildren())
+		for(org.jdom2.Element cellElement : spreadsheet.getChild("Cells").getChildren())
 			addCell(new Cell(cellElement, get_lines(), get_columns()));	
 	}
 	
@@ -53,9 +53,7 @@ public class Spreadsheet extends Spreadsheet_Base {
         set_id(id);
         set_lines(lines);
         set_columns(columns);
-        
-        java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
-        set_date(dateFormat.format(new java.util.Date()));
+        set_date(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()));
         
         for(int i=1 ; i<=lines; i++){
                 for(int j=1 ; j<=columns; j++){
@@ -93,16 +91,18 @@ public class Spreadsheet extends Spreadsheet_Base {
     private org.jdom2.Document __export__() throws InvalidExportException {
 		org.jdom2.Document document = new org.jdom2.Document();
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
-		spreadsheet.setAttribute("id", get_id().toString());
+		//spreadsheet.setAttribute("id", get_id().toString());
 		spreadsheet.setAttribute("lines", get_lines().toString());
 		spreadsheet.setAttribute("columns", get_columns().toString());
 		spreadsheet.setAttribute("author", get_author());
 		spreadsheet.setAttribute("name", get_name());
 		spreadsheet.setAttribute("date", get_date());
 		document.setRootElement(spreadsheet);
+		org.jdom2.Element cells = new org.jdom2.Element("Cells");
+		spreadsheet.addContent(cells);
 		for(Cell cell : getCellSet()) {
 			try {
-				spreadsheet.addContent(cell.export());
+				cells.addContent(cell.export());
 			} catch (InvalidCellException e) {
 				throw new InvalidExportException("Attempted to export invalid matrix for spreadsheet");
 			}

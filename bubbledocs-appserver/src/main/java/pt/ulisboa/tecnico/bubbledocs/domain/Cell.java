@@ -8,7 +8,7 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 
     public Cell(int line, int column, boolean prot) {
         super();
-        init(column, line, prot);
+        init(line, column, prot);
       }
 
     public int myHashCode() {
@@ -50,7 +50,6 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 		return cellElement;
 	}
 	
-    
 	@Override
 	public int compareTo(Cell other) {
 		int linDiff = other.get_line() - get_line();
@@ -64,9 +63,9 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 		boolean protectd = Boolean.parseBoolean(cellElement.getAttribute("protected").getValue());
 		
 		if(line < 1 || spreadsheetLines < line) 
-			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Line Bounds");
+			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Line Bounds (Bound: " + spreadsheetLines + " , Cell: " + line + ").");
 		else if(column < 1 || spreadsheetColumns < column)
-			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Column Bounds");
+			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Column Bounds (Bound: " + spreadsheetColumns + " , Cell: " + column + ").");
 		
 		set_line(line);
 		set_column(column);

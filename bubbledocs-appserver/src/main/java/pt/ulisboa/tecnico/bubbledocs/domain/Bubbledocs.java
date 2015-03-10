@@ -232,7 +232,7 @@ public class Bubbledocs extends Bubbledocs_Base {
      * @throws JDOMException 
      */    
     public Spreadsheet createSpreadsheet(User requestUser, String XMLString) throws InvalidImportException, JDOMException, IOException {
-    	Spreadsheet spreadsheet = new Spreadsheet(requestUser.get_name(), XMLString);
+    	Spreadsheet spreadsheet = new Spreadsheet(requestUser.get_username(), XMLString);
     	spreadsheet.set_id(generateId());
     	addSpreadsheet(spreadsheet);
         addPermission(new Permission(spreadsheet.get_id(), spreadsheet.get_author(), true));

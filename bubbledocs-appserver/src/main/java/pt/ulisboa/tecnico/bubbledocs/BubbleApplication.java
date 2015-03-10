@@ -61,7 +61,7 @@ public class BubbleApplication{
         			System.out.println(ss);
         		}
         	}
-        	
+        	/*
             //Remove pf's "Notas ES" spreadsheet from storage
         	spreadsheet = getSpreadsheetByName("Notas ES", bubble.getSpreadsheetsByAuthor("pf"));
         	if(null == spreadsheet)
@@ -70,7 +70,7 @@ public class BubbleApplication{
         		bubble.deleteSpreadsheet(bubble.getUserByUsername("pf"), spreadsheet.get_id());
         		spreadsheet = null;
         	}
-        		                
+        	*/	                
 
         	System.out.println("Spreadsheets from user 'pf' [after removing 'Notas ES']:"); 
         	for(Spreadsheet sheet : bubble.getSpreadsheetSet()) {
@@ -79,6 +79,7 @@ public class BubbleApplication{
         		}
         	}
         	
+        	//Import spreadsheet from XML String ss
         	System.out.println("Importing back 'Notas ES'");
         	pf.createSpreadsheet(ss);        	
         	
@@ -109,10 +110,10 @@ public class BubbleApplication{
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (UnauthorizedUserException e) {
+		//} catch (UnauthorizedUserException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (SpreadsheetNotFoundException e) {
+//		} catch (SpreadsheetNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
