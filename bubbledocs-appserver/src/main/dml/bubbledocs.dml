@@ -114,12 +114,12 @@ relation BinaryHasArgumentTwo {
 }
 
 relation RangeHasReferenceOne {
-	Range playsRole range;
+	Range playsRole rangeOne;
 	Reference playsRole referenceOne;
 }
 
 relation RangeHasReferenceTwo {
-	Range playsRole range;
+	Range playsRole rangeTwo;
 	Reference playsRole referenceTwo;
 }
 
