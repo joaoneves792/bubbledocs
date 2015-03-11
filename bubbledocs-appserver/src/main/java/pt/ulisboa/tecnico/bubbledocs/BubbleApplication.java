@@ -23,7 +23,7 @@ public class BubbleApplication{
     public static void main(String[] args) {
         System.out.println("Welcome to the BubbleDocs application!");
         
-        //testing
+        //testing2
         
         TransactionManager tm = FenixFramework.getTransactionManager();
         boolean committed = false;
