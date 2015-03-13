@@ -126,3 +126,15 @@ relation RangeHasReferenceTwo {
 	Reference playsRole referenceTwo;
 }
 
+class Session {
+	String  _username;
+	Integer _tokenInt;
+	String  _date;
+}
+
+relation BubbledocsHasSessions {
+	Bubbledocs playsRole bubbledocs;
+	Session playsRole session {
+		multiplicity *;
+	}
+}
