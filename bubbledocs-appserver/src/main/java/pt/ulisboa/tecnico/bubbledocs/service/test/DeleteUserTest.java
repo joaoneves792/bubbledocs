@@ -6,10 +6,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
-import pt.ulisboa.tecnico.bubbledocs.exceptions..BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions...UnauthorizedOperationException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions...UnknownBubbledocsUserException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions...UserNotInSessionException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedOperationException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.DeleteUser;
 
 // add needed import declarations

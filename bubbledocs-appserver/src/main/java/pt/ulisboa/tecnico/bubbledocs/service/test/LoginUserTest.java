@@ -9,9 +9,9 @@ import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
-import pt.ulisboa.tecnico.bubbledocs.exceptions...BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions...UnknownBubbledocsUserException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions...WrongPasswordException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 
 // add needed import declarations

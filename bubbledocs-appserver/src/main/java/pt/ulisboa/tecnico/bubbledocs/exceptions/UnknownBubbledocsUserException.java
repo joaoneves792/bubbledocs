@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.exceptions.;
+package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
 public class UnknownBubbledocsUserException extends Exception {
 	/**
