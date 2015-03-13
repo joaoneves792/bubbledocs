@@ -7,7 +7,7 @@ import org.junit.Test;
 
 // add needed import declarations
 
-public class DeleteUserTest extends BubbleDocsServiceTest {
+public class DeleteUserTest extends BubbledocsServiceTest {
 
     private static final String USERNAME_TO_DELETE = "smf";
     private static final String USERNAME = "ars";
@@ -60,7 +60,7 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
 	assertNull("Removed user but not removed from session", getUserFromSession(token));
     }
 
-    @Test(expected = UnknownBubbleDocsUserException.class)
+    @Test(expected = UnknownBubbledocsUserException.class)
     public void userToDeleteDoesNotExist() {
         new DeleteUser(root, USERNAME_DOES_NOT_EXIST).execute();
     }

@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 // add needed import declarations
 
-public class AssignLiteralCell extends BubbleDocsService {
+public class AssignLiteralCell extends BubbledocsService {
     private String result;
 
     public AssignLiteralCell(String accessUsername, int docId, String cellId,
@@ -11,7 +11,7 @@ public class AssignLiteralCell extends BubbleDocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbleDocsException {
+    protected void dispatch() throws BubbledocsException {
 	// add code here
     }
 

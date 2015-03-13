@@ -4,12 +4,12 @@ import pt.ist.fenixframework.Atomic;
 
 // add needed import declarations
 
-public abstract class BubbleDocsService {
+public abstract class BubbledocsService {
 
     @Atomic
-    public final void execute() throws BubbleDocsException {
+    public final void execute() throws BubbledocsException {
         dispatch();
     }
 
-    protected abstract void dispatch() throws BubbleDocsException;
+    protected abstract void dispatch() throws BubbledocsException;
 }

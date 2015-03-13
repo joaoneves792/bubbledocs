@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 // add needed import declarations
 
-public class ExportDocument extends BubbleDocsService {
+public class ExportDocument extends BubbledocsService {
     private byte[] docXML;
 
     public byte[] getDocXML() {
@@ -14,7 +14,7 @@ public class ExportDocument extends BubbleDocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbleDocsException {
+    protected void dispatch() throws BubbledocsException {
 	// add code here
     }
 }

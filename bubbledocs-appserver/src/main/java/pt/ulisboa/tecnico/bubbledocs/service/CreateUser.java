@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 // add needed import declarations
 
-public class CreateUser extends BubbleDocsService {
+public class CreateUser extends BubbledocsService {
 
     public CreateUser(String userToken, String newUsername,
             String password, String name) {
@@ -10,7 +10,7 @@ public class CreateUser extends BubbleDocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbleDocsException {
+    protected void dispatch() throws BubbledocsException {
 	// add code here
     }
 }

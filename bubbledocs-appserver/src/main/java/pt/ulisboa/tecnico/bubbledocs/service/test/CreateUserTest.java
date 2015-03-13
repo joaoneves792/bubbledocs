@@ -6,7 +6,7 @@ import org.junit.Test;
 
 // add needed import declarations
 
-public class CreateUserTest extends BubbleDocsServiceTest {
+public class CreateUserTest extends BubbledocsServiceTest {
 
     // the tokens
     private String root;

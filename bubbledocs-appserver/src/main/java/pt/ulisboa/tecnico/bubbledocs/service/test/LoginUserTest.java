@@ -10,7 +10,7 @@ import org.joda.time.Seconds;
 
 // add needed import declarations
 
-public class LoginUserTest extends BubbleDocsServiceTest {
+public class LoginUserTest extends BubbledocsServiceTest {
 
     private String jp; // the token for user jp
     private String root; // the token for user root
@@ -62,7 +62,7 @@ public class LoginUserTest extends BubbleDocsServiceTest {
         assertEquals(USERNAME, user.getUsername());
     }
 
-    @Test(expected = UnknownBubbleDocsUserException.class)
+    @Test(expected = UnknownBubbledocsUserException.class)
     public void loginUnknownUser() {
         LoginUser service = new LoginUser("jp2", "jp");
         service.execute();

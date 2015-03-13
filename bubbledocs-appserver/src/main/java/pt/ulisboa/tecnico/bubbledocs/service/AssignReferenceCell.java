@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 // add needed import declarations
 
-public class AssignReferenceCell extends BubbleDocsService {
+public class AssignReferenceCell extends BubbledocsService {
     private String result;
 
     public AssignReferenceCell(String tokenUser, int docId, String cellId,
@@ -11,7 +11,7 @@ public class AssignReferenceCell extends BubbleDocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbleDocsException {
+    protected void dispatch() throws BubbledocsException {
 	// add code here
     }
 

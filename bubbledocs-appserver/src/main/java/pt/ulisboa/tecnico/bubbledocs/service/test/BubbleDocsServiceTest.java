@@ -11,7 +11,7 @@ import pt.ist.fenixframework.core.WriteOnReadError;
 
 // add needed import declarations
 
-public class BubbleDocsServiceTest {
+public class BubbledocsServiceTest {
 
     @Before
     public void setUp() throws Exception {

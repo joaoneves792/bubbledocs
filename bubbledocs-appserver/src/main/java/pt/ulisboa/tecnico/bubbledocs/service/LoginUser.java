@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 // add needed import declarations
 
-public class LoginUser extends BubbleDocsService {
+public class LoginUser extends BubbledocsService {
 
     private String userToken;
 
@@ -11,7 +11,7 @@ public class LoginUser extends BubbleDocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbleDocsException {
+    protected void dispatch() throws BubbledocsException {
 	// add code here
     }
 
