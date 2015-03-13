@@ -1,12 +1,12 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions.;
 
-public class UserNotFoundException extends Exception {	
+public class UserNotInSessionException extends Exception {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public UserNotFoundException(String message) {
-		super(message);
+	public UserNotInSessionException(String m) {
+		super(m);
 	}
 }

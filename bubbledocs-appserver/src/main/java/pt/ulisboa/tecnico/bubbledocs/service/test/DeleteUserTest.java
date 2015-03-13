@@ -5,6 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.User;
+import pt.ulisboa.tecnico.bubbledocs.exceptions..BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions...UnauthorizedOperationException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions...UnknownBubbledocsUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions...UserNotInSessionException;
+import pt.ulisboa.tecnico.bubbledocs.service.DeleteUser;
+
 // add needed import declarations
 
 public class DeleteUserTest extends BubbledocsServiceTest {
@@ -28,7 +35,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
         root = addUserToSession(ROOT_USERNAME);
     };
 
-    public void success() {
+    public void success() throws BubbledocsException {
         DeleteUser service = new DeleteUser(root, USERNAME_TO_DELETE);
         service.execute();
 
@@ -45,7 +52,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
      * and is not in session
      */
     @Test
-    public void successToDeleteIsNotInSession() {
+    public void successToDeleteIsNotInSession() throws BubbledocsException {
         success();
     }
 
@@ -54,32 +61,32 @@ public class DeleteUserTest extends BubbledocsServiceTest {
      * and is in session Test if user and session are both deleted
      */
     @Test
-    public void successToDeleteIsInSession() {
+    public void successToDeleteIsInSession() throws BubbledocsException {
         String token = addUserToSession(USERNAME_TO_DELETE);
         success();
 	assertNull("Removed user but not removed from session", getUserFromSession(token));
     }
 
     @Test(expected = UnknownBubbledocsUserException.class)
-    public void userToDeleteDoesNotExist() {
+    public void userToDeleteDoesNotExist() throws BubbledocsException {
         new DeleteUser(root, USERNAME_DOES_NOT_EXIST).execute();
     }
 
     @Test(expected = UnauthorizedOperationException.class)
-    public void notRootUser() {
+    public void notRootUser() throws BubbledocsException {
         String ars = addUserToSession(USERNAME);
         new DeleteUser(ars, USERNAME_TO_DELETE).execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
-    public void rootNotInSession() {
+    public void rootNotInSession() throws BubbledocsException {
         removeUserFromSession(root);
 
         new DeleteUser(root, USERNAME_TO_DELETE).execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
-    public void notInSessionAndNotRoot() {
+    public void notInSessionAndNotRoot() throws BubbledocsException {
         String ars = addUserToSession(USERNAME);
         removeUserFromSession(ars);
 
@@ -87,7 +94,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     }
 
     @Test(expected = UserNotInSessionException.class)
-    public void accessUserDoesNotExist() {
+    public void accessUserDoesNotExist() throws BubbledocsException {
         new DeleteUser(USERNAME_DOES_NOT_EXIST, USERNAME_TO_DELETE).execute();
     }
 }

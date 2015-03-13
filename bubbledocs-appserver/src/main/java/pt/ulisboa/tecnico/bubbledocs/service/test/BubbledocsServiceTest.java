@@ -8,6 +8,8 @@ import org.junit.Before;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.core.WriteOnReadError;
+import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.ulisboa.tecnico.bubbledocs.domain.User;
 
 // add needed import declarations
 
@@ -39,28 +41,33 @@ public class BubbledocsServiceTest {
     }
 
     // auxiliary methods that access the domain layer and are needed in the test classes
-    // for defining the iniital state and checking that the service has the expected behavior
+    // for defining the initial state and checking that the service has the expected behavior
     User createUser(String username, String password, String name) {
 	// add code here
+    	return null; 
     }
 
-    public SpreadSheet createSpreadSheet(User user, String name, int row,
+    public Spreadsheet createSpreadSheet(User user, String name, int row,
             int column) {
+				return null;
 	// add code here
     }
 
     // returns a spreadsheet whose name is equal to name
-    public SpreadSheet getSpreadSheet(String name) {
+    public Spreadsheet getSpreadSheet(String name) {
+		return null;
 	// add code here
     }
 
     // returns the user registered in the application whose username is equal to username
     User getUserFromUsername(String username) {
+		return null;
 	// add code here
     }
 
     // put a user into session and returns the token associated to it
     String addUserToSession(String username) {
+		return username;
 	// add code here
     }
 
@@ -71,6 +78,7 @@ public class BubbledocsServiceTest {
 
     // return the user registered in session whose token is equal to token
     User getUserFromSession(String token) {
+		return null;
 	// add code here
     }
 

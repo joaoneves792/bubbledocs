@@ -13,7 +13,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <version.fenixframework>2.6.0</version.fenixframework>
-        <version.java>1.8</version.java>
+        <version.java>1.7</version.java>
         <version.junit>4.11</version.junit>
         <version.maven.build-helper-plugin>1.7</version.maven.build-helper-plugin>
         <version.org.jdom.jdom>2.0.5</version.org.jdom.jdom>

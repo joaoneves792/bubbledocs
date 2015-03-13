@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+
 // add needed import declarations
 
 public class LoginUser extends BubbledocsService {
