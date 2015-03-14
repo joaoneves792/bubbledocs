@@ -1,30 +1,33 @@
-package pt.ulisboa.tecnico.bubbledocs.domain;
+    package pt.ulisboa.tecnico.bubbledocs.domain;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+    import java.io.IOException;
+    import java.util.ArrayList;
+    import java.util.Collections;
+    import java.util.List;
+    import java.util.Random;
+    import java.util.Set;
 
-import org.jdom2.JDOMException;
+    import org.jdom2.JDOMException;
 
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
-import pt.ist.fenixframework.FenixFramework;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
+    import pt.ist.fenixframework.FenixFramework;
 
-public class Bubbledocs extends Bubbledocs_Base {
-    private Bubbledocs() {
-         FenixFramework.getDomainRoot().setBubbledocs(this);
-         set_idGenerator(new Integer(0));
-         //addUser(Root.getRoot()); FIXME WTF???
-    }
-	
-    //private static Bubbledocs theBubbledocs = new Bubbledocs();	
-	    
+    public class Bubbledocs extends Bubbledocs_Base {
+        private Bubbledocs() {
+             FenixFramework.getDomainRoot().setBubbledocs(this);
+             set_idGenerator(new Integer(0));
+             //addUser(Root.getRoot()); FIXME WTF???
+        }
+        
+        //private static Bubbledocs theBubbledocs = new Bubbledocs();	
+            
     public static Bubbledocs getBubbledocs() {
         Bubbledocs bubble = FenixFramework.getDomainRoot().getBubbledocs();
         if( null == bubble )
@@ -55,7 +58,68 @@ public class Bubbledocs extends Bubbledocs_Base {
     		return user;
     	}
     }
-    
+
+    public Integer loginUser(String username, String password)throws UserNotFoundException, WrongPasswordException{
+        User user;
+        Session session;
+        Random rand = new Random();
+        Integer tokenInt;
+
+        //Before anything else perform a check on all Sessions
+        performSessionClean();
+        
+        user = getUserByUsername(username);
+        if(!password.equals(user.get_passwd()))
+            throw new WrongPasswordException("Failed to login user " + username + "due to password mismatch.");
+        tokenInt = rand.nextInt(10);
+        session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
+        addSession(session);
+
+
+        return tokenInt;
+    }
+
+    /**
+     * Everytime a user logs in we have to delete all other sessions that have expired
+     */
+    private void performSessionClean(){
+        Set<Session> sessions;
+
+        sessions = this.getSessionSet();
+        for(Session s : sessions)
+            if(checkSessionExpired(s)){
+               removeSession(s); 
+               s.clean();
+            }
+    }
+
+    /**
+     * Private method to check if a session was last accessed over 2 hours ago
+     * @param Session
+     */
+    private boolean checkSessionExpired(Session s){
+        java.util.Date date;
+        java.util.Date sessionDate;
+        java.text.SimpleDateFormat dateFormat;
+        long differenceMilliseconds;
+        final long TWO_HOURS = 7200000; //Two hours in miliseconds
+
+        dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
+        try{
+            sessionDate = dateFormat.parse(s.get_date());
+            date = new java.util.Date();
+            
+            differenceMilliseconds = date.getTime() - sessionDate.getTime();
+
+            if(TWO_HOURS < differenceMilliseconds)
+                return true;
+        }catch(java.text.ParseException e){
+            //Should we really print this , throw it up or mark the session as invalid and return true?
+            System.out.println("ERROR Failed to parse a date for session from user: " + s.get_username());
+        }
+        return false;
+    }
+
     private Spreadsheet __getSpreadsheetById__(int spreadsheetId) {
     	for(Spreadsheet spreadsheet : getSpreadsheetSet()) {
     		if(spreadsheet.get_id() == spreadsheetId)
