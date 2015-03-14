@@ -59,6 +59,14 @@
     	}
     }
 
+    /**
+     * Method to create a session for a user
+     * @param username
+     * @param password
+     * @return the session token int
+     * @throws UserNotFoundException
+     * @throws WrongPasswordException
+     */
     public Integer loginUser(String username, String password)throws UserNotFoundException, WrongPasswordException{
         User user;
         Session session;
@@ -72,13 +80,51 @@
         if(!password.equals(user.get_passwd()))
             throw new WrongPasswordException("Failed to login user " + username + "due to password mismatch.");
         tokenInt = rand.nextInt(10);
+        
+        //If a session for this user is already set then delete it and create a new one
+        session = getUsernameSession(username);
+        if(null != session){
+        	removeSession(session);
+        	session.clean();
+        }
+        	        	
         session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
         addSession(session);
-
+        
 
         return tokenInt;
     }
 
+    /**
+     * Method to get the session belonging to username
+     * @param username
+     * @return Session or null
+     */
+    private Session getUsernameSession(String username){
+    	Set<Session> sessions;
+    	
+    	sessions = getSessionSet();
+    	for(Session s : sessions)
+    		if(s.get_username().equals(username))
+    			return s;
+    	return null;    		
+    }
+    
+    /**
+     * Method to get the session identified by a Service layer token
+     * @param token
+     * @return Session or null
+     */
+    public Session getTokenSession(String token){
+    	Set<Session> sessions;
+    	
+    	sessions = getSessionSet();
+    	for(Session s : sessions)
+    		if(token.equals(s.get_username() + s.get_tokenInt()))
+    			return s;
+    	return null;
+    }
+    
     /**
      * Everytime a user logs in we have to delete all other sessions that have expired
      */

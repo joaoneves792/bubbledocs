@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class WrongPasswordException extends Exception {
+public class WrongPasswordException extends BubbledocsException {
 	/**
 	 * 
 	 */

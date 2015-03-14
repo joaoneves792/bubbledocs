@@ -5,9 +5,11 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.joda.time.LocalTime;
+import org.joda.time.LocalDateTime;
 import org.joda.time.Seconds;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
@@ -17,11 +19,6 @@ import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 // add needed import declarations
 
 public class LoginUserTest extends BubbledocsServiceTest {
-
-    @SuppressWarnings("unused")
-	private String jp; // the token for user jp
-    @SuppressWarnings("unused")
-	private String root; // the token for user root
 
     private static final String USERNAME = "jp";
     private static final String PASSWORD = "jp#";
@@ -33,20 +30,23 @@ public class LoginUserTest extends BubbledocsServiceTest {
 
     // returns the time of the last access for the user with token userToken.
     // It must get this data from the session object of the application
-    private LocalTime getLastAccessTimeInSession(String userToken) {
-		return null;
-	// add code here
+    private LocalDateTime getLastAccessTimeInSession(String userToken) {
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	Session session = bubble.getTokenSession(userToken);
+    	
+    	//Not 100% sure the next line works!!
+    	return new LocalDateTime(session.get_date());
     }
 
     @Test
     public void success() throws BubbledocsException {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
         service.execute();
-	LocalTime currentTime = new LocalTime();
+        LocalDateTime currentTime = new LocalDateTime();
 	
-	String token = service.getUserToken();
+        String token = service.getUserToken();
 
-        User user = getUserFromSession(service.getUserToken());
+        User user = getUserFromSession(token);
         assertEquals(USERNAME, user.get_username());
 
 	int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();

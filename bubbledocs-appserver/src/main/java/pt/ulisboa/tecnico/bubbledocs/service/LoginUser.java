@@ -2,8 +2,8 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 
 // add needed import declarations
 
@@ -33,9 +33,8 @@ public class LoginUser extends BubbledocsService {
         try{
             tokenInt = bubble.loginUser(_username, _password);
             _userToken = _username + tokenInt;
-        //Does it really make sense to catch exceptions here???
-        }catch(UserNotFoundException | WrongPasswordException e){
-            System.out.println(e.getMessage());
+        }catch(UserNotFoundException e){
+        	throw new UnknownBubbledocsUserException("Unknown username");
         }
     }
 
