@@ -20,6 +20,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     private static final String USERNAME = "ars";
     private static final String PASSWORD = "ars";
     private static final String ROOT_USERNAME = "root";
+    private static final String ROOT_PASSWORD = "root";
     private static final String USERNAME_DOES_NOT_EXIST = "no-one";
     private static final String SPREADSHEET_NAME = "spread";
 
@@ -32,7 +33,12 @@ public class DeleteUserTest extends BubbledocsServiceTest {
         User smf = createUser(USERNAME_TO_DELETE, "smf", "Sérgio Fernandes");
         createSpreadSheet(smf, USERNAME_TO_DELETE, 20, 20);
 
-        root = addUserToSession(ROOT_USERNAME);
+        try {
+			root = addUserToSession(ROOT_USERNAME, ROOT_PASSWORD);
+		} catch (BubbledocsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     };
 
     public void success() throws BubbledocsException {
@@ -62,7 +68,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
      */
     @Test
     public void successToDeleteIsInSession() throws BubbledocsException {
-        String token = addUserToSession(USERNAME_TO_DELETE);
+        String token = addUserToSession(USERNAME_TO_DELETE, "smf");
         success();
 	assertNull("Removed user but not removed from session", getUserFromSession(token));
     }
@@ -74,7 +80,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
 
     @Test(expected = UnauthorizedOperationException.class)
     public void notRootUser() throws BubbledocsException {
-        String ars = addUserToSession(USERNAME);
+        String ars = addUserToSession(USERNAME, PASSWORD);
         new DeleteUser(ars, USERNAME_TO_DELETE).execute();
     }
 
@@ -87,7 +93,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
 
     @Test(expected = UserNotInSessionException.class)
     public void notInSessionAndNotRoot() throws BubbledocsException {
-        String ars = addUserToSession(USERNAME);
+        String ars = addUserToSession(USERNAME, PASSWORD);
         removeUserFromSession(ars);
 
         new DeleteUser(ars, USERNAME_TO_DELETE).execute();

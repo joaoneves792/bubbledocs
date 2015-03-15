@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class SpreadsheetNotFoundException extends Exception {
+public class SpreadsheetNotFoundException extends BubbledocsException {
 	/**
 	 * 
 	 */

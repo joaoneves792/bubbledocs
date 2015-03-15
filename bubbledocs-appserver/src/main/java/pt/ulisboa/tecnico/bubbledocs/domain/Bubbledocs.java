@@ -18,6 +18,8 @@
     import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
     import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
     import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptySpreadsheetNameException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.OutOfBoundsSpreadsheetException;
     import pt.ist.fenixframework.FenixFramework;
 
     public class Bubbledocs extends Bubbledocs_Base {
@@ -145,7 +147,8 @@
      * Clear a session (from persistence)
      * @param Session
      */
-    private void clearSession(Session s){
+    //I really dont think this should be public but its required in BubbledocsServiceTest
+    public void clearSession(Session s){
         removeSession(s); 
         s.clean();
     }
@@ -355,10 +358,18 @@
      * @param comulns
      * @return SpreadsheetID
      */
-    public Integer createSpreadsheet(String userToken, String name, int rows, int columns)throws UserNotInSessionException{
+    public Integer createSpreadsheet(String userToken, String name, int rows, int columns)
+        throws UserNotInSessionException, EmptySpreadsheetNameException, OutOfBoundsSpreadsheetException{
         Session session;
         User author;
         Spreadsheet spreadsheet;
+       
+        //Sanity checks 
+        if(name.isEmpty())
+            throw new EmptySpreadsheetNameException("Operation not permited: create a Spreadsheet with an empty name!");
+        if(1 > rows || 1 > columns)
+            throw new OutOfBoundsSpreadsheetException("Operation not permited: create a spreadheet with 0 or less rows/columns!");
+
         try{
             session = getSessionByToken(userToken);
 

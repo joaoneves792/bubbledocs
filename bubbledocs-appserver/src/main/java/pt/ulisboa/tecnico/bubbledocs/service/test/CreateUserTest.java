@@ -29,8 +29,14 @@ public class CreateUserTest extends BubbledocsServiceTest {
     @Override
     public void populate4Test() {
         createUser(USERNAME, PASSWORD, "António Rito Silva");
-        root = addUserToSession("root");
-        ars = addUserToSession("ars");
+        try {
+			root = addUserToSession("root", "root");
+	        ars = addUserToSession("ars", "ars");
+        } catch (BubbledocsException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
     }
 
     @Test
