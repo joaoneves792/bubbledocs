@@ -37,4 +37,5 @@ public class DeleteUser extends BubbledocsService {
 	public void setDeadUsername(String deadUsername) {
 		this.deadUsername = deadUsername;
 	}
+	
 }
