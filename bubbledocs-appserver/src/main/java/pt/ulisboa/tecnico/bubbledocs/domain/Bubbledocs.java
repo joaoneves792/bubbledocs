@@ -16,6 +16,7 @@
     import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
     import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
     import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+    import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
     import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
     import pt.ist.fenixframework.FenixFramework;
 
@@ -81,16 +82,20 @@
             throw new WrongPasswordException("Failed to login user " + username + "due to password mismatch.");
         tokenInt = rand.nextInt(10);
         
-        //If a session for this user is already set then delete it and create a new one
-        session = getUsernameSession(username);
-        if(null != session){
-        	removeSession(session);
-        	session.clean();
+        try{
+            session = getUsernameSession(username);
+        }catch(UserNotInSessionException e){
+            //Some code duplication... (but its better than an empty catch block)
+            session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
+            addSession(session);
+            return tokenInt;
         }
-        	        	
+        
+        //If a session for this user was already set then delete it and create a new one
+        removeSession(session);
+      	session.clean();
         session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
         addSession(session);
-        
 
         return tokenInt;
     }
@@ -100,29 +105,29 @@
      * @param username
      * @return Session or null
      */
-    private Session getUsernameSession(String username){
+    private Session getUsernameSession(String username)throws UserNotInSessionException{
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
     	for(Session s : sessions)
     		if(s.get_username().equals(username))
     			return s;
-    	return null;    		
+        throw new UserNotInSessionException("No existing session for " + username + " found!");
     }
     
     /**
      * Method to get the session identified by a Service layer token
      * @param token
-     * @return Session or null
+     * @return Session
      */
-    public Session getTokenSession(String token){
+    public Session getSessionByToken(String token)throws UserNotInSessionException{
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
     	for(Session s : sessions)
     		if(token.equals(s.get_username() + s.get_tokenInt()))
     			return s;
-    	return null;
+        throw new UserNotInSessionException("No existing session for " + token + " found!");
     }
     
     /**
@@ -327,7 +332,29 @@
     		}
     	}
     }
-    
+   
+    /**
+     * Method to create a spreasheet (overload to be called from the service layer)
+     * @param userToken
+     * @param spreadsheetname
+     * @param rows
+     * @param comulns
+     * @return SpreadsheetID
+     */
+    public Integer createSpreadsheet(String userToken, String name, int rows, int columns)throws UserNotInSessionException{
+        Session session;
+        User author;
+        Spreadsheet spreasheet;
+        session = getSessionByToken(userToken);
+        try{
+            author = getUserByUsername(session.get_username());
+            spreasheet = createSpreadsheet(author, name, rows, columns);
+            return spreasheet.get_id();
+        }catch(UserNotFoundException e){
+            throw new UserNotInSessionException("FATAL: there is a session for " + userToken + " but there isnt a user by the name " + session.get_username());
+        }
+    }  
+
     public Spreadsheet createSpreadsheet(User author, String name, int lines, int columns) {
     	Spreadsheet spreadsheet = new Spreadsheet(name, author.get_username(), generateId(), lines, columns);
     	addSpreadsheet(spreadsheet);

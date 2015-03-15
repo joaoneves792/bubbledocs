@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 
@@ -30,9 +31,9 @@ public class LoginUserTest extends BubbledocsServiceTest {
 
     // returns the time of the last access for the user with token userToken.
     // It must get this data from the session object of the application
-    private LocalDateTime getLastAccessTimeInSession(String userToken) {
+    private LocalDateTime getLastAccessTimeInSession(String userToken) throws UserNotInSessionException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	Session session = bubble.getTokenSession(userToken);
+    	Session session = bubble.getSessionByToken(userToken);
     	
     	//Not 100% sure the next line works!!
     	return new LocalDateTime(session.get_date());

@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class UserNotInSessionException extends Exception {
+public class UserNotInSessionException extends BubbledocsException {
 	/**
 	 * 
 	 */
