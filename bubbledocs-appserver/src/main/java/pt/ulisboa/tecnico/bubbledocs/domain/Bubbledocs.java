@@ -92,8 +92,7 @@
         }
         
         //If a session for this user was already set then delete it and create a new one
-        removeSession(session);
-      	session.clean();
+        clearSession(session);
         session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
         addSession(session);
 
@@ -138,10 +137,17 @@
 
         sessions = this.getSessionSet();
         for(Session s : sessions)
-            if(checkSessionExpired(s)){
-               removeSession(s); 
-               s.clean();
-            }
+            if(checkSessionExpired(s))
+                clearSession(s);
+    }
+
+    /**
+     * Clear a session (from persistence)
+     * @param Session
+     */
+    private void clearSession(Session s){
+        removeSession(s); 
+        s.clean();
     }
 
     /**
@@ -169,6 +175,14 @@
             System.out.println("ERROR Failed to parse a date for session from user: " + s.get_username());
         }
         return false;
+    }
+
+    /**
+     * Method to be called every time a user accesses bubbledocs and his session is still valid
+     * @param Session
+     */
+    private void updateSessionTime(Session s){
+        s.set_date(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
     }
 
     private Spreadsheet __getSpreadsheetById__(int spreadsheetId) {
@@ -344,14 +358,23 @@
     public Integer createSpreadsheet(String userToken, String name, int rows, int columns)throws UserNotInSessionException{
         Session session;
         User author;
-        Spreadsheet spreasheet;
-        session = getSessionByToken(userToken);
+        Spreadsheet spreadsheet;
         try{
+            session = getSessionByToken(userToken);
+
+            //This if block should be in everyones functions called from the service layer!!
+            if(checkSessionExpired(session)){
+                clearSession(session);
+                throw new UserNotInSessionException(userToken + "'s Session expired!");
+            }else
+                updateSessionTime(session);
+            //-----------------------------
+
             author = getUserByUsername(session.get_username());
-            spreasheet = createSpreadsheet(author, name, rows, columns);
-            return spreasheet.get_id();
+            spreadsheet = createSpreadsheet(author, name, rows, columns);
+            return spreadsheet.get_id();
         }catch(UserNotFoundException e){
-            throw new UserNotInSessionException("FATAL: there is a session for " + userToken + " but there isnt a user by the name " + session.get_username());
+            throw new UserNotInSessionException("FATAL: there is a session for " + userToken + " but there isnt a user by that name!");
         }
     }  
 
