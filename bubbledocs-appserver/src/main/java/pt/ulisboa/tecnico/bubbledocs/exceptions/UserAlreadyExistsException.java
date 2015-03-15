@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class UserAlreadyExistsException extends Exception {
+public class UserAlreadyExistsException extends BubbledocsException {
 	/**
 	 * 
 	 */

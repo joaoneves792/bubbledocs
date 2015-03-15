@@ -5,6 +5,7 @@ import java.util.Set;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 
 public class Root extends Root_Base {
     
@@ -23,24 +24,12 @@ public class Root extends Root_Base {
     	return theRoot;
     }
     
-    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException {
-    	try {
-    		User user = Bubbledocs.getBubbledocs().getUserByUsername(username);
-    		if(null != user) {
-    			throw new UserAlreadyExistsException("User with usaname " + username + " already exists.");
-    		}
-    	} catch (UserNotFoundException e) {
-    		Bubbledocs.getBubbledocs().addUser(new User(name, username, passwd));
-    	}
+    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException, UserNotInSessionException {
+    	Bubbledocs.getBubbledocs().createUser(this, new User(name, username, passwd));
     }
     
-    public void removeUser(String username) throws UserNotFoundException {
-    	try {
-    		User user = Bubbledocs.getBubbledocs().getUserByUsername(username);
-    		Bubbledocs.getBubbledocs().removeUser(user);
-    	} catch (UserNotFoundException e) {
-    		throw e;
-    	}
+    public void removeUser(String username) throws UserNotFoundException, UserNotInSessionException {
+    	Bubbledocs.getBubbledocs().destroyUser(this, username);
     }
     
     public Set<User> getUsers() {

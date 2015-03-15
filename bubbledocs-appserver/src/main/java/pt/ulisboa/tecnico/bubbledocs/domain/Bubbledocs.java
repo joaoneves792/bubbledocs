@@ -1,26 +1,27 @@
     package pt.ulisboa.tecnico.bubbledocs.domain;
 
     import java.io.IOException;
-    import java.util.ArrayList;
-    import java.util.Collections;
-    import java.util.List;
-    import java.util.Random;
-    import java.util.Set;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
     import org.jdom2.JDOMException;
 
     import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptySpreadsheetNameException;
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.OutOfBoundsSpreadsheetException;
-    import pt.ist.fenixframework.FenixFramework;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptySpreadsheetNameException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.OutOfBoundsSpreadsheetException;
+import pt.ist.fenixframework.FenixFramework;
 
     public class Bubbledocs extends Bubbledocs_Base {
         private Bubbledocs() {
@@ -106,7 +107,7 @@
      * @param username
      * @return Session or null
      */
-    private Session getUsernameSession(String username)throws UserNotInSessionException{
+    private Session getUsernameSession(String username) throws UserNotInSessionException{
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
@@ -132,7 +133,7 @@
     }
     
     /**
-     * Everytime a user logs in we have to delete all other sessions that have expired
+     * Every time a user logs in we have to delete all other sessions that have expired
      */
     private void performSessionClean(){
         Set<Session> sessions;
@@ -162,7 +163,7 @@
         java.util.Date sessionDate;
         java.text.SimpleDateFormat dateFormat;
         long differenceMilliseconds;
-        final long TWO_HOURS = 7200000; //Two hours in miliseconds
+        final long TWO_HOURS = 7200000; //Two hours in milliseconds
 
         dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
         try{
@@ -351,7 +352,7 @@
     }
    
     /**
-     * Method to create a spreasheet (overload to be called from the service layer)
+     * Method to create a spreadsheet (overload to be called from the service layer)
      * @param userToken
      * @param spreadsheetname
      * @param rows
@@ -494,6 +495,37 @@
     public String export(Spreadsheet spreadsheet) throws InvalidExportException {
     	return spreadsheet.export();    	
     }
+
+	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {
+		Session session = getUsernameSession("root");
+		if(checkSessionExpired(session)) {
+			removeSession(session);
+			throw new UserNotInSessionException("Root is not logged in.");
+		}
+    	
+		try {
+			User user = getUserByUsername(newUser.get_username());
+    		if(null != user) {
+    			throw new UserAlreadyExistsException("User with usaname " + newUser.get_username() + " already exists.");
+    		}    		
+    	} catch (UserNotFoundException e) {
+    		addUser(newUser);
+    	} 
+	}
     
-    
+    public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException {
+    	Session session = getUsernameSession("root");
+    	if(checkSessionExpired(session)) {
+    		removeSession(session);
+    		throw new UserNotInSessionException("Root is not logged in.");
+    	}
+    		
+    	User user = getUserByUsername(deadUserUsername);
+    	removeUser(user);
+    	
+    	for(Spreadsheet spreadsheet : getSpreadsheetsByAuthor(deadUserUsername)) {
+    		removeSpreadsheet(spreadsheet);
+    		spreadsheet.clean();
+    	}    	
+    }
 }

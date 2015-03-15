@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class DuplicateUsernameException extends Exception {
+public class DuplicateUsernameException extends BubbledocsException {
 
 	/**
 	 * 

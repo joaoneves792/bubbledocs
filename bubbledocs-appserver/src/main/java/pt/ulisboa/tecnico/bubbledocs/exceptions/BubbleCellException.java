@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public abstract class BubbleCellException extends Exception {	
+public abstract class BubbleCellException extends BubbledocsException {	
 	/**
 	 * 
 	 */

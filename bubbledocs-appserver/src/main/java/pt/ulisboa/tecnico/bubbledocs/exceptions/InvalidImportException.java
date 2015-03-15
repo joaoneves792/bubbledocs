@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class InvalidImportException extends Exception {
+public class InvalidImportException extends BubbledocsException {
 	/**
 	 * 
 	 */

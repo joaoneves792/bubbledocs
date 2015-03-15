@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class PermissionNotFoundException extends Exception {
+public class PermissionNotFoundException extends BubbledocsException {
 	/**
 	 * 
 	 */

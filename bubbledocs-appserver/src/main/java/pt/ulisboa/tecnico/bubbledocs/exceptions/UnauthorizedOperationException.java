@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class UnauthorizedOperationException extends Exception {
+public class UnauthorizedOperationException extends BubbledocsException {
 	/**
 	 * 
 	 */

@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class EmptyUsernameException extends Exception {
+public class EmptyUsernameException extends BubbledocsException {
 	/**
 	 * 
 	 */
