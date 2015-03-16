@@ -512,13 +512,27 @@ import pt.ist.fenixframework.FenixFramework;
     
     	        	
 
-    	if(checkSessionExpired(session)){
+    	if(session.hasExpired()){
+    		removeSession(session);
+    		session.clean();
     		throw new ExpiredSessionException("User session has expired.");
     	}
-    	    	
+    	
+    	session.update();
+
     	userPermission = getPermission(session.get_username(), spredsheetID);
     	if(!userPermission.get_writePermission()){
     		throw new UnauthorizedUserException(" Assign reference to Cell: User doesnt have permission to write in Spreadsheet");
     	}
+    }
+    
+    public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException{
+    	
+    	checkUser(_userToken,_spreadsheetId);
+        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
+        
+        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Reference(_cellReferenceLine, _cellReferenceColumn));
+        
+        return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
 }

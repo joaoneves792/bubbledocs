@@ -1,8 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
-import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
 // add needed import declarations
@@ -15,7 +13,7 @@ public class AssignReferenceCell extends BubbledocsService {
     private Integer _cellIdColumn;
     private Integer _cellReferenceLine;
     private Integer _cellReferenceColumn;
-    private Integer result;
+    private Integer _result;
     
     /*
      * Assigns a reference to a cell
@@ -47,13 +45,9 @@ public class AssignReferenceCell extends BubbledocsService {
     @Override
     protected void dispatch() throws BubbledocsException {
     	
-        Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        bubble.checkUser(_userToken,_spreadsheetId);
-        Spreadsheet spreadsheet = bubble.getSpreadsheetById(_spreadsheetId);
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	_result = bubble.AssignReferenceCell(_userToken, _spreadsheetId, _cellIdLine, _cellIdColumn, _cellReferenceLine, _cellReferenceColumn);
         
-        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Reference(_cellReferenceLine, _cellReferenceColumn));
-        
-        result = spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
 
     public final String getUserToken() {
@@ -61,7 +55,7 @@ public class AssignReferenceCell extends BubbledocsService {
     }
     
     public Integer getResult() {
-        return result;
+        return _result;
     }
     
 }
