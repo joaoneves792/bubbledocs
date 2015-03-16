@@ -9,7 +9,9 @@ import java.util.Set;
 
     import org.jdom2.JDOMException;
 
-    import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.ExpiredSessionException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
@@ -527,5 +529,23 @@ import pt.ist.fenixframework.FenixFramework;
     		removeSpreadsheet(spreadsheet);
     		spreadsheet.clean();
     	}    	
+    }
+    
+    public void checkUser(String userToken, Integer spredsheetID) throws BubbledocsException{
+    	Session session;
+    	Permission userPermission;
+    	
+    	session = getSessionByToken(userToken);
+    
+    	        	
+
+    	if(checkSessionExpired(session)){
+    		throw new ExpiredSessionException("User session has expired.");
+    	}
+    	    	
+    	userPermission = getPermission(session.get_username(), spredsheetID);
+    	if(!userPermission.get_writePermission()){
+    		throw new UnauthorizedUserException(" Assign reference to Cell: User doesnt have permission to write in Spreadsheet");
+    	}
     }
 }
