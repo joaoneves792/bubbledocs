@@ -5,18 +5,32 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 // add needed import declarations
 
 public class ExportDocument extends BubbledocsService {
+	
+	private String _userToken;
+	private String _docId;
+	
     private byte[] docXML;
 
-    public byte[] getDocXML() {
+    public final byte[] getDocXML() {
 	return docXML;
     }
 
     public ExportDocument(String userToken, int docId) {
-	// add code here
+    	_userToken = userToken;
+    	_docId = docId;
     }
 
     @Override
     protected void dispatch() throws BubbledocsException {
-	// add code here
+    	
+    	Bubbledocs bubble;       
+        bubble = Bubbledocs.getBubbledocs();
+        //TODO try catch block and handle exceptions
+        
+       //try { 
+        
+        	this.setDocXML(bubble.exportSpreadsheetById(_userToken, _docID));
+        
+       // } catch () {}
     }
 }
