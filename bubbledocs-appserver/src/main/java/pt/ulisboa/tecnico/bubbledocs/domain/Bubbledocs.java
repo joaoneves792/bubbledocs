@@ -1,6 +1,6 @@
     package pt.ulisboa.tecnico.bubbledocs.domain;
 
-    import java.io.IOException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,7 +73,7 @@ import pt.ist.fenixframework.FenixFramework;
      * @throws UserNotFoundException
      * @throws WrongPasswordException
      */
-    public Integer loginUser(String username, String password)throws UserNotFoundException, WrongPasswordException{
+    public Integer loginUser(String username, String password)throws UserNotFoundException, WrongPasswordException {
         User user;
         Session session;
         Random rand = new Random();
@@ -89,7 +89,7 @@ import pt.ist.fenixframework.FenixFramework;
         
         try{
             session = getUsernameSession(username);
-        }catch(UserNotInSessionException e){
+        } catch(UserNotInSessionException e) {
             //Some code duplication... (but its better than an empty catch block)
             session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
             addSession(session);
@@ -137,12 +137,12 @@ import pt.ist.fenixframework.FenixFramework;
     /**
      * Every time a user logs in we have to delete all other sessions that have expired
      */
-    private void performSessionClean(){
+    private void performSessionClean()  {
         Set<Session> sessions;
 
-        sessions = this.getSessionSet();
+        sessions = getSessionSet();
         for(Session s : sessions)
-            if(checkSessionExpired(s))
+            if(s.hasExpired())
                 clearSession(s);
     }
 
@@ -150,46 +150,13 @@ import pt.ist.fenixframework.FenixFramework;
      * Clear a session (from persistence)
      * @param Session
      */
-    //I really dont think this should be public but its required in BubbledocsServiceTest
+    //I really don't think this should be public but its required in BubbledocsServiceTest
     public void clearSession(Session s){
         removeSession(s); 
         s.clean();
     }
 
-    /**
-     * Private method to check if a session was last accessed over 2 hours ago
-     * @param Session
-     */
-    private boolean checkSessionExpired(Session s){
-        java.util.Date date;
-        java.util.Date sessionDate;
-        java.text.SimpleDateFormat dateFormat;
-        long differenceMilliseconds;
-        final long TWO_HOURS = 7200000; //Two hours in milliseconds
 
-        dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try{
-            sessionDate = dateFormat.parse(s.get_date());
-            date = new java.util.Date();
-            
-            differenceMilliseconds = date.getTime() - sessionDate.getTime();
-
-            if(TWO_HOURS < differenceMilliseconds)
-                return true;
-        }catch(java.text.ParseException e){
-            //Should we really print this , throw it up or mark the session as invalid and return true?
-            System.out.println("ERROR Failed to parse a date for session from user: " + s.get_username());
-        }
-        return false;
-    }
-
-    /**
-     * Method to be called every time a user accesses bubbledocs and his session is still valid
-     * @param Session
-     */
-    private void updateSessionTime(Session s){
-        s.set_date(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
-    }
 
     private Spreadsheet __getSpreadsheetById__(int spreadsheetId) {
     	for(Spreadsheet spreadsheet : getSpreadsheetSet()) {
@@ -362,7 +329,7 @@ import pt.ist.fenixframework.FenixFramework;
      * @return SpreadsheetID
      */
     public Integer createSpreadsheet(String userToken, String name, int rows, int columns)
-        throws UserNotInSessionException, EmptySpreadsheetNameException, OutOfBoundsSpreadsheetException{
+        throws UserNotInSessionException, EmptySpreadsheetNameException, OutOfBoundsSpreadsheetException {
         Session session;
         User author;
         Spreadsheet spreadsheet;
@@ -377,11 +344,11 @@ import pt.ist.fenixframework.FenixFramework;
             session = getSessionByToken(userToken);
 
             //This if block should be in everyones functions called from the service layer!!
-            if(checkSessionExpired(session)){
+            if(session.hasExpired()){
                 clearSession(session);
                 throw new UserNotInSessionException(userToken + "'s Session expired!");
             }else
-                updateSessionTime(session);
+                session.update();
             //-----------------------------
 
             author = getUserByUsername(session.get_username());
@@ -500,10 +467,13 @@ import pt.ist.fenixframework.FenixFramework;
 
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {
 		Session session = getUsernameSession("root");
-		if(checkSessionExpired(session)) {
+		if(session.hasExpired()) {
 			removeSession(session);
+			session.clean();
 			throw new UserNotInSessionException("Root is not logged in.");
 		}
+		
+		session.update();
     	
 		try {
 			User user = getUserByUsername(newUser.get_username());
@@ -517,11 +487,14 @@ import pt.ist.fenixframework.FenixFramework;
     
     public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException {
     	Session session = getUsernameSession("root");
-    	if(checkSessionExpired(session)) {
+    	if(session.hasExpired()) {
     		removeSession(session);
+    		session.clean();
     		throw new UserNotInSessionException("Root is not logged in.");
     	}
     		
+    	session.update();
+    	
     	User user = getUserByUsername(deadUserUsername);
     	removeUser(user);
     	
