@@ -551,3 +551,13 @@ import pt.ist.fenixframework.FenixFramework;
 	        return getSpreadSheetById(docId).export();
     }
 }
+    public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
+    	
+    	checkUser(_userToken,_spreadsheetId);
+        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
+        
+        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));
+        
+        return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
+    }
+}
