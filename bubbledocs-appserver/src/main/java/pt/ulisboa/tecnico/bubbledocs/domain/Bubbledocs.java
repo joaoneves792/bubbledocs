@@ -467,8 +467,7 @@ import pt.ist.fenixframework.FenixFramework;
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {
 		Session session = getUsernameSession("root");
 		if(session.hasExpired()) {
-			removeSession(session);
-			session.clean();
+			clearSession(session);
 			throw new UserNotInSessionException("Root is not logged in.");
 		}
 		
@@ -487,8 +486,7 @@ import pt.ist.fenixframework.FenixFramework;
     public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException {
     	Session session = getUsernameSession("root");
     	if(session.hasExpired()) {
-    		removeSession(session);
-    		session.clean();
+    		clearSession(session);
     		throw new UserNotInSessionException("Root is not logged in.");
     	}
     		
@@ -507,8 +505,7 @@ import pt.ist.fenixframework.FenixFramework;
     	Session session = getSessionByToken(userToken);
     	
     	if(session.hasExpired()){
-    		removeSession(session);
-    		session.clean();
+    		clearSession(session);
     		throw new UserNotInSessionException("User session has expired.");
     	}
     	
@@ -532,28 +529,21 @@ import pt.ist.fenixframework.FenixFramework;
         return myCell.getValue();
     }
 
-    public String exportDocument(String userToken, int docId) throws UserNotInSessionException {
-    	  
-    		Session session = getSessionByToken(userToken);
-	        
-	        if(checkSessionExpired(session)){
-	            clearSession(session);
-	            throw new UserNotInSessionException(userToken + "'s Session expired!");
-	        }else
-	            updateSessionTime(session);
-	
-	        getPermission(userToken, docId);	      
-	        
-	        return getSpreadSheetById(docId).export();
+    public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {
+    	Session session = getSessionByToken(userToken);
+    	if(session.hasExpired()){
+    		clearSession(session);
+    		throw new UserNotInSessionException(userToken + "'s Session expired!");
+    	}
+    	session.update();
+    	getPermission(userToken, docId);	     
+    	return getSpreadsheetById(docId).export();
     }
-}
+
     public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
-    	
-    	checkUser(_userToken,_spreadsheetId);
-        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
-        
-        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));
-        
+    	assertSessionAndWritePermission(_userToken,_spreadsheetId);
+        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);        
+        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));        
         return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
 }

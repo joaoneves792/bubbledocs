@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
 // add needed import declarations
@@ -7,26 +8,25 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 public class ExportDocument extends BubbledocsService {
 	
 	private String userToken;
-	private String docId;
-	
-    private String docXML;
+	private int docId;
+	private String docXML;
 
     public final String getDocXML() {
 	return docXML;
     }
 
     public ExportDocument(String userToken, int docId) {
-    	this.setUserToken(userToken);
-    	this.setDocId(docId);
+    	this.userToken = userToken;
+    	this.docId     = docId;
     }
 
     @Override
     protected void dispatch() throws BubbledocsException {
-    	
-    	Bubbledocs bubble;       
-        bubble = Bubbledocs.getBubbledocs();
-        
-	    this.setDocXML(bubble.exportDocument(userToken, docId));
-
+        Bubbledocs bubble = Bubbledocs.getBubbledocs();
+        this.docXML = bubble.exportDocument(userToken, docId);
+    }
+    
+    public String getXMLString() {
+    	return docXML;
     }
 }

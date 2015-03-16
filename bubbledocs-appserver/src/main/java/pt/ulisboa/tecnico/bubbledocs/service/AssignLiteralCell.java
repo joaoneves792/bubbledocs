@@ -3,8 +3,6 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
-// add needed import declarations
-
 public class AssignLiteralCell extends BubbledocsService {
 
     private int spreadSheetId;
@@ -27,9 +25,7 @@ public class AssignLiteralCell extends BubbledocsService {
     @Override
     protected void dispatch() throws BubbledocsException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        
-    	result = bubble.AssignLiteralCell(userToken, spreadSheetId, cellIdLine, cellIdColumn, literal);
-        
+    	result = bubble.AssignLiteralCell(userToken, spreadSheetId, cellIdLine, cellIdColumn, literal);        
     }
 
 	public String getUserToken() {
