@@ -6,18 +6,18 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
 public class ExportDocument extends BubbledocsService {
 	
-	private String _userToken;
-	private String _docId;
+	private String userToken;
+	private String docId;
 	
-    private byte[] docXML;
+    private String docXML;
 
-    public final byte[] getDocXML() {
+    public final String getDocXML() {
 	return docXML;
     }
 
     public ExportDocument(String userToken, int docId) {
-    	_userToken = userToken;
-    	_docId = docId;
+    	this.setUserToken(userToken);
+    	this.setDocId(docId);
     }
 
     @Override
@@ -25,12 +25,18 @@ public class ExportDocument extends BubbledocsService {
     	
     	Bubbledocs bubble;       
         bubble = Bubbledocs.getBubbledocs();
-        //TODO try catch block and handle exceptions
         
-       //try { 
-        
-        	this.setDocXML(bubble.exportSpreadsheetById(_userToken, _docID));
-        
-       // } catch () {}
+	        Session session = bubble.getSessionByToken(userToken);
+	        
+	        if(checkSessionExpired(session)){
+	            clearSession(session);
+	            throw new UserNotInSessionException(userToken + "'s Session expired!");
+	        }else
+	            bubble.updateSessionTime(session);
+	
+	        bubble.getPermission(userToken, docId);
+	        
+	        this.setDocXML(bubble.getSpreadSheetById(docId).export());
+
     }
 }

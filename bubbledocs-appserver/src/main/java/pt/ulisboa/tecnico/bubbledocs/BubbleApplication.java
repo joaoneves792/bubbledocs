@@ -122,19 +122,6 @@ public class BubbleApplication{
 		return ss;
 	}
 	
-	//@Atomic
-	public static org.jdom2.Document exportSpreadsheetById(String username, int spreasheetId)
-				throws InvalidExportException {
-			org.jdom2.Document ss = null;
-			System.out.println("XML for Spreadsheets from user '" + username + "' ."); 
-			for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
-				if((sheet.get_author().equals(username)) && 
-						((sheet.get_Id().equals(spreasheetId)))) {
-					ss = sheet.export();
-				}
-			}
-		return ss;
-	}
 
 	//@Atomic
 	public static void printSpreadsheetsByUsername(String username) {
