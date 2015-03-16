@@ -117,6 +117,13 @@ public class Spreadsheet extends Spreadsheet_Base {
 		
 		return xml.outputString(__export__());
 	}
+	
+	public org.jdom2.Document exportXML() throws InvalidExportException {
+		org.jdom2.output.XMLOutputter xml =
+				new org.jdom2.output.XMLOutputter(org.jdom2.output.Format.getPrettyFormat());
+		
+		return xml;
+	}
     
     
     @Override
