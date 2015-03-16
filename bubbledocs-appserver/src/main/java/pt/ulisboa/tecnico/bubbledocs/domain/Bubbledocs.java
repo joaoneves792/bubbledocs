@@ -535,4 +535,19 @@ import pt.ist.fenixframework.FenixFramework;
         
         return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
+
+    public String exportDocument(String userToken, int docId) throws UserNotInSessionException {
+    	  
+    		Session session = getSessionByToken(userToken);
+	        
+	        if(checkSessionExpired(session)){
+	            clearSession(session);
+	            throw new UserNotInSessionException(userToken + "'s Session expired!");
+	        }else
+	            updateSessionTime(session);
+	
+	        getPermission(userToken, docId);	      
+	        
+	        return getSpreadSheetById(docId).export();
+    }
 }

@@ -26,17 +26,7 @@ public class ExportDocument extends BubbledocsService {
     	Bubbledocs bubble;       
         bubble = Bubbledocs.getBubbledocs();
         
-	        Session session = bubble.getSessionByToken(userToken);
-	        
-	        if(checkSessionExpired(session)){
-	            clearSession(session);
-	            throw new UserNotInSessionException(userToken + "'s Session expired!");
-	        }else
-	            bubble.updateSessionTime(session);
-	
-	        bubble.getPermission(userToken, docId);
-	        
-	        this.setDocXML(bubble.getSpreadSheetById(docId).export());
+	    this.setDocXML(bubble.exportDocument(userToken, docId));
 
     }
 }
