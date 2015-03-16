@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.Set;
 
@@ -29,7 +28,7 @@ public class Root extends Root_Base {
     	Bubbledocs.getBubbledocs().createUser(this, new User(name, username, passwd));
     }
     
-    public void removeUser(String username) throws UserNotFoundException, UserNotInSessionException, ParseException {
+    public void removeUser(String username) throws UserNotFoundException, UserNotInSessionException {
     	Bubbledocs.getBubbledocs().destroyUser(this, username);
     }
     

@@ -58,6 +58,7 @@ public class Spreadsheet extends Spreadsheet_Base {
         for(int i=1 ; i<=lines; i++){
                 for(int j=1 ; j<=columns; j++){
                         newCell = new Cell(i, j, false);
+                        newCell.setSpreadsheet(this);
                         addCell(newCell);
                 }
         }

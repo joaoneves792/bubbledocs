@@ -45,6 +45,7 @@ public class Session extends Session_Base {
         try {
 			sessionDate = dateFormat.parse(get_date());
 		} catch (ParseException e) {
+			System.err.println("Could not parse date in Session for user [" + get_username() + "].");
 			return true;
 		}
         date = new java.util.Date();

@@ -10,7 +10,6 @@ import java.util.Set;
     import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.ExpiredSessionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
@@ -124,7 +123,7 @@ import pt.ist.fenixframework.FenixFramework;
      * @param token
      * @return Session
      */
-    public Session getSessionByToken(String token)throws UserNotInSessionException{
+    public Session getSessionByToken(String token)throws UserNotInSessionException {
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
@@ -504,36 +503,33 @@ import pt.ist.fenixframework.FenixFramework;
     	}    	
     }
     
-    public void checkUser(String userToken, Integer spredsheetID) throws BubbledocsException{
-    	Session session;
-    	Permission userPermission;
+    private void assertSessionAndWritePermission(String userToken, Integer spredsheetID) throws BubbledocsException {
+    	Session session = getSessionByToken(userToken);
     	
-    	session = getSessionByToken(userToken);
-    
-    	        	
-
     	if(session.hasExpired()){
     		removeSession(session);
     		session.clean();
-    		throw new ExpiredSessionException("User session has expired.");
+    		throw new UserNotInSessionException("User session has expired.");
     	}
     	
     	session.update();
 
-    	userPermission = getPermission(session.get_username(), spredsheetID);
-    	if(!userPermission.get_writePermission()){
-    		throw new UnauthorizedUserException(" Assign reference to Cell: User doesnt have permission to write in Spreadsheet");
+    	Permission userPermission = getPermission(session.get_username(), spredsheetID);
+    	if(!userPermission.get_writePermission()) {
+    		throw new UnauthorizedUserException("Assign reference to Cell: User doesnt have permission to write in Spreadsheet");
     	}
     }
     
     public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException{
+    	assertSessionAndWritePermission(_userToken,_spreadsheetId);
     	
-    	checkUser(_userToken,_spreadsheetId);
-        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
-        
-        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Reference(_cellReferenceLine, _cellReferenceColumn));
-        
-        return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
+    	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
+    	Cell myCell = spreadsheet.getCell(_cellIdLine, _cellIdColumn);
+    	
+        Reference ref = new Reference(_cellReferenceLine, _cellReferenceColumn);
+        ref.setCell(myCell);
+        myCell.setContent(ref);
+        return myCell.getValue();
     }
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException {

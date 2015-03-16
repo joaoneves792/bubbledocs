@@ -44,10 +44,8 @@ public class AssignReferenceCell extends BubbledocsService {
 
     @Override
     protected void dispatch() throws BubbledocsException {
-    	
-    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+   	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	_result = bubble.AssignReferenceCell(_userToken, _spreadsheetId, _cellIdLine, _cellIdColumn, _cellReferenceLine, _cellReferenceColumn);
-        
     }
 
     public final String getUserToken() {
