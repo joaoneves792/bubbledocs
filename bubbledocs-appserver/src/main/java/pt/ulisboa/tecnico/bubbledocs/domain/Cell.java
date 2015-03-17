@@ -119,10 +119,14 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
          * Method to erase this Cells contents (from persistence)
          */
         public void cleanContents(){
+        	Spreadsheet spreadsheet = getSpreadsheet();
             Content content = getContent();
             if(null != content){
                 setContent(null);
                 content.clean();
+            }
+            if(null != spreadsheet) {
+            	setSpreadsheet(null);
             }
         }
         
