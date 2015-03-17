@@ -155,8 +155,6 @@ import pt.ist.fenixframework.FenixFramework;
         s.clean();
     }
 
-
-
     private Spreadsheet __getSpreadsheetById__(int spreadsheetId) {
     	for(Spreadsheet spreadsheet : getSpreadsheetSet()) {
     		if(spreadsheet.get_id() == spreadsheetId)
@@ -209,116 +207,95 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     	return Collections.unmodifiableList(permissions);
     }
- 
-    //TODO REFACTOR THESE METHODS!!!!! 
-    
-    public void addReadPermission(User requestUser, String granted, int spreadsheetId) 
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	User user = __getUserByUsername__(granted);
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
-    	} else if(null == user) {
-    		throw new UserNotFoundException("User " + granted + " not found.");
-    	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
+    /*
+    public void addReadPermission(String requestUsername, String granted, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	getUserByUsername(granted);
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author()) ||
+    			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		Permission permission = __getPermission__(granted, spreadsheetId);
     		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    		} else {
-    			if(permission.get_writePermission()) {
-    				if (null == __getPermission__(granted, spreadsheetId)) {
-    					addPermission(new Permission(spreadsheetId, granted, false));
-    				}    			
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
-    		}
+    			addPermission(new Permission(spreadsheetId, granted, false));
+    		} else return;
+    	} else {
+    		throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
     	}
     }
-    
-    public void addWritePermission(User requestUser, String granted, int spreadsheetId)
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	User user = __getUserByUsername__(granted);
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
-    	} else if(null == user) {
-    		throw new UserNotFoundException("User " + granted + " not found.");
-    	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
+    */
+    public void addReadPermission(String requestUsername, String granted, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	new AddReadRoutine().execute(requestUsername, granted, spreadsheetId);
+    }   
+    /*
+    public void addWritePermission(String requestUsername, String granted, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	getUserByUsername(granted);
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author()) ||
+    			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		Permission permission = __getPermission__(granted, spreadsheetId);
     		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
+    			addPermission(new Permission(spreadsheetId, granted, true));
     		} else {
-    			if(permission.get_writePermission()) {
-    				Permission grantedPermission = __getPermission__(granted, spreadsheetId);
-    				if (null == grantedPermission) {
-    					addPermission(new Permission(spreadsheetId, granted, true));
-    				} else {
-    					grantedPermission.set_writePermission(true);
-    				}
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
+    			permission.set_writePermission(true);
     		}
+    	} else {
+    		throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
     	}
     }
-    
-    public void revokeReadPermission(User requestUser, String revoked, int spreadsheetId) 
-    	throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	User user = __getUserByUsername__(revoked);
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
-    	} else if(null == user) {
-    		throw new UserNotFoundException("User " + revoked + " not found.");
-    	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
-    		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    		} else {
-    			if(permission.get_writePermission()) {
-    				Permission grantedPermission = __getPermission__(revoked, spreadsheetId);
-    				if (null != grantedPermission)
-    					removePermission(grantedPermission);
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
-    		}
-    	}    	
+    */
+    public void addWritePermission(String requestUsername, String granted, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	new AddWriteRoutine().execute(requestUsername, granted, spreadsheetId);
     }
-    
-    public void revokeWritePermission(User requestUser, String revoked, int spreadsheetId)
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	User user = __getUserByUsername__(revoked);
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
-    	} else if(null == user) {
-    		throw new UserNotFoundException("User " + revoked + " not found.");
+    /*    
+    public void revokeReadPermission(String requestUsername, String revoked, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	getUserByUsername(revoked);
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author()) ||
+    			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		Permission permission = __getPermission__(revoked, spreadsheetId);
+    		if(null != permission) {
+    			removePermission(permission);
+    			permission.clean();
+    		} else return;
     	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
-    		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    		} else {
-    			if(permission.get_writePermission()) {
-    				Permission grantedPermission = __getPermission__(revoked, spreadsheetId);
-    				if (null != grantedPermission && grantedPermission.get_writePermission())
-    					grantedPermission.set_writePermission(false);
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
-    		}
+    		throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
     	}
     }
-   
+	*/
+    public void revokeReadPermission(String requestUsername, String revoked, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	new RevokeReadRoutine().execute(requestUsername, revoked, spreadsheetId);
+    }
+    /*
+    public void revokeWritePermission(String requestUsername, String revoked, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	getUserByUsername(revoked);
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author()) ||
+    			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		Permission permission = __getPermission__(revoked, spreadsheetId);
+    		if(null != permission) {
+    			permission.set_writePermission(false);
+    		} else return;
+    	} else {
+    		throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
+    	}
+    }
+   */
+    public void revokeWritePermission(String requestUsername, String revoked, int spreadsheetId)
+    		throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    	new RevokeWriteRoutine().execute(requestUsername, revoked, spreadsheetId);
+    }
+    
+    
     /**
      * Method to create a spreadsheet (overload to be called from the service layer)
      * @param userToken
@@ -406,49 +383,44 @@ import pt.ist.fenixframework.FenixFramework;
     		}
     	}
     }
-        
-    public void protectSpreadsheetCell(User requestUser, int spreadsheetId, int line, int column)
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException{
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
+   /*     
+    public void protectSpreadsheetCell(String requestUsername, int spreadsheetId, int line, int column)
+    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author()) ||
+    			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		spreadsheet.getCell(line, column).set_protected(true);
     	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
-    		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    		} else {
-    			if(permission.get_writePermission()) {
-    				spreadsheet.getCell(line, column).set_protected(true);
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
-    		}
+    		throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
     	}
     }
+    */
     
-    public void unProtectSpreadsheetCell(User requestUser, int spreadsheetId, int line, int column) 
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException{
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
-    	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
-    		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    		} else {
-    			if(permission.get_writePermission()) {
-    				spreadsheet.getCell(line, column).set_protected(false);
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
-    		}
-    	}
+    public void protectSpreadsheetCell(String requestUsername, int spreadsheetId, int line, int column)
+    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
+    	new ProtectRoutine().execute(requestUsername, spreadsheetId, line, column);
     }
     
+    /*
+    public void unProtectSpreadsheetCell(String requestUsername, int spreadsheetId, int line, int column)
+    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author()) ||
+    			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		spreadsheet.getCell(line, column).set_protected(false);
+    	} else {
+    		throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
+    	}
+    }
+    */
+    
+    public void unProtectSpreadsheetCell(String requestUsername, int spreadsheetId, int line, int column)
+    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
+    	new UnprotectRoutine().execute(requestUsername, spreadsheetId, line, column);
+    }
+       
     public List<Spreadsheet> getSpreadsheetsByAuthor(String author) {
     	List<Spreadsheet> spreadsheets = new ArrayList<Spreadsheet>();
     	for(Spreadsheet sheet : getSpreadsheetSet()) {
@@ -518,6 +490,7 @@ import pt.ist.fenixframework.FenixFramework;
     }
     
     public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException{
+    	//FIXME CHECK IF CELL IS PROTECTED
     	assertSessionAndWritePermission(_userToken,_spreadsheetId);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
@@ -541,9 +514,93 @@ import pt.ist.fenixframework.FenixFramework;
     }
 
     public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
+    	//FIXME CHECK IF CELL IS PROTECTED
     	assertSessionAndWritePermission(_userToken,_spreadsheetId);
         Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);        
         spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));        
         return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
+    
+    
+    private abstract class ReadWriteRoutine {
+    	protected final void execute(String requestUsername, String targetUsername, int spreadsheetId) 
+    			throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
+    		getUserByUsername(targetUsername);
+    		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    		if(requestUsername.equals(spreadsheet.get_author()) ||
+    				getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    	    			Permission permission = __getPermission__(targetUsername, spreadsheetId);
+    	    			dispatch(targetUsername, spreadsheetId, permission);
+    		} else {
+    			throw new UnauthorizedUserException
+    			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
+    		}
+    	}
+    	
+    	protected abstract void dispatch(String targetUsername, int spreadsheetId, Permission permission);	    
+    }
+    
+    private class AddReadRoutine extends ReadWriteRoutine {
+    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    		if(null == permission) {
+    			addPermission(new Permission(spreadsheetId, targetUsername, false));
+    		} else return;
+    	}
+    }
+    
+    private class AddWriteRoutine extends ReadWriteRoutine {
+    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    		if(null == permission) {
+    			addPermission(new Permission(spreadsheetId, targetUsername, true));
+    		} else {
+    			permission.set_writePermission(true);
+    		}
+    	}
+    }
+    
+    private class RevokeReadRoutine extends ReadWriteRoutine {
+    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    		if(null != permission) {
+    			removePermission(permission);
+    			permission.clean();
+    		} else return;
+    	}
+    }
+    
+    private class RevokeWriteRoutine extends ReadWriteRoutine {
+    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    		if(null != permission) {
+    			permission.set_writePermission(false);
+    		} else return;
+    	}
+    }
+    
+    private abstract class ProtectionRoutine {
+    	protected final void execute(String requestUsername, int spreadsheetId, int line, int column)
+    			throws SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException, UnauthorizedUserException {
+    		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+        	if(requestUsername.equals(spreadsheet.get_author()) ||
+        			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+        		dispatch(spreadsheet, line, column);
+        	} else {
+        		throw new UnauthorizedUserException
+        			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
+        	}
+    	}
+    	
+    	protected abstract void dispatch(Spreadsheet spreadsheet, int line, int column) throws InvalidCellException ;
+    }
+    
+    private class ProtectRoutine extends ProtectionRoutine{
+    	protected void dispatch(Spreadsheet spreadsheet, int line, int column) throws InvalidCellException {
+    		spreadsheet.getCell(line, column).set_protected(true);
+    	}
+    }
+    
+    private class UnprotectRoutine extends ProtectionRoutine {
+    	protected void dispatch(Spreadsheet spreadsheet, int line, int column) throws InvalidCellException {
+    		spreadsheet.getCell(line, column).set_protected(false);
+    	}
+    }
+
 }
