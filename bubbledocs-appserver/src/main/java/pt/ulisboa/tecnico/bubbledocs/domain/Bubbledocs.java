@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
@@ -378,7 +379,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}    	
     }
     
-    private void assertSessionAndWritePermission(String userToken, Integer spredsheetID) throws BubbledocsException {
+    private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int line, int column) throws BubbledocsException {
     	Session session = getSessionByToken(userToken);
     	
     	if(session.hasExpired()){
@@ -388,15 +389,18 @@ import pt.ist.fenixframework.FenixFramework;
     	
     	session.update();
 
-    	Permission userPermission = getPermission(session.get_username(), spredsheetID);
+    	Permission userPermission = getPermission(session.get_username(), spreadsheetId);
     	if(!userPermission.get_writePermission()) {
-    		throw new UnauthorizedUserException("Assign reference to Cell: User doesnt have permission to write in Spreadsheet");
+    		throw new UnauthorizedUserException("Assign reference to Cell: User doesn't have permission to write in Spreadsheet");
+    	}
+    	
+    	if(getSpreadsheetById(spreadsheetId).getCell(line, column).get_protected()) {
+    		throw new ProtectedCellException("Cannot write to protected cell at coordinates [" + line + ", " + column + "].");
     	}
     }
     
     public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException{
-    	//FIXME CHECK IF CELL IS PROTECTED
-    	assertSessionAndWritePermission(_userToken,_spreadsheetId);
+    	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdLine, _cellIdColumn);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
     	Cell myCell = spreadsheet.getCell(_cellIdLine, _cellIdColumn);
@@ -419,9 +423,8 @@ import pt.ist.fenixframework.FenixFramework;
     }
 
     public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
-    	//FIXME CHECK IF CELL IS PROTECTED
-    	assertSessionAndWritePermission(_userToken,_spreadsheetId);
-        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);    
+    	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdLine, _cellIdColumn);
+        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
         spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));        
         return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
