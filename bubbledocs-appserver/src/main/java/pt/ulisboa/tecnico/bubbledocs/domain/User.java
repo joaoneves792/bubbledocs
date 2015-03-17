@@ -51,7 +51,7 @@ public class User extends User_Base {
     }
     
     public void deleteSpreadsheet(int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException {
-    	Bubbledocs.getBubbledocs().deleteSpreadsheet(this, spreadsheetId);
+    	Bubbledocs.getBubbledocs().deleteSpreadsheet(get_username(), spreadsheetId);
     }
     
     public void protectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException {

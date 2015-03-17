@@ -320,7 +320,6 @@ import pt.ist.fenixframework.FenixFramework;
     }
     */
     
-    
     public void deleteSpreadsheet(String requestUsername, int spreadsheetId) throws SpreadsheetNotFoundException, UnauthorizedUserException {
     	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
     	if(requestUsername.equals(spreadsheet.get_author())) {
@@ -419,7 +418,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
     
-    public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException{
+    public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException {
     	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdLine, _cellIdColumn);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
@@ -448,8 +447,7 @@ import pt.ist.fenixframework.FenixFramework;
         spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));        
         return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
     }
-    
-    
+        
     private abstract class ReadWriteRoutine {
     	protected final void execute(String requestUsername, String targetUsername, int spreadsheetId) 
     			throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
