@@ -8,6 +8,7 @@ import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
@@ -29,20 +30,20 @@ public class User extends User_Base {
     	set_username(username);    	
     }
     
-    public void addReadPermission(String granted, int spreadsheetId) throws UserNotFoundException, UnauthorizedUserException, SpreadsheetNotFoundException {
-    	Bubbledocs.getBubbledocs().addReadPermission(this, granted, spreadsheetId);
+    public void addReadPermission(String granted, int spreadsheetId) throws UserNotFoundException, UnauthorizedUserException, SpreadsheetNotFoundException, PermissionNotFoundException {
+    	Bubbledocs.getBubbledocs().addReadPermission(get_username(), granted, spreadsheetId);
     }
     
-    public void addWritePermission(String granted, int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	Bubbledocs.getBubbledocs().addWritePermission(this, granted, spreadsheetId);
+    public void addWritePermission(String granted, int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException, PermissionNotFoundException {
+    	Bubbledocs.getBubbledocs().addWritePermission(get_username(), granted, spreadsheetId);
     }
     
-    public void revokeReadPermission(String granted, int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	Bubbledocs.getBubbledocs().revokeReadPermission(this, granted, spreadsheetId);
+    public void revokeReadPermission(String granted, int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException, PermissionNotFoundException {
+    	Bubbledocs.getBubbledocs().revokeReadPermission(get_username(), granted, spreadsheetId);
     }
     
-    public void revokeWritePermission(String granted, int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException {
-    	Bubbledocs.getBubbledocs().revokeWritePermission(this, granted, spreadsheetId);
+    public void revokeWritePermission(String granted, int spreadsheetId) throws UnauthorizedUserException, SpreadsheetNotFoundException, UserNotFoundException, PermissionNotFoundException {
+    	Bubbledocs.getBubbledocs().revokeWritePermission(get_username(), granted, spreadsheetId);
     }
     
     public Spreadsheet createSpreadsheet(String name, int lines, int columns) {
@@ -53,12 +54,12 @@ public class User extends User_Base {
     	Bubbledocs.getBubbledocs().deleteSpreadsheet(this, spreadsheetId);
     }
     
-    public void protectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException {
-    	Bubbledocs.getBubbledocs().protectSpreadsheetCell(this, spreadSheetId, line, column);
+    public void protectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException {
+    	Bubbledocs.getBubbledocs().protectSpreadsheetCell(get_username(), spreadSheetId, line, column);
     }
     
-    public void unProtectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException {
-    	Bubbledocs.getBubbledocs().unProtectSpreadsheetCell(this, spreadSheetId, line, column);
+    public void unProtectSpreadsheetCell(int spreadSheetId, int line, int column) throws UnauthorizedUserException, SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException {
+    	Bubbledocs.getBubbledocs().unProtectSpreadsheetCell(get_username(), spreadSheetId, line, column);
     }
 
 	public List<Spreadsheet> findSpreadsheetsByName(String str) {
