@@ -277,7 +277,7 @@ import pt.ist.fenixframework.FenixFramework;
     
     /**
      *  This is the XML import 
-     *  @param JDOM Document
+     *  @param XMLString
      *  @return the new spreadsheet
      * @throws IOException 
      * @throws JDOMException 
@@ -290,7 +290,9 @@ import pt.ist.fenixframework.FenixFramework;
     	return spreadsheet;
     }
     
-    public void deleteSpreadsheet(User requestUser, int spreadsheetId)
+    
+    /*
+    public void deleteSpreadsheet(String requestUsername, int spreadsheetId)
     		throws UnauthorizedUserException, SpreadsheetNotFoundException {
     	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
     	if(null == spreadsheet) {
@@ -314,6 +316,24 @@ import pt.ist.fenixframework.FenixFramework;
     				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
     			}    				
     		}
+    	}
+    }
+    */
+    
+    
+    public void deleteSpreadsheet(String requestUsername, int spreadsheetId) throws SpreadsheetNotFoundException, UnauthorizedUserException {
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+    	if(requestUsername.equals(spreadsheet.get_author())) {
+    		removeSpreadsheet(spreadsheet);
+            spreadsheet.clean();
+			//remove all permissions for this spreadsheet
+			for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
+				removePermission(permission_it);
+                permission_it.clean();
+			}
+    	} else {	
+    		throw new UnauthorizedUserException
+    					("User " + requestUsername + " is not authorized to delete spreadsheet " + spreadsheetId + ".");
     	}
     }
     
