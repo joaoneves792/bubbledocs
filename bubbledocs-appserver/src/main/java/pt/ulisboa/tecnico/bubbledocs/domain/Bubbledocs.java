@@ -420,6 +420,7 @@ import pt.ist.fenixframework.FenixFramework;
     
     public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, String _cellId ,String _cellReference) throws BubbledocsException {
     	
+    	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
     	
     	String delims = "[;]";
     	String[] tokensCellId= _cellId.split(delims);
@@ -433,7 +434,6 @@ import pt.ist.fenixframework.FenixFramework;
     	
     	assertSessionAndWritePermission(_userToken,_spreadsheetId, cellIdLine, cellIdColumn);
     	
-    	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
     	Cell myCell = spreadsheet.getCell(cellIdLine, cellIdColumn);
     	
         Reference ref = new Reference(cellReferenceLine, cellReferenceColumn);
