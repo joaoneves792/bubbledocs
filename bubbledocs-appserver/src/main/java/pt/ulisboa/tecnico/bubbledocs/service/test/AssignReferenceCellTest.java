@@ -1,149 +1,143 @@
 package pt.ulisboa.tecnico.bubbledocs.service.test;
 
 import org.junit.Test;
-
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
-import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
-import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
-import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
+import pt.ulisboa.tecnico.bubbledocs.service.AssignLiteralCell;
 import pt.ulisboa.tecnico.bubbledocs.service.AssignReferenceCell;
+import pt.ulisboa.tecnico.bubbledocs.service.CreateSpreadSheet;
 
-public class AssignReferenceCellTest extends BubbledocsServiceTest{
-	
-	private static final String USERNAME = "ars";
-	private static final String PASSWORD = "ars";
-	
-	private static final int DOCID_INVALID = 0;
-	
-	private static final String USERNAME_NOPERMISSION = "ra";
-	private static final String PASSWORD_NOPERMISSION = "cor";
-	
-	String token;
-	String token_nopermission;
-	Spreadsheet ss;
-	User ars;
-	
+// add needed import declarations
+
+public class AssignReferenceCellTest extends BubbledocsServiceTest {
+
+    private static final String USERNAME = "jp";
+    private static final String NAME = "João Pereira";
+    private static final String PASSWORD = "jp#";
+    private static final String USERNAME_RO = "jn";
+    private static final String NAME_RO = "João Neves";
+    private static final String PASSWORD_RO = "jn#";
+    private static final String SPREADHEET_NAME = "My Spreadsheet";
+    private static final int SPREADHEET_ROWS = 10;
+    private static final int SPREADHEET_COLUMNS = 15;
+    private static final String REFERENCE_ID = "1;1";
+    private static final String LITERAL_ID = "5;5";
+    private static final String PROTECTED_ID = "6;6";
+    private static final String LITERAL = "3";
+    private static final String INVALID_ID = "abc";
+    private static final String INVALID_CELL_ID = "100;100";
+    
+    //This is needed throughout the tests
+    private Integer _spreadsheetID;
+    
+    
     @Override
     public void populate4Test() {
+ 	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
+ 	   createUser(USERNAME, PASSWORD, NAME);
+       createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
+       try{
+    	   String token = addUserToSession(USERNAME, PASSWORD);
+       
+    	   //Maybe this should be in BubbleDocsServiceTest.createSpreadSheet
+    	   CreateSpreadSheet cSSService = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+    	   cSSService.execute(); 
+    	   _spreadsheetID = cSSService.getSheetId();
 
-    	ars = new User("Paul Door", USERNAME, PASSWORD);
-    	Bubbledocs bubble = Bubbledocs.getBubbledocs();   	
-    	bubble.addUser(ars);
-    	
-    	User ra = new User("Step Rabbit", "ra", "cor");
-    	bubble.addUser(ra);
-    	
-    	try {
-    		ss = ars.createSpreadsheet("Testa Export", 10, 15);
+    	   //Assign a literal to cell
+    	   AssignLiteralCell aLCService = new AssignLiteralCell(token, cSSService.getSheetId(), LITERAL_ID, LITERAL);
+    	   aLCService.execute();
+    	   
+    	   //Protect Cell 6;6
+    	   bubble.protectSpreadsheetCell(USERNAME, _spreadsheetID, 6, 6);
+    	   
+    	   //Give RO user read permissions
+    	   bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
 
-    		ss.getCell(3, 4).setContent(new Literal(5));
-    		ss.getCell(1, 1).setContent(new Reference(5, 6));
-    		
-    		ss.getCell(6, 7).setContent(new Literal(12));
-    		ss.getCell(6, 7).set_protected(true);
-    		
-    		token = addUserToSession(USERNAME, PASSWORD);
-    		token_nopermission = addUserToSession(USERNAME_NOPERMISSION, PASSWORD_NOPERMISSION);
-    		
-    		} catch (BubbledocsException e) {
-    			// TODO Auto-generated catch block
-    		e.printStackTrace();
-    		}
-    	}
-    
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void testCase1() throws BubbledocsException {
-    	
-    	populate4Test();
-    	AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "9999;" , "2;5");
-        service.execute();
+       }catch (BubbledocsException e) {
+    	   System.out.println("FAILED TO POPULATE FOR AssignReferenceCellTest");
+    	   //FIXME At this point we should probably abort!
+       }
+    }
+
+    //Test case 1
+    @Test(expected = NumberFormatException.class)
+    public void assignReferenceToInvalidId() throws BubbledocsException, NumberFormatException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+    	AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, INVALID_ID, LITERAL_ID);
+        service.execute();   
     }
     
+    //Test case 2
     @Test(expected = InvalidCellException.class)
-    public void testCase2() throws BubbledocsException {
-    	
-    	populate4Test();
-    	AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "5;400" , "2;5");
-        service.execute();
+    public void assignReferenceToInvalidCell() throws BubbledocsException, NumberFormatException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+    	AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, INVALID_CELL_ID, LITERAL_ID);
+        service.execute();   
     }
     
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
-    public void testCase3() throws BubbledocsException {
-    	
-    	populate4Test();
-    	AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "12;14" , "$%&*@");
-        service.execute();
+    //Test case 3
+    @Test(expected = NumberFormatException.class)
+    public void assignReferenceWithInvalidReferenceId() throws BubbledocsException, NumberFormatException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+    	AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, INVALID_ID);
+        service.execute();   
     }
     
+    //Test case 4
+    //FIXME VERY IMPORTANT CREATING THIS REFERENCE IS NOT THROWING THE EXCEPTION
     @Test(expected = InvalidCellException.class)
-    public void testCase4() throws BubbledocsException {
-    	
-    	populate4Test();
-    	AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "5;8" , "0;-1");
-        service.execute();
+    public void assignReferenceWithInvalidReferenceCell() throws BubbledocsException, NumberFormatException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+    	AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, INVALID_CELL_ID);
+        service.execute();   
     }
     
-    //Spreadsheet Invalida com ID = 0
+    //Test case 5
     @Test(expected = SpreadsheetNotFoundException.class)
-    public void testCase5() throws BubbledocsException {
-    	
-    	populate4Test();
-    	AssignReferenceCell service = new AssignReferenceCell(token, DOCID_INVALID, "5;8" , "0;-1");
-        service.execute();
+    public void assignReferenceOnNonExistingSpreadsheet() throws BubbledocsException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+    	AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID+5, REFERENCE_ID, LITERAL_ID);
+        service.execute();   
     }
     
-    //Cell (6;7) esta protegida
+    //Test case 6
     @Test(expected = ProtectedCellException.class)
-    public void testCase6() throws BubbledocsException {
-    	
-    	populate4Test();
-    	AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "6;7" , "2;5");
-        service.execute();
+    public void assignReferenceOnProtectedCell() throws BubbledocsException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+    	AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, PROTECTED_ID, LITERAL_ID);
+        service.execute();   
     }
     
-  //Remove user da sessao e tenta de seguida fazer AssignReferenceCell
+    //Test case 7
     @Test(expected = UserNotInSessionException.class)
-    public void testCase7() throws BubbledocsException {
-    	
-    	populate4Test();
-    	
-    	removeUserFromSession(token);
-    	
-    	AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "6;7" , "2;5");
-        service.execute();
+    public void assignReferenceUserNotInSession() throws BubbledocsException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+ 	    removeUserFromSession(token);
+ 	    AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, LITERAL_ID);
+        service.execute();   
     }
     
-    //protected cell
+    //Test case 8
     @Test(expected = UnauthorizedUserException.class)
-    public void testCase8() throws BubbledocsException {
-    	
-    	populate4Test();
-        
-        AssignReferenceCell service = new AssignReferenceCell(token_nopermission, ss.get_id(), "4;4" , "3;4");
-        service.execute();
+    public void assignReferenceUserReadOnlyPermission() throws BubbledocsException {
+ 	    String token = addUserToSession(USERNAME_RO, PASSWORD_RO);
+ 	    AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, LITERAL_ID);
+        service.execute();   
     }
     
-  //caso de sucesso
-    @Test
-    public void testCase9() throws BubbledocsException {
-    	//TODO caso sem resultado na wiki ... para remover?
-    }
     
-  //caso de sucesso
+    //Test case 9
     @Test
-    public void testCase10() throws BubbledocsException {
-    	
-    	populate4Test();
-        
-        AssignReferenceCell service = new AssignReferenceCell(token, ss.get_id(), "15;4" , "3;4");
-        service.execute();
+    public void success() throws BubbledocsException {
+ 	    String token = addUserToSession(USERNAME, PASSWORD);
+ 	    AssignReferenceCell service = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, LITERAL_ID);
+        service.execute();   
     }
     
 }

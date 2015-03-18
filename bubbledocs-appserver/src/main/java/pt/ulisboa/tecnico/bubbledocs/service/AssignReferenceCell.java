@@ -22,61 +22,34 @@ public class AssignReferenceCell extends BubbledocsService {
      */
     public AssignReferenceCell(String tokenUser, int spreadsheetId, String cellId, String cellReference) {
 
-    	setUserToken(tokenUser);
-    	setSpreadsheetId(spreadsheetId);
-    	setCellId(cellId);
-    	setCellReference(cellReference);
+    	_userToken = tokenUser;
+    	_spreadsheetId = spreadsheetId;
+    	_cellId = cellId;
+    	_cellReference = cellReference;
 
     }
 
     @Override
-    protected void dispatch() throws BubbledocsException {
+    protected void dispatch() throws BubbledocsException, NumberFormatException {
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	_result = bubble.AssignReferenceCell(_userToken, _spreadsheetId, _cellId,_cellReference);
-    }
-
-    //Gets
-    
-    public final String getUserToken() {
-    	return _userToken;
-    }
-    
-    public Integer getResult() {
-        return _result;
-    }
-    
-    public Integer getSpreadsheetId() {
-        return _spreadsheetId;
-    }
-    
-    public String getCellId() {
-        return _cellId;
+   	   	Integer cellLine, cellColumn, refCellLine, refCellColumn;
+   	   	
+   	   	
+   	   	//Parse the cells id's
+   	   	String delims = "[;]";
+    	String[] tokensCellId= _cellId.split(delims);
+    	String[] tokensCellReference = _cellReference.split(delims);
+    	
+    	cellLine = Integer.parseInt(tokensCellId[0]);
+    	cellColumn = Integer.parseInt(tokensCellId[1]);
+    	refCellLine = Integer.parseInt(tokensCellReference[0]);
+    	refCellColumn = Integer.parseInt(tokensCellReference[1]);
+   	   	
+    	//Assign it and get the value of this cell
+    	_result = bubble.AssignReferenceCell(_userToken, _spreadsheetId, cellLine, cellColumn, refCellLine, refCellColumn);
     }
     
-    public String getCellReference() {
-        return _cellReference;
+    public final Integer getResult(){
+    	return _result;
     }
-
-    //Sets
-    
-    public void setUserToken(String userToken) {
-    	this._userToken = userToken;
-    }
-    
-    public void setResult(Integer result) {
-    	this._result = result;
-    }
-    
-    public void setSpreadsheetId(Integer  spreadsheetId) {
-    	this._spreadsheetId = spreadsheetId;
-    }
-    
-    public void setCellId(String cellId) {
-    	this._cellId = cellId;
-    }
-
-    public void setCellReference(String cellReference) {
-    	this._cellReference = cellReference;
-    }
-    
 }

@@ -23,10 +23,13 @@ public class LoginUserTest extends BubbledocsServiceTest {
 
     private static final String USERNAME = "jp";
     private static final String PASSWORD = "jp#";
-
+    private static final String NAME = "João Pereira";
+    private static final String INVALID_USERNAME = "jp2";
+    private static final String INVALID_PASSWORD = "jp#2";
+    
     @Override
     public void populate4Test() {
-        createUser(USERNAME, PASSWORD, "João Pereira");
+        createUser(USERNAME, PASSWORD, NAME);
     }
 
     // returns the time of the last access for the user with token userToken.
@@ -39,6 +42,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     	return new LocalDateTime(session.get_date());
     }
 
+    //Test Case 1 
     @Test
     public void success() throws BubbledocsException {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
@@ -50,12 +54,13 @@ public class LoginUserTest extends BubbledocsServiceTest {
         User user = getUserFromSession(token);
         assertEquals(USERNAME, user.get_username());
 
-	int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
+        int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
 
-	assertTrue("Access time in session not correctly set", difference >= 0);
-	assertTrue("diference in seconds greater than expected", difference < 2);
+	    assertTrue("Access time in session not correctly set", difference >= 0);
+	    assertTrue("diference in seconds greater than expected", difference < 2);
     }
 
+    //Test Case 2
     @Test
     public void successLoginTwice() throws BubbledocsException {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
@@ -67,20 +72,24 @@ public class LoginUserTest extends BubbledocsServiceTest {
         String token2 = service.getUserToken();
 
         User user = getUserFromSession(token1);
+     
+        //What happens if the random generator hits the same number??
         assertNull(user);
         user = getUserFromSession(token2);
         assertEquals(USERNAME, user.get_username());
     }
 
+    //Test Case 3
     @Test(expected = UnknownBubbledocsUserException.class)
     public void loginUnknownUser() throws BubbledocsException {
-        LoginUser service = new LoginUser("jp2", "jp");
+        LoginUser service = new LoginUser(INVALID_USERNAME, INVALID_PASSWORD);
         service.execute();
     }
 
+    //Test Case 4
     @Test(expected = WrongPasswordException.class)
-    public void loginUserWithinWrongPassword() throws BubbledocsException {
-        LoginUser service = new LoginUser(USERNAME, "jp2");
+    public void loginUserWithWrongPassword() throws BubbledocsException {
+        LoginUser service = new LoginUser(USERNAME, INVALID_PASSWORD);
         service.execute();
     }
 }

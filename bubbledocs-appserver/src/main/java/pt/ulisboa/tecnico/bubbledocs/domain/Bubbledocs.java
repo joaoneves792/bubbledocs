@@ -398,7 +398,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}    	
     }
     
-    private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int line, int column) throws BubbledocsException {
+    private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int line, int column) throws BubbledocsException  {
     	Session session = getSessionByToken(userToken);
     	
     	if(session.hasExpired()){
@@ -418,28 +418,17 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
     
-    public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, String _cellId ,String _cellReference) throws BubbledocsException {
-    	
-    	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
-    	
-    	String delims = "[;]";
-    	String[] tokensCellId= _cellId.split(delims);
-    	String[] tokensCellReference = _cellReference.split(delims);
-    	
-    	
-    	Integer cellIdLine = Integer.parseInt(tokensCellId[0]);
-    	Integer cellIdColumn = Integer.parseInt(tokensCellId[1]);
-    	Integer cellReferenceLine = Integer.parseInt(tokensCellReference[0]);
-    	Integer cellReferenceColumn = Integer.parseInt(tokensCellReference[1]);
-    	
-    	assertSessionAndWritePermission(_userToken,_spreadsheetId, cellIdLine, cellIdColumn);
-    	
+    public Integer AssignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdLine, Integer cellIdColumn, 
+            							Integer cellReferenceLine, Integer cellReferenceColumn) throws BubbledocsException{
+    	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdLine, cellIdColumn);
+
+    	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
     	Cell myCell = spreadsheet.getCell(cellIdLine, cellIdColumn);
-    	
-        Reference ref = new Reference(cellReferenceLine, cellReferenceColumn);
-        ref.setCell(myCell);
-        myCell.setContent(ref);
-        return myCell.getValue();
+
+    	Reference ref = new Reference(cellReferenceLine, cellReferenceColumn);
+    	ref.setCell(myCell);
+    	myCell.setContent(ref);
+    	return myCell.getValue();
     }
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {

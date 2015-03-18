@@ -15,6 +15,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
@@ -72,6 +73,11 @@ public class BubbledocsServiceTest {
     	return null;    	
     }
 
+    public Spreadsheet getSpreadSheetById(Integer id) throws SpreadsheetNotFoundException {
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	return bubble.getSpreadsheetById(id);    	
+    }
+    
     // returns the user registered in the application whose username is equal to username
     User getUserFromUsername(String username) throws UserNotFoundException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
