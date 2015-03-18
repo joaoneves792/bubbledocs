@@ -246,7 +246,7 @@ import pt.ist.fenixframework.FenixFramework;
         //Sanity checks 
         if(name.isEmpty())
             throw new EmptySpreadsheetNameException("Operation not permited: create a Spreadsheet with an empty name!");
-        if(0 > rows || 0 > columns)
+        if(1 > rows || 1 > columns)
             throw new OutOfBoundsSpreadsheetException("Operation not permited: create a spreadheet with 0 or less rows/columns!");
 
         try{
