@@ -126,21 +126,21 @@ public class Spreadsheet extends Spreadsheet_Base {
     }
     
      /**
-      ** Method to recursively erase this spreadsheet (from persistence)
+      * Method to recursively erase this spreadsheet (from persistence)
       **/
       public void clean(){
           Set<Cell> cells;
           cells = getCellSet();
 
-          //We need to do two passes to avoid deleting cells that are referenced by other cells 
           for(Cell c : cells){
-              c.cleanContents();
+              c.clean();
+              removeCell(c);
           }
 
-          for(Cell c : cells){
+          /*for(Cell c : cells){
               removeCell(c);
               c.clean();
-          }
+          }*/
           super.deleteDomainObject();
       }
 }

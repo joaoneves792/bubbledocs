@@ -116,9 +116,9 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 	}
 
         /**
-         * Method to erase this Cells contents (from persistence)
+         * Method to erase this Cell (from persistence)
          */
-        public void cleanContents(){
+        public void clean(){
         	Spreadsheet spreadsheet = getSpreadsheet();
             Content content = getContent();
             if(null != content){
@@ -128,12 +128,6 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
             if(null != spreadsheet) {
             	setSpreadsheet(null);
             }
-        }
-        
-        /**
-         * Method to erase this Cell (from persistence)
-         */
-        public void clean(){
             super.deleteDomainObject();
         }
 }
