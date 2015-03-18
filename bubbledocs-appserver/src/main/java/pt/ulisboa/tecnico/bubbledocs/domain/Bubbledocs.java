@@ -418,13 +418,25 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
     
-    public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _cellReferenceLine, Integer _cellReferenceColumn) throws BubbledocsException {
-    	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdLine, _cellIdColumn);
+    public Integer AssignReferenceCell(String _userToken, Integer _spreadsheetId, String _cellId ,String _cellReference) throws BubbledocsException {
+    	
+    	
+    	String delims = "[;]";
+    	String[] tokensCellId= _cellId.split(delims);
+    	String[] tokensCellReference = _cellReference.split(delims);
+    	
+    	
+    	Integer cellIdLine = Integer.parseInt(tokensCellId[0]);
+    	Integer cellIdColumn = Integer.parseInt(tokensCellId[1]);
+    	Integer cellReferenceLine = Integer.parseInt(tokensCellReference[0]);
+    	Integer cellReferenceColumn = Integer.parseInt(tokensCellReference[1]);
+    	
+    	assertSessionAndWritePermission(_userToken,_spreadsheetId, cellIdLine, cellIdColumn);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
-    	Cell myCell = spreadsheet.getCell(_cellIdLine, _cellIdColumn);
+    	Cell myCell = spreadsheet.getCell(cellIdLine, cellIdColumn);
     	
-        Reference ref = new Reference(_cellReferenceLine, _cellReferenceColumn);
+        Reference ref = new Reference(cellReferenceLine, cellReferenceColumn);
         ref.setCell(myCell);
         myCell.setContent(ref);
         return myCell.getValue();
