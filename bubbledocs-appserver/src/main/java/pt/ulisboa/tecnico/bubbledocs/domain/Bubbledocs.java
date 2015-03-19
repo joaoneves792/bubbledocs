@@ -394,15 +394,15 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
     
-    public Integer AssignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferencerow, Integer cellReferenceColumn) throws BubbledocsException {
+    public Integer AssignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferenceRow, Integer cellReferenceColumn) throws BubbledocsException {
     	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdrow, cellIdColumn);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-    	Cell myCell = spreadsheet.getCell(cellIdrow, cellIdColumn);
+    	Cell modifiedCell = spreadsheet.getCell(cellIdrow, cellIdColumn);
+    	Cell referencedCell = spreadsheet.getCell(cellReferenceRow, cellReferenceColumn);
     	
-        Reference ref = new Reference(myCell);
-        myCell.setContent(ref);
-        return myCell.calculate();
+        modifiedCell.setContent(new Reference(referencedCell));
+        return modifiedCell.calculate();
     }
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {

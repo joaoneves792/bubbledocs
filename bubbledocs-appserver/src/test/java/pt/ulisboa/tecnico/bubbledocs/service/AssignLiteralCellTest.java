@@ -1,7 +1,10 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
 import org.junit.Test;
+
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
@@ -9,7 +12,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.AssignLiteralCell;
-import pt.ulisboa.tecnico.bubbledocs.service.CreateSpreadSheet;
 
 // add needed import declarations
 
@@ -36,22 +38,14 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     
     
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
  	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
- 	   createUser(USERNAME, PASSWORD, NAME);
+ 	   User user =createUser(USERNAME, PASSWORD, NAME);
        createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
        try{
-    	   String token = addUserToSession(USERNAME, PASSWORD);
-       
-    	   //Maybe this should be in BubbleDocsServiceTest.createSpreadSheet
-    	   CreateSpreadSheet cSSService = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
-    	   cSSService.execute(); 
-    	   _spreadsheetID = cSSService.getSheetId();
+    	   Spreadsheet ss = createSpreadSheet(user, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+     	   _spreadsheetID = ss.getId();
 
-    	   //Assign a literal to cell
-    	   AssignLiteralCell aLCService = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
-    	   aLCService.execute();
-    	   
     	   //Protect Cell 6;6
     	   bubble.protectSpreadsheetCell(USERNAME, _spreadsheetID, 6, 6);
     	   

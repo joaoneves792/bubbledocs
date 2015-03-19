@@ -74,7 +74,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
         User user1 = getUserFromSession(token1);
         User user2 = getUserFromSession(token2);
      
-        //What happens if the random generator hits the same number??
+        //FIXME What happens if the random generator hits the same number??
         assertNull(user1);
         user2 = getUserFromSession(token2);
         assertEquals(USERNAME, user2.getUsername());

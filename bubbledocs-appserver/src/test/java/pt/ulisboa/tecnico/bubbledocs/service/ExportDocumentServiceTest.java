@@ -5,6 +5,10 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
+import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
+import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
@@ -22,9 +26,12 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private static final String SPREADHEET_NAME = "My Spreadsheet";
     private static final int SPREADHEET_ROWS = 10;
     private static final int SPREADHEET_COLUMNS = 15;
-    private static final String REFERENCE_ID = "1;1";
-    private static final String LITERAL_ID = "5;5";
-    private static final String LITERAL = "3";
+    private static final int REFERENCE_ROW = 1;
+    private static final int REFERENCE_COLUMN = 1;
+    private static final int LITERAL_ROW = 1;
+    private static final int LITERAL_COLUMN = 1;
+
+    private static final int LITERAL = 3;
 
     private static final int DOCID_INVALID = -5;
       
@@ -34,25 +41,19 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     @Override
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-  	    createUser(USERNAME, PASSWORD, NAME);
+  	    User user = createUser(USERNAME, PASSWORD, NAME);
         createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
 
         try{
-     	   String token = addUserToSession(USERNAME, PASSWORD);
-        
-     	   //Maybe this should be in BubbleDocsServiceTest.createSpreadSheet
-     	   CreateSpreadSheet cSSService = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
-     	   cSSService.execute(); 
-     	   _spreadsheetID = cSSService.getSheetId();
+    	   Spreadsheet ss = createSpreadSheet(user, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+     	   _spreadsheetID = ss.getId();
 
      	   //Assign a literal to cell
-     	   AssignLiteralCell aLCService = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
-     	   aLCService.execute();
+     	   ss.getCell(LITERAL_ROW ,LITERAL_COLUMN).setContent(new Literal(LITERAL));
      	   
      	   //Assign a reference to cell
-     	   AssignReferenceCell aRCService = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, LITERAL_ID);
-     	   aRCService.execute();
-     	        	   
+     	   ss.getCell(REFERENCE_ROW, REFERENCE_COLUMN).setContent(new Reference(ss.getCell(LITERAL_ROW, LITERAL_COLUMN)));     	        	   
+     	   
      	   //Give RO user read permissions
      	   bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
 
