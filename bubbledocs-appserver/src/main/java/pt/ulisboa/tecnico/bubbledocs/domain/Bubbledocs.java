@@ -355,6 +355,19 @@ import pt.ist.fenixframework.FenixFramework;
     	User user = getUserByUsername(deadUserUsername);
     	removeUser(user);
     	
+    	for(Session s : getSessionSet()) {
+    		if(s.getUser().getUsername().equals(deadUserUsername)) {
+    			removeSession(s);
+    			s.clean();
+    		}
+    	}
+    	
+    	for(Permission p : getPermissionSet()) {
+    		if(p.getUser().getUsername().equals(deadUserUsername));
+    		removePermission(p);
+    		p.clean();
+    	}
+    	
     	for(Spreadsheet spreadsheet : getSpreadsheetsByAuthor(deadUserUsername)) {
     		removeSpreadsheet(spreadsheet);
     		spreadsheet.clean();
