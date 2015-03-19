@@ -7,7 +7,7 @@ public class Avg extends Avg_Base {
     }
 
 	@Override
-	protected int __getValue__() {
+	protected int myValue() {
 		// TODO calculate average of submatrix
 		return 0;
 	}

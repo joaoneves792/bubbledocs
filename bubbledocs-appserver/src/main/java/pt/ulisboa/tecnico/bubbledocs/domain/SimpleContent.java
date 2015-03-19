@@ -15,7 +15,7 @@ public abstract class SimpleContent extends SimpleContent_Base {
      * @throws InvalidCellException 
      * @throws InvalidReferenceException 
      */
-    protected abstract int __getValue__() throws InvalidCellException, InvalidReferenceException;
+    protected abstract int myValue() throws InvalidCellException, InvalidReferenceException;
  
     /**
      * Defines XML element for this class
@@ -26,7 +26,8 @@ public abstract class SimpleContent extends SimpleContent_Base {
     /**
      * pseudo-constructor for initializing a content from an XML element
      * @param XML JDOM element for this content
+     * @throws InvalidCellException 
      */
-    protected abstract void init(org.jdom2.Element el) throws InvalidImportException;
+    protected abstract void init(org.jdom2.Element el, Spreadsheet sheet) throws InvalidImportException, InvalidCellException;
     
 }

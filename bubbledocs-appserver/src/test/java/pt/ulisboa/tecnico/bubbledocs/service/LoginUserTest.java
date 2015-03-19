@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service.test;
+package pt.ulisboa.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -39,7 +39,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     	Session session = bubble.getSessionByToken(userToken);
     	
     	//Not 100% sure the next line works!!
-    	return new LocalDateTime(session.get_date());
+    	return new LocalDateTime(session.getDate());
     }
 
     //Test Case 1 
@@ -52,7 +52,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
         String token = service.getUserToken();
 
         User user = getUserFromSession(token);
-        assertEquals(USERNAME, user.get_username());
+        assertEquals(USERNAME, user.getUsername());
 
         int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
 
@@ -76,7 +76,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
         //What happens if the random generator hits the same number??
         assertNull(user);
         user = getUserFromSession(token2);
-        assertEquals(USERNAME, user.get_username());
+        assertEquals(USERNAME, user.getUsername());
     }
 
     //Test Case 3

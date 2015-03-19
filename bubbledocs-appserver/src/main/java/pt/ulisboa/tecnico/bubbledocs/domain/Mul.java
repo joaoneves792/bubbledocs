@@ -12,8 +12,8 @@ public class Mul extends Mul_Base {
     }
 	
 	@Override
-	protected int __getValue__() {
-		return getArgumentOne().getValue() * getArgumentTwo().getValue();	
+	protected int myValue() {
+		return getArgumentOne().calculate() * getArgumentTwo().calculate();	
 	}	
 	
 }

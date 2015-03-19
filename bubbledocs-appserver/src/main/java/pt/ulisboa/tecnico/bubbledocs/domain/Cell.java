@@ -6,26 +6,26 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 public class Cell extends Cell_Base implements Comparable<Cell> {
 
-    public Cell(int line, int column, boolean prot) {
+    public Cell(int row, int column, boolean prot) {
         super();
-        init(line, column, prot);
+        init(row, column, prot);
       }
 
-    public int myHashCode() {
-    	return ( (get_line() + get_column()) * (get_line() + get_column() + 1) + get_column() ) / 2;
+    public int getHash() {
+    	return ( (getRow() + getColumn()) * (getRow() + getColumn() + 1) + getColumn() ) / 2;
     }
     
-    protected void init(int line, int column, boolean prot) {
-        set_column(column);
-        set_line(line);
-        set_protected(prot);
+    protected void init(int row, int column, boolean prot) {
+        setColumn(column);
+        setRow(row);
+        setProtectd(prot);
     }
 
-    public Integer getValue() throws BubbleCellException {
+    public Integer calculate() throws BubbleCellException {
         Content content = getContent();
         if(content == null)
                 return null;
-        return content.getValue();
+        return content.calculate();
     }
 
     public String toString(){
@@ -42,9 +42,9 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
      */
 	org.jdom2.Element export() throws InvalidCellException {
 		org.jdom2.Element cellElement = new org.jdom2.Element("Cell");
-		cellElement.setAttribute("line", get_line().toString());
-		cellElement.setAttribute("column", get_column().toString());
-		cellElement.setAttribute("protected", get_protected().toString());
+		cellElement.setAttribute("row", getRow().toString());
+		cellElement.setAttribute("column", getColumn().toString());
+		cellElement.setAttribute("protected", getProtectd().toString());
 		if(getContent() != null)
 			cellElement.addContent(getContent().export());
 		return cellElement;
@@ -52,24 +52,29 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 	
 	@Override
 	public int compareTo(Cell other) {
-		int linDiff = other.get_line() - get_line();
-		int colDiff = other.get_column() - get_column();
+		int linDiff = other.getRow() - getRow();
+		int colDiff = other.getColumn() - getColumn();
 		return linDiff == 0 ? colDiff : linDiff;
 	}
 
-	public Cell(org.jdom2.Element cellElement, int spreadsheetLines, int spreadsheetColumns) throws InvalidImportException {
-		int line = Integer.parseInt(cellElement.getAttribute("line").getValue());
-		int column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+/*
+	public Cell(org.jdom2.Element cellElement, Spreadsheet sheet) throws InvalidImportException, InvalidCellException {
+		int row = Integer.parseInt(cellElement.getAttribute("row").getValue()),
+		 column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+		
 		boolean protectd = Boolean.parseBoolean(cellElement.getAttribute("protected").getValue());
 		
-		if(line < 1 || spreadsheetLines < line) 
-			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Line Bounds (Bound: " + spreadsheetLines + " , Cell: " + line + ").");
+		int spreadsheetrows = sheet.getRows(), 
+	     spreadsheetColumns = sheet.getColumns();
+				
+		if(row < 1 || spreadsheetrows < row) 
+			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet row Bounds (Bound: " + spreadsheetrows + " , Cell: " + row + ").");
 		else if(column < 1 || spreadsheetColumns < column)
 			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Column Bounds (Bound: " + spreadsheetColumns + " , Cell: " + column + ").");
 		
-		set_line(line);
-		set_column(column);
-		set_protected(protectd);
+		setRow(row);
+		setColumn(column);
+		setProtectd(protectd);
 		java.util.List<org.jdom2.Element> content = cellElement.getChildren();
 		
 		if(null == content) return;
@@ -79,55 +84,59 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 				String contentName = el.getName();
 				if(contentName.equals("Add")) {
 					Add add = new Add();
-					add.init(el);
+					add.init(el, sheet);
 					setContent(add);
 				} else if(contentName.equals("Sub")) {
 					Sub sub = new Sub();
-					sub.init(el);
+					sub.init(el, sheet);
 					setContent(sub);
 				} else if(contentName.equals("Mul")) {
 					Mul mul = new Mul();
-					mul.init(el);
+					mul.init(el, sheet);
 					setContent(mul);
 				} else if(contentName.equals("Div")) {
 					Div div = new Div();
-					div.init(el);
+					div.init(el, sheet);
 					setContent(div);
 				} else if(contentName.equals("Literal")) {
 					Literal lit = new Literal();
-					lit.init(el);
+					lit.init(el, sheet);
 					setContent(lit);
 				} else if(contentName.equals("Reference")) {
 					Reference ref = new Reference();
-					ref.init(el);
+					ref.init(el, sheet);
 					setContent(ref);
 				} else if(contentName.equals("Prd")) {
 					Prd prd = new Prd();
-					prd.init(el);
+					prd.init(el, sheet);
 					setContent(prd);
 				} else if(contentName.equals("Avg")) {
 					Avg avg = new Avg();
-					avg.init(el);
+					avg.init(el, sheet);
 					setContent(avg);
 				} else {
 					throw new InvalidImportException("Attempted to Import Invalid Cell Content.");
 				}
 			}
 	}
+*/
 
         /**
          * Method to erase this Cell (from persistence)
          */
-        public void clean(){
-        	Spreadsheet spreadsheet = getSpreadsheet();
-            Content content = getContent();
-            if(null != content){
-                setContent(null);
-                content.clean();
-            }
-            if(null != spreadsheet) {
-            	setSpreadsheet(null);
-            }
+        public void clean() {
+        	getSpreadsheet().removeCell(this);
+        	setSpreadsheet(null);
+        	
+        	for(Reference ref : getReferencesSet()) {
+        		ref.setReferencedCell(null);
+        	}
+        	
+        	Content content = getContent();
+        	if(null != content) {
+        		setContent(null);
+        		content.clean();
+        	}
             super.deleteDomainObject();
         }
 }

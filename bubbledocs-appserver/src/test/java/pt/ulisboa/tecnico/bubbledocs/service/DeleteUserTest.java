@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service.test;
+package pt.ulisboa.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;

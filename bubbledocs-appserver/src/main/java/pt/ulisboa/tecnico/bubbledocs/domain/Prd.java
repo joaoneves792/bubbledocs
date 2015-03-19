@@ -7,7 +7,7 @@ public class Prd extends Prd_Base {
     }
 
 	@Override
-	protected int __getValue__() {
+	protected int myValue() {
 		// TODO calculate product of submatrix
 		return 0;
 	}

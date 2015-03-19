@@ -10,30 +10,23 @@ public class Reference extends Reference_Base {
         super();
     }
 
-    public Reference(int line, int column) {
+    public Reference(Cell referencedCell) {
     	super();
-    	init(line, column);
+    	setReferencedCell(referencedCell);
+    	referencedCell.addReferences(this);
 	}
 
-	public final void init(int line, int column) {
-    	set_line(line);
-    	set_column(column);
-    }
-    
     @Override
-    protected final int __getValue__()  throws InvalidCellException, InvalidReferenceException {
+    protected final int myValue()  throws InvalidCellException, InvalidReferenceException {
     	Cell referencedCell = getReferencedCell();
     	if(null == referencedCell)
             throw new InvalidCellException("A Reference points to a Cell that does not exist.");
     	Content content = referencedCell.getContent();
     	if(content == null) 
     		throw new InvalidReferenceException("A Reference points to an empty Cell.");
-    	return content.getValue();
+    	return content.calculate();
     }
 
-	private Cell getReferencedCell() throws InvalidCellException {
-		return getCell().getSpreadsheet().getCell(get_line(), get_column());
-	}
         
     /**
      * Defines XML element for this class
@@ -42,29 +35,32 @@ public class Reference extends Reference_Base {
     @Override
     public final org.jdom2.Element export() throws InvalidCellException {
     	org.jdom2.Element refElement = new org.jdom2.Element("Reference");
-    	refElement.setAttribute("line", get_line().toString());
-    	refElement.setAttribute("column", get_column().toString());
+    	refElement.setAttribute("row", getReferencedCell().getRow().toString());
+    	refElement.setAttribute("column", getReferencedCell().getColumn().toString());
     	return refElement;
     }
     
     /**
      * pseudo-constructor for initializing a content from an XML element
      * @param XML JDOM element for this content
+     * @throws InvalidCellException 
      */
-    protected final void init(org.jdom2.Element el) throws InvalidImportException {
-    	set_line(Integer.parseInt(el.getAttribute("line").getValue()));
-    	set_column(Integer.parseInt(el.getAttribute("column").getValue()));
-    	/*try {
-    		getReferencedCell();
-    	} catch(InvalidCellException e) {
-    		throw new InvalidImportException("Attempted to import reference to outside of spreadsheet");
-    	} */   	
+    protected final void init(org.jdom2.Element el, Spreadsheet sheet) throws InvalidImportException, InvalidCellException {
+    	int referencedRow = Integer.parseInt(el.getAttribute("row").getValue()),
+    		referencedCol = Integer.parseInt(el.getAttribute("column").getValue());
+    	Cell referencedCell = sheet.getCell(referencedRow, referencedCol);
+    	setReferencedCell(referencedCell); 
+    	referencedCell.addReferences(this);
     }
  
     /**
       * Method to erase this Reference (from persistence)
       */
     public void clean(){
+    	if(null != getCell()) 
+    		setCell(null);
+    	if(null != getReferencedCell())
+    		setReferencedCell(null);
         super.deleteDomainObject();
     }
 

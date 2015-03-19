@@ -3,32 +3,26 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import java.util.Collections;
 import java.util.Set;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 
 public class Root extends Root_Base {
     
-    private Root(String name, String username, String passwd) {
+    public Root() {
         super();
-        init(name, username, passwd);
-        Bubbledocs.getBubbledocs().addUser(this);
-    }
-    
-    private static Root theRoot = null;
-    
-    public static Root getRoot() {
-    	if(theRoot == null){
-    		theRoot = new Root("Super User", "root", "root");
-    	}
-    	return theRoot;
-    }
-    
-    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException, UserNotInSessionException {
+        init("Super User", "root", "root");
+        //Bubbledocs.getBubbledocs().addUser(this);
+        //setBubbledocs(Bubbledocs.getBubbledocs());
+    }    
+   
+    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException, UserNotInSessionException, CreateRootException {
     	Bubbledocs.getBubbledocs().createUser(this, new User(name, username, passwd));
     }
     
-    public void removeUser(String username) throws UserNotFoundException, UserNotInSessionException {
+    public void removeUser(String username) throws UserNotFoundException, UserNotInSessionException, RootRemoveException {
     	Bubbledocs.getBubbledocs().destroyUser(this, username);
     }
     

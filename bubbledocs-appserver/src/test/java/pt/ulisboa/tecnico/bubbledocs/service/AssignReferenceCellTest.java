@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service.test;
+package pt.ulisboa.tecnico.bubbledocs.service;
 
 import org.junit.Test;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;

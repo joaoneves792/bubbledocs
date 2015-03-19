@@ -20,10 +20,10 @@ public abstract class Content extends Content_Base {
      * Template Method for getting a value of a Content
      * @return the Value of the content, null if a Invalid Reference was found
      */
-    protected final Integer getValue() {
+    protected final Integer calculate() {
     	Integer value;
     	try {
-    		value = __getValue__();
+    		value = myValue();
     	} catch (InvalidCellException e) {
     		return null;
     	} catch (InvalidReferenceException e) {
@@ -37,7 +37,7 @@ public abstract class Content extends Content_Base {
      * @throws InvalidCellException 
      * @throws InvalidReferenceException 
      */
-    protected abstract int __getValue__() throws InvalidCellException, InvalidReferenceException;
+    protected abstract int myValue() throws InvalidCellException, InvalidReferenceException;
     
     
     /**
@@ -50,8 +50,9 @@ public abstract class Content extends Content_Base {
      * pseudo-constructor for initializing a content from an XML element
      * @param XML JDOM element for this content
      * @throws InvalidImportException 
+     * @throws InvalidCellException 
      */
-    protected abstract void init(org.jdom2.Element el) throws InvalidImportException;
+    protected abstract void init(org.jdom2.Element el, Spreadsheet sheet) throws InvalidImportException, InvalidCellException;
 
 
     /**

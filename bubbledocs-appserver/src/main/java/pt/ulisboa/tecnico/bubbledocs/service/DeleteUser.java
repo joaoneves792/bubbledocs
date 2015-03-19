@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
@@ -19,7 +20,7 @@ public class DeleteUser extends BubbledocsService {
     protected void dispatch() throws BubbledocsException {
     	if(!userToken.matches("root\\d"))
     		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
-    	Root.getRoot().removeUser(deadUsername);
+    	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).removeUser(deadUsername);
     }
 
 	public String getUserToken() {

@@ -8,15 +8,15 @@ public class Session extends Session_Base {
         super();
     }
 
-    public Session( String username, Integer tokenInt, String date){
+    public Session(User user, Integer tokenInt, org.joda.time.LocalDate date) {
         super();
-        init(username, tokenInt, date);
+        init(user, tokenInt, date);
     }
 
-    protected void init( String username, Integer tokenInt, String date){
-        set_username(username);
-        set_tokenInt(tokenInt);
-        set_date(date);
+    protected void init(User user, Integer tokenInt, org.joda.time.LocalDate date) {
+        setUser(user);
+        setTokenInt(tokenInt);
+        setDate(date);
     }    
 
 
@@ -25,7 +25,7 @@ public class Session extends Session_Base {
      * @param Session
      */
     public void update() {
-        set_date(new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
+        setDate(org.joda.time.LocalDate.now());
     }
 
     
@@ -37,29 +37,21 @@ public class Session extends Session_Base {
     public boolean hasExpired() {
         java.util.Date date;
         java.util.Date sessionDate;
-        java.text.SimpleDateFormat dateFormat;
         long differenceMilliseconds;
         final long TWO_HOURS = 7200000; //Two hours in milliseconds
-
-        dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm");
-        try {
-			sessionDate = dateFormat.parse(get_date());
-		} catch (ParseException e) {
-			System.err.println("Could not parse date in Session for user [" + get_username() + "].");
-			return true;
-		}
-        date = new java.util.Date();
-            
+        
+        sessionDate = getDate().toDate();		
+        date = new java.util.Date();            
         differenceMilliseconds = date.getTime() - sessionDate.getTime();
 
         if(TWO_HOURS < differenceMilliseconds)
         	return true;
-        else
-        	return false;
+        else return false;
     }
     
     
     public void clean(){
+    	setUser(null);
         super.deleteDomainObject();
     }
 

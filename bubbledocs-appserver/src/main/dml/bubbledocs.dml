@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 class Bubbledocs {
-	Integer _idGenerator;
+	Integer idGenerator;
 }
 
 relation DomainRootHasBubbledocsApplication {
@@ -14,9 +14,7 @@ relation DomainRootHasBubbledocsApplication {
 }
 
 class Permission {
-	String _username;
-	Integer _spreadsheetId;
-	Boolean _writePermission;
+	Boolean writePermission;
 }
 
 relation BubbledocsHasPermissions {
@@ -27,26 +25,26 @@ relation BubbledocsHasPermissions {
 }	
 
 class User {
-	String _name;
-	String _passwd;
-	String _username;
+	String name;
+	String passwd;
+	String username;
 }
 
 class Root extends User;
 
 class Spreadsheet {
-	String  _author;
-	String  _name;
-	Integer _lines;
-	Integer _columns;
-	Integer _id;
-	String  _date;
+	String  author;
+	String  name;
+	Integer rows;
+	Integer columns;
+	Integer id;
+	LocalDate  date;
 }
 
 class Cell {
-	Integer _column;
-	Integer _line;
-	Boolean _protected;
+	Integer column;
+	Integer row;
+	Boolean protectd;
 }
 
 class Content;
@@ -56,13 +54,10 @@ class Function extends Content;
 class SimpleContent extends Content;
 
 class Literal extends SimpleContent {
-	Integer _value;
+	Integer value;
 }
 
-class Reference extends SimpleContent {
-	Integer _line;
-	Integer _column;
-}
+class Reference extends SimpleContent;
 
 class Binary extends Function;
 
@@ -127,14 +122,35 @@ relation RangeHasReferenceTwo {
 }
 
 class Session {
-	String  _username;
-	Integer _tokenInt;
-	String  _date;
+	Integer tokenInt;
+	LocalDate  date;
 }
 
 relation BubbledocsHasSessions {
 	Bubbledocs playsRole bubbledocs;
 	Session playsRole session {
+		multiplicity *;
+	}
+}
+
+relation PermissionHasSpreadsheet {
+	Permission playsRole permission;
+	Spreadsheet playsRole spreadsheet;
+}
+
+relation PermissionHasUser {
+	Permission playsRole permission;
+	User playsRole user;
+}
+
+relation UserHasSession {
+	User playsRole user;
+	Session playsRole session;
+}
+
+relation CellIsReferencedBy {
+	Cell playsRole referencedCell;
+	Reference playsRole references {
 		multiplicity *;
 	}
 }

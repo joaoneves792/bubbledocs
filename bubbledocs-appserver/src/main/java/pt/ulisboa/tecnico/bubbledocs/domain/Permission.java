@@ -6,18 +6,20 @@ public class Permission extends Permission_Base {
         super();
     }
         
-    public Permission(int spreadsheetId, String username, boolean writePermission) {
+    public Permission(Spreadsheet spreadsheet, User user, boolean writePermission) {
     	super();
-    	init(spreadsheetId, username, writePermission);
+    	init(spreadsheet, user, writePermission);
     }
 
-	protected void init(int spreadsheetId, String username,	boolean writePermission) {
-		set_spreadsheetId(spreadsheetId);
-    	set_username(username);
-    	set_writePermission(writePermission);
+	protected void init(Spreadsheet spreadsheet, User user, boolean writePermission) {
+		setSpreadsheet(spreadsheet);
+    	setUser(user);
+    	setWritePermission(writePermission);
 	}
 
     public void clean(){
+    	setSpreadsheet(null);
+    	setUser(null);
         super.deleteDomainObject();
     }
 }

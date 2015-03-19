@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
@@ -23,7 +24,7 @@ public class CreateUser extends BubbledocsService {
     protected void dispatch() throws BubbledocsException {
     	if(!userToken.matches("root\\d"))
     		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
-    	Root.getRoot().addUser(name, newUsername, passwd);
+    	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).addUser(name, newUsername, passwd);
     }
 
 	public String getUserToken() {

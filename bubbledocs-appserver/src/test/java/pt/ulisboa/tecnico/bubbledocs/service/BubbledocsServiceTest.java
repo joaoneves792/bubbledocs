@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service.test;
+package pt.ulisboa.tecnico.bubbledocs.service;
 
 import java.util.Set;
 
@@ -68,7 +68,7 @@ public class BubbledocsServiceTest {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	Set<Spreadsheet> spreadsheets = bubble.getSpreadsheetSet();
     	for(Spreadsheet s : spreadsheets)
-    		if(s.get_name().equals(name))
+    		if(s.getName().equals(name))
     			return s;
     	return null;    	
     }
@@ -76,6 +76,17 @@ public class BubbledocsServiceTest {
     public Spreadsheet getSpreadSheetById(Integer id) throws SpreadsheetNotFoundException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	return bubble.getSpreadsheetById(id);    	
+    }
+    
+    /* FIXME suggestion for your hack... */    
+    public java.util.List<Spreadsheet> getSpreadsheetsByName(String name) {
+    	java.util.List<Spreadsheet> sheets = new java.util.ArrayList<Spreadsheet>();
+    	for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
+    		if(sheet.getName().equals(name)) {
+    			sheets.add(sheet);
+    		}
+    	}
+    	return sheets;
     }
     
     // returns the user registered in the application whose username is equal to username
@@ -101,7 +112,7 @@ public class BubbledocsServiceTest {
     // return the user registered in session whose token is equal to token
     User getUserFromSession(String token) throws UserNotInSessionException, UserNotFoundException {
        	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        return bubble.getUserByUsername(bubble.getSessionByToken(token).get_username());
+        return bubble.getUserByUsername(bubble.getSessionByToken(token).getUser().getUsername());
     }
 
 }

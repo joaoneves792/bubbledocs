@@ -12,8 +12,8 @@ public class Sub extends Sub_Base {
     }
 	
 	@Override
-	protected final int __getValue__() {
-		return getArgumentOne().getValue() - getArgumentTwo().getValue();		
+	protected final int myValue() {
+		return getArgumentOne().calculate() - getArgumentTwo().calculate();		
 	}
 	
 }

@@ -1,4 +1,4 @@
-    package pt.ulisboa.tecnico.bubbledocs.domain;
+package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
@@ -28,41 +29,36 @@ import pt.ist.fenixframework.FenixFramework;
     public class Bubbledocs extends Bubbledocs_Base {
         private Bubbledocs() {
              FenixFramework.getDomainRoot().setBubbledocs(this);
-             set_idGenerator(new Integer(0));
-             //addUser(Root.getRoot()); FIXME WTF???
+             setIdGenerator(new Integer(0));
+             //addUser(Root.getRoot());
+             //Root.getRoot().setBubbledocs(this);
         }
         
-        //private static Bubbledocs theBubbledocs = new Bubbledocs();	
+    //private static Bubbledocs theBubbledocs = new Bubbledocs();	
             
     public static Bubbledocs getBubbledocs() {
         Bubbledocs bubble = FenixFramework.getDomainRoot().getBubbledocs();
-        if( null == bubble )
-            bubble = new Bubbledocs();
-
+        if( null == bubble ) {
+          bubble = new Bubbledocs();
+          //Root.getRoot();
+          //bubble.addUser(Root.getRoot());
+          //Root.getRoot().setBubbledocs(bubble);
+        }
         return bubble;
     }
     
     private int generateId() {
-    	int currentId = get_idGenerator();
-    	set_idGenerator(currentId + 1);
+    	int currentId = getIdGenerator();
+    	setIdGenerator(currentId + 1);
     	return currentId;
     }
 
-    private User __getUserByUsername__(String username) {
+    public User getUserByUsername(String username) throws UserNotFoundException {
     	for(User user : getUserSet()) {
-    		if(user.get_username().equals(username))
+    		if(user.getUsername().equals(username))
     			return user;
     	}
-		return null;
-    }
-    
-    public User getUserByUsername(String username) throws UserNotFoundException {
-    	User user = __getUserByUsername__(username);
-    	if(null == user) {
-    		throw new UserNotFoundException("User was not found");
-    	} else {
-    		return user;
-    	}
+    	throw new UserNotFoundException("User with username " + username + " was not found.");
     }
 
     /**
@@ -83,22 +79,22 @@ import pt.ist.fenixframework.FenixFramework;
         performSessionClean();
         
         user = getUserByUsername(username);
-        if(!password.equals(user.get_passwd()))
+        if(!password.equals(user.getPasswd()))
             throw new WrongPasswordException("Failed to login user " + username + "due to password mismatch.");
         tokenInt = rand.nextInt(10);
         
-        try{
-            session = getUsernameSession(username);
+        try { 
+            session = getSessionByUsername(username);
         } catch(UserNotInSessionException e) {
             //Some code duplication... (but its better than an empty catch block)
-            session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
+            session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
             addSession(session);
             return tokenInt;
         }
         
         //If a session for this user was already set then delete it and create a new one
         clearSession(session);
-        session = new Session(username, tokenInt, new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()));
+        session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
         addSession(session);
 
         return tokenInt;
@@ -109,12 +105,12 @@ import pt.ist.fenixframework.FenixFramework;
      * @param username
      * @return Session or null
      */
-    private Session getUsernameSession(String username) throws UserNotInSessionException{
+    private Session getSessionByUsername(String username) throws UserNotInSessionException {
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
     	for(Session s : sessions)
-    		if(s.get_username().equals(username))
+    		if(s.getUser().getUsername().equals(username))
     			return s;
         throw new UserNotInSessionException("No existing session for " + username + " found!");
     }
@@ -124,12 +120,12 @@ import pt.ist.fenixframework.FenixFramework;
      * @param token
      * @return Session
      */
-    public Session getSessionByToken(String token)throws UserNotInSessionException {
+    public Session getSessionByToken(String token) throws UserNotInSessionException {
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
     	for(Session s : sessions)
-    		if(token.equals(s.get_username() + s.get_tokenInt()))
+    		if(token.equals(s.getUser().getUsername() + s.getTokenInt()))
     			return s;
         throw new UserNotInSessionException("No existing session for " + token + " found!");
     }
@@ -156,45 +152,37 @@ import pt.ist.fenixframework.FenixFramework;
         s.clean();
     }
 
-    private Spreadsheet __getSpreadsheetById__(int spreadsheetId) {
-    	for(Spreadsheet spreadsheet : getSpreadsheetSet()) {
-    		if(spreadsheet.get_id() == spreadsheetId)
-    			return spreadsheet;
-    	}
-		return null;
-    }
-    
     public Spreadsheet getSpreadsheetById(int spreadsheetId) throws SpreadsheetNotFoundException {
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet was not found");
-    	} else {
-    		return spreadsheet;
+    	for(Spreadsheet sheet : getSpreadsheetSet()) {
+    		if(sheet.getId() == spreadsheetId)
+    			return sheet;
     	}
+    	throw new SpreadsheetNotFoundException("No spreadsheet found for ID: " + spreadsheetId);
     }
     
     private Permission __getPermission__(String username, int spreadsheetId) {
     	for(Permission permission : getPermissionSet()) {
-    		if(permission.get_username().equals(username) &&
-    				permission.get_spreadsheetId() == spreadsheetId)
+    		if(permission.getUser().getUsername().equals(username) &&
+    				permission.getSpreadsheet().getId() == spreadsheetId)
     			return permission;
     	}
 		return null;
     }
     
     public Permission getPermission(String username, int spreadsheetId) throws PermissionNotFoundException {
-    	Permission permission = __getPermission__(username, spreadsheetId);
-    	if(null == permission) {
-    		throw new PermissionNotFoundException("Permission was not found");
-    	} else {
-    		return permission;
+    	for(Permission permission : getPermissionSet()) {
+    		if(permission.getUser().getUsername().equals(username) && 
+    				permission.getSpreadsheet().getId() == spreadsheetId) {
+    			return permission;
+    		}
     	}
+    	throw new PermissionNotFoundException("Permission for user " + username + " on spreadsheet with ID " + spreadsheetId + " was not found.");
     }
     
     public List<Permission> getPermissionsByUser(String username) {
     	List<Permission>	permissions = new ArrayList<Permission>();
     	for(Permission permission : getPermissionSet()) {
-    		if(permission.get_username().equals(username))
+    		if(permission.getUser().getUsername().equals(username))
     			permissions.add(permission);
     	}
     	return Collections.unmodifiableList(permissions);
@@ -203,7 +191,7 @@ import pt.ist.fenixframework.FenixFramework;
     public List<Permission> getPermissionsBySpreadsheet(int spreadsheetId) {
     	List<Permission>	permissions = new ArrayList<Permission>();
     	for(Permission permission : getPermissionSet()) {
-    		if(permission.get_spreadsheetId() == spreadsheetId)
+    		if(permission.getSpreadsheet().getId() == spreadsheetId)
     			permissions.add(permission);
     	}
     	return Collections.unmodifiableList(permissions);
@@ -260,18 +248,18 @@ import pt.ist.fenixframework.FenixFramework;
                 session.update();
             //-----------------------------
 
-            author = getUserByUsername(session.get_username());
+            author = getUserByUsername(session.getUser().getUsername());
             spreadsheet = createSpreadsheet(author, name, rows, columns);
-            return spreadsheet.get_id();
+            return spreadsheet.getId();
         }catch(UserNotFoundException e){
             throw new UserNotInSessionException("FATAL: there is a session for " + userToken + " but there isnt a user by that name!");
         }
     }  
 
-    public Spreadsheet createSpreadsheet(User author, String name, int lines, int columns) {
-    	Spreadsheet spreadsheet = new Spreadsheet(name, author.get_username(), generateId(), lines, columns);
+    public Spreadsheet createSpreadsheet(User author, String name, int rows, int columns) {
+    	Spreadsheet spreadsheet = new Spreadsheet(name, author.getUsername(), generateId(), rows, columns);
     	addSpreadsheet(spreadsheet);
-        addPermission(new Permission(spreadsheet.get_id(), author.get_username(), true));
+        addPermission(new Permission(spreadsheet, author, true));
     	return spreadsheet;
     }
     
@@ -281,76 +269,48 @@ import pt.ist.fenixframework.FenixFramework;
      *  @return the new spreadsheet
      * @throws IOException 
      * @throws JDOMException 
+     * @throws UserNotFoundException 
+     * @throws InvalidCellException 
      */    
-    public Spreadsheet createSpreadsheet(User requestUser, String XMLString) throws InvalidImportException, JDOMException, IOException {
-    	Spreadsheet spreadsheet = new Spreadsheet(requestUser.get_username(), XMLString);
-    	spreadsheet.set_id(generateId());
+    public Spreadsheet createSpreadsheet(User requestUser, String XMLString) throws InvalidImportException, JDOMException, IOException, UserNotFoundException, InvalidCellException {
+    	Spreadsheet spreadsheet = new Spreadsheet(requestUser.getUsername(), XMLString);
+    	spreadsheet.setId(generateId());
     	addSpreadsheet(spreadsheet);
-        addPermission(new Permission(spreadsheet.get_id(), spreadsheet.get_author(), true));
+        addPermission(new Permission(spreadsheet, getUserByUsername(spreadsheet.getAuthor()), true));
     	return spreadsheet;
     }
-    
-    
-    /*
-    public void deleteSpreadsheet(String requestUsername, int spreadsheetId)
-    		throws UnauthorizedUserException, SpreadsheetNotFoundException {
-    	Spreadsheet spreadsheet = __getSpreadsheetById__(spreadsheetId);
-    	if(null == spreadsheet) {
-    		throw new SpreadsheetNotFoundException("Spreadsheet with ID " + spreadsheetId + " not found.");
-    	} else {
-    		Permission permission = __getPermission__(requestUser.get_username(), spreadsheetId);
-    		if(null == permission) {
-    			throw new UnauthorizedUserException
-    			("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    		} else {
-    			if(permission.get_writePermission()) {
-    				removeSpreadsheet(spreadsheet);
-                    spreadsheet.clean();
-    				//remove all permissions for this spreadsheet
-    				for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
-    					removePermission(permission_it);
-                        permission_it.clean();
-    				}
-    			} else {
-    				throw new UnauthorizedUserException
-    				("User " + requestUser.get_username() + " is not authorized to change spreadsheet " + spreadsheetId + ".");
-    			}    				
-    		}
-    	}
-    }
-    */
-    
+
     public void deleteSpreadsheet(String requestUsername, int spreadsheetId) throws SpreadsheetNotFoundException, UnauthorizedUserException {
     	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-    	if(requestUsername.equals(spreadsheet.get_author())) {
+    	if(requestUsername.equals(spreadsheet.getAuthor())) {
     		removeSpreadsheet(spreadsheet);
-            spreadsheet.clean();
-			//remove all permissions for this spreadsheet
+    		//remove all permissions for this spreadsheet
 			for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
 				removePermission(permission_it);
                 permission_it.clean();
 			}
+            spreadsheet.clean();			
     	} else {	
     		throw new UnauthorizedUserException
     					("User " + requestUsername + " is not authorized to delete spreadsheet " + spreadsheetId + ".");
     	}
     }
     
-    public void protectSpreadsheetCell(String requestUsername, int spreadsheetId, int line, int column)
+    public void protectSpreadsheetCell(String requestUsername, int spreadsheetId, int row, int column)
     		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
-    	new ProtectRoutine().execute(requestUsername, spreadsheetId, line, column);
+    	new ProtectRoutine().execute(requestUsername, spreadsheetId, row, column);
     }
     
-    public void unProtectSpreadsheetCell(String requestUsername, int spreadsheetId, int line, int column)
+    public void unProtectSpreadsheetCell(String requestUsername, int spreadsheetId, int row, int column)
     		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
-    	new UnprotectRoutine().execute(requestUsername, spreadsheetId, line, column);
+    	new UnprotectRoutine().execute(requestUsername, spreadsheetId, row, column);
     }
        
     public List<Spreadsheet> getSpreadsheetsByAuthor(String author) {
     	List<Spreadsheet> spreadsheets = new ArrayList<Spreadsheet>();
     	for(Spreadsheet sheet : getSpreadsheetSet()) {
     		System.out.println(sheet.toString());
-    		if(author.equals(sheet.get_author())) {    			
+    		if(author.equals(sheet.getAuthor())) {    			
     			spreadsheets.add(sheet);
     		}    			
     	}
@@ -362,7 +322,7 @@ import pt.ist.fenixframework.FenixFramework;
     }
 
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {
-		Session session = getUsernameSession("root");
+		Session session = getSessionByUsername("root");
 		if(session.hasExpired()) {
 			clearSession(session);
 			throw new UserNotInSessionException("Root is not logged in.");
@@ -371,17 +331,20 @@ import pt.ist.fenixframework.FenixFramework;
 		session.update();
     	
 		try {
-			User user = getUserByUsername(newUser.get_username());
+			User user = getUserByUsername(newUser.getUsername());
     		if(null != user) {
-    			throw new UserAlreadyExistsException("User with usaname " + newUser.get_username() + " already exists.");
+    			throw new UserAlreadyExistsException("User with username " + newUser.getUsername() + " already exists.");
     		}    		
     	} catch (UserNotFoundException e) {
     		addUser(newUser);
     	} 
 	}
     
-    public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException {
-    	Session session = getUsernameSession("root");
+    public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException, RootRemoveException {
+    	if(deadUserUsername.equals("root"))
+    		throw new RootRemoveException("Don't delete yourself!");
+    	
+    	Session session = getSessionByUsername("root");
     	if(session.hasExpired()) {
     		clearSession(session);
     		throw new UserNotInSessionException("Root is not logged in.");
@@ -398,7 +361,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}    	
     }
     
-    private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int line, int column) throws BubbledocsException  {
+    private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int row, int column) throws BubbledocsException {
     	Session session = getSessionByToken(userToken);
     	
     	if(session.hasExpired()){
@@ -408,27 +371,25 @@ import pt.ist.fenixframework.FenixFramework;
     	
     	session.update();
 
-    	Permission userPermission = getPermission(session.get_username(), spreadsheetId);
-    	if(!userPermission.get_writePermission()) {
+    	Permission userPermission = getPermission(session.getUser().getUsername(), spreadsheetId);
+    	if(!userPermission.getWritePermission()) {
     		throw new UnauthorizedUserException("Assign reference to Cell: User doesn't have permission to write in Spreadsheet");
     	}
     	
-    	if(getSpreadsheetById(spreadsheetId).getCell(line, column).get_protected()) {
-    		throw new ProtectedCellException("Cannot write to protected cell at coordinates [" + line + ", " + column + "].");
+    	if(getSpreadsheetById(spreadsheetId).getCell(row, column).getProtectd()) {
+    		throw new ProtectedCellException("Cannot write to protected cell at coordinates [" + row + ", " + column + "].");
     	}
     }
     
-    public Integer AssignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdLine, Integer cellIdColumn, 
-            							Integer cellReferenceLine, Integer cellReferenceColumn) throws BubbledocsException{
-    	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdLine, cellIdColumn);
-
+    public Integer AssignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferencerow, Integer cellReferenceColumn) throws BubbledocsException {
+    	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdrow, cellIdColumn);
+    	
     	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-    	Cell myCell = spreadsheet.getCell(cellIdLine, cellIdColumn);
-
-    	Reference ref = new Reference(cellReferenceLine, cellReferenceColumn);
-    	ref.setCell(myCell);
-    	myCell.setContent(ref);
-    	return myCell.getValue();
+    	Cell myCell = spreadsheet.getCell(cellIdrow, cellIdColumn);
+    	
+        Reference ref = new Reference(myCell);
+        myCell.setContent(ref);
+        return myCell.calculate();
     }
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {
@@ -442,11 +403,11 @@ import pt.ist.fenixframework.FenixFramework;
     	return getSpreadsheetById(docId).export();
     }
 
-    public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdLine, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
-    	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdLine, _cellIdColumn);
+    public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdrow, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
+    	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdrow, _cellIdColumn);
         Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
-        spreadsheet.getCell(_cellIdLine, _cellIdColumn).setContent(new Literal(_literal));        
-        return spreadsheet.getCell(_cellIdLine, _cellIdColumn).getValue();
+        spreadsheet.getCell(_cellIdrow, _cellIdColumn).setContent(new Literal(_literal));        
+        return spreadsheet.getCell(_cellIdrow, _cellIdColumn).calculate();
     }
         
     private abstract class ReadWriteRoutine {
@@ -454,8 +415,8 @@ import pt.ist.fenixframework.FenixFramework;
     			throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
     		getUserByUsername(targetUsername);
     		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-    		if(requestUsername.equals(spreadsheet.get_author()) ||
-    				getPermission(requestUsername, spreadsheetId).get_writePermission()) {
+    		if(requestUsername.equals(spreadsheet.getAuthor()) ||
+    				getPermission(requestUsername, spreadsheetId).getWritePermission()) {
     	    			Permission permission = __getPermission__(targetUsername, spreadsheetId);
     	    			dispatch(targetUsername, spreadsheetId, permission);
     		} else {
@@ -464,23 +425,23 @@ import pt.ist.fenixframework.FenixFramework;
     		}
     	}
     	
-    	protected abstract void dispatch(String targetUsername, int spreadsheetId, Permission permission);	    
+    	protected abstract void dispatch(String targetUsername, int spreadsheetId, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException;	    
     }
     
     private class AddReadRoutine extends ReadWriteRoutine {
-    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException {
     		if(null == permission) {
-    			addPermission(new Permission(spreadsheetId, targetUsername, false));
+    			addPermission(new Permission(getSpreadsheetById(spreadsheetId), getUserByUsername(targetUsername), false));
     		} else return;
     	}
     }
     
     private class AddWriteRoutine extends ReadWriteRoutine {
-    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException {
     		if(null == permission) {
-    			addPermission(new Permission(spreadsheetId, targetUsername, true));
+    			addPermission(new Permission(getSpreadsheetById(spreadsheetId), getUserByUsername(targetUsername), true));
     		} else {
-    			permission.set_writePermission(true);
+    			permission.setWritePermission(true);
     		}
     	}
     }
@@ -497,36 +458,36 @@ import pt.ist.fenixframework.FenixFramework;
     private class RevokeWriteRoutine extends ReadWriteRoutine {
     	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
     		if(null != permission) {
-    			permission.set_writePermission(false);
+    			permission.setWritePermission(false);
     		} else return;
     	}
     }
     
     private abstract class ProtectionRoutine {
-    	protected final void execute(String requestUsername, int spreadsheetId, int line, int column)
+    	protected final void execute(String requestUsername, int spreadsheetId, int row, int column)
     			throws SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException, UnauthorizedUserException {
     		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-        	if(requestUsername.equals(spreadsheet.get_author()) ||
-        			getPermission(requestUsername, spreadsheetId).get_writePermission()) {
-        		dispatch(spreadsheet, line, column);
+        	if(requestUsername.equals(spreadsheet.getAuthor()) ||
+        			getPermission(requestUsername, spreadsheetId).getWritePermission()) {
+        		dispatch(spreadsheet, row, column);
         	} else {
         		throw new UnauthorizedUserException
         			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
         	}
     	}
     	
-    	protected abstract void dispatch(Spreadsheet spreadsheet, int line, int column) throws InvalidCellException ;
+    	protected abstract void dispatch(Spreadsheet spreadsheet, int row, int column) throws InvalidCellException ;
     }
     
     private class ProtectRoutine extends ProtectionRoutine{
-    	protected void dispatch(Spreadsheet spreadsheet, int line, int column) throws InvalidCellException {
-    		spreadsheet.getCell(line, column).set_protected(true);
+    	protected void dispatch(Spreadsheet spreadsheet, int row, int column) throws InvalidCellException {
+    		spreadsheet.getCell(row, column).setProtectd(true);
     	}
     }
     
     private class UnprotectRoutine extends ProtectionRoutine {
-    	protected void dispatch(Spreadsheet spreadsheet, int line, int column) throws InvalidCellException {
-    		spreadsheet.getCell(line, column).set_protected(false);
+    	protected void dispatch(Spreadsheet spreadsheet, int row, int column) throws InvalidCellException {
+    		spreadsheet.getCell(row, column).setProtectd(false);
     	}
     }
 

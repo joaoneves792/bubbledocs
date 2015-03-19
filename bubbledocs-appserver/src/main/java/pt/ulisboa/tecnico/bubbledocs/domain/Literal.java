@@ -8,16 +8,16 @@ public class Literal extends Literal_Base {
 
     public Literal(int i) {
 		super();
-		set_value(i);
+		setValue(i);
 	}
 
 	public final void init(Integer value) {
-    	set_value(value);
+    	setValue(value);
     }
     
     @Override
-    protected final int __getValue__() {
-    	return get_value();
+    protected final int myValue() {
+    	return getValue();
     }
     
     /**
@@ -26,7 +26,7 @@ public class Literal extends Literal_Base {
     @Override
     public final org.jdom2.Element export() {
     	org.jdom2.Element litElement = new org.jdom2.Element("Literal");
-    	litElement.setAttribute("value", get_value().toString());
+    	litElement.setAttribute("value", getValue().toString());
     	return litElement;
     }
 
@@ -34,8 +34,8 @@ public class Literal extends Literal_Base {
      * pseudo-constructor for initializing a content from an XML element
      * @param XML JDOM element for this content
      */
-    protected final void init(org.jdom2.Element el) {
-    	set_value(Integer.parseInt(el.getAttribute("value").getValue()));
+    protected final void init(org.jdom2.Element el, Spreadsheet sheet) {
+    	setValue(Integer.parseInt(el.getAttribute("value").getValue()));
     }
 
 

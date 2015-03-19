@@ -80,6 +80,12 @@ public class BubbleApplication{
 		} catch (IOException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace(); 
+		} catch (InvalidCellException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
+		} catch (CreateRootException e) {
+			System.err.println(e.getMessage());
+			e.printStackTrace();
 		}  finally {
              if (!committed)
              try {
@@ -94,7 +100,7 @@ public class BubbleApplication{
 
     //@Atomic
 	public static void importSpreadsheetForUser(User pf, String ss)
-			throws InvalidImportException, JDOMException, IOException {
+			throws InvalidImportException, JDOMException, IOException, InvalidCellException, UserNotFoundException {
 		System.out.println("Importing back 'Notas ES'");
 		pf.createSpreadsheet(ss);
 	}
@@ -104,7 +110,7 @@ public class BubbleApplication{
 			throws UnauthorizedUserException, SpreadsheetNotFoundException {
 		List<Spreadsheet> pfSpreadsheets = pf.findSpreadsheetsByName(spreadsheetName);
 		for(Spreadsheet sheet : pfSpreadsheets) {
-			pf.deleteSpreadsheet(sheet.get_id());
+			pf.deleteSpreadsheet(sheet.getId());
 		}
 	}
 
@@ -114,7 +120,7 @@ public class BubbleApplication{
 		String ss = null;
 		System.out.println("XML for Spreadsheets from user '" + username + "' :"); 
 		for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
-			if(sheet.get_author().equals(username)) {
+			if(sheet.getAuthor().equals(username)) {
 				ss = sheet.export();
 				System.out.println(ss);
 			}
@@ -127,7 +133,7 @@ public class BubbleApplication{
 	public static void printSpreadsheetsByUsername(String username) {
 		System.out.println("Spreadsheets from user '" + username + "' :"); 
 		for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
-			if(sheet.get_author().equals(username)) {
+			if(sheet.getAuthor().equals(username)) {
 				System.out.println(sheet.toString());
 			}
 		}
@@ -142,11 +148,11 @@ public class BubbleApplication{
 	}
 
    //@Atomic
-    private static void populateDomain(Bubbledocs bubble) {
+    private static void populateDomain(Bubbledocs bubble) throws CreateRootException {
     	if(!bubble.getUserSet().isEmpty()) 
     		return;
     	
-    	Root root = Root.getRoot();
+    	Root root = new Root();
     	bubble.addUser(root);
     	
     	User pf = new User("Paul Door", "pf", "sub");
@@ -159,9 +165,9 @@ public class BubbleApplication{
     	
     	try {
 			ss.getCell(3, 4).setContent(new Literal(5));
-			ss.getCell(1, 1).setContent(new Reference(5, 6));
-			ss.getCell(5, 6).setContent(new Add(new Literal(2), new Reference(3, 4)));
-			ss.getCell(2, 2).setContent(new Div(new Reference(1, 1), new Reference(3, 4)));
+			ss.getCell(1, 1).setContent(new Reference(ss.getCell(5, 6)));
+			ss.getCell(5, 6).setContent(new Add(new Literal(2), new Reference(ss.getCell(3, 4))));
+			ss.getCell(2, 2).setContent(new Div(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(3, 4))));
 		} catch (InvalidCellException e) {
 			e.printStackTrace();
 		}

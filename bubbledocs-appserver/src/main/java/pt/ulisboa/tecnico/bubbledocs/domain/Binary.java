@@ -3,8 +3,6 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
-//abstract class
-//this should not be instanced
 public abstract class Binary extends Binary_Base {
     
 	/**
@@ -27,7 +25,7 @@ public abstract class Binary extends Binary_Base {
     /**
      * To be defined by the concrete subclasses
      */
-    protected abstract int __getValue__();
+    protected abstract int myValue();
     
     /**
      * @return JDOM element for this class
@@ -50,17 +48,18 @@ public abstract class Binary extends Binary_Base {
     /**
      * pseudo-constructor for initializing a content from an JDOM element
      * @param XML JDOM element for this content
+     * @throws InvalidCellException 
      */
-    protected final void init(org.jdom2.Element binElement) throws InvalidImportException {
+    protected final void init(org.jdom2.Element binElement, Spreadsheet sheet) throws InvalidImportException, InvalidCellException {
     	org.jdom2.Element el = binElement.getChild("ArgumentOne").getChildren().get(0);
     	String contentName = el.getName();
 		if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
-			ref.init(el);
+			ref.init(el, sheet);
 			setArgumentOne(ref);
 		} else if(contentName.equals("Literal")) {
 			Literal lit = new Literal();
-			lit.init(el);
+			lit.init(el, sheet);
 			setArgumentOne(lit);
 		} else {
 			throw new InvalidImportException("Attempted to Import Invalid Cell Content: " + contentName);
@@ -70,11 +69,11 @@ public abstract class Binary extends Binary_Base {
 		contentName = el.getName();
 		if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
-			ref.init(el);
+			ref.init(el, sheet);
 			setArgumentTwo(ref);
 		} else if(contentName.equals("Literal")) {
 			Literal lit = new Literal();
-			lit.init(el);
+			lit.init(el, sheet);
 			setArgumentTwo(lit);
 		} else {
 			throw new InvalidImportException("Attempted to Import Invalid Cell Content: " + contentName);
@@ -85,11 +84,11 @@ public abstract class Binary extends Binary_Base {
       * Method to erase this Binary Function (from persistence)
       */
     public final void clean(){
-    	SimpleContent arg1 = getArgumentOne(),
-    			      arg2 = getArgumentTwo();
+    	/*SimpleContent arg1 = getArgumentOne(),
+    			      arg2 = getArgumentTwo();*/
     	
-    	setArgumentOne(null); arg1.clean();
-    	setArgumentTwo(null); arg2.clean();   	
+    	setArgumentOne(null); //arg1.clean();
+    	setArgumentTwo(null); //arg2.clean();   	
     	
         super.deleteDomainObject();   
     }

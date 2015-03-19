@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service.test;
+package pt.ulisboa.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,9 +48,9 @@ public class CreateUserTest extends BubbledocsServiceTest {
 	// User is the domain class that represents a User
         User user = getUserFromUsername(USERNAME_DOES_NOT_EXIST);
 
-        assertEquals(USERNAME_DOES_NOT_EXIST, user.get_username());
-        assertEquals("jose", user.get_passwd());
-        assertEquals("José Ferreira", user.get_name());
+        assertEquals(USERNAME_DOES_NOT_EXIST, user.getUsername());
+        assertEquals("jose", user.getPasswd());
+        assertEquals("José Ferreira", user.getName());
     }
 
     @Test(expected = DuplicateUsernameException.class)

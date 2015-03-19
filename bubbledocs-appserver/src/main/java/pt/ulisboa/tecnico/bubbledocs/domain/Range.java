@@ -26,26 +26,27 @@ public abstract class Range extends Range_Base {
     /**
      * To be defined by the concrete subclasses
      */
-    protected abstract int __getValue__();
+    protected abstract int myValue();
     
     
     /**
      * pseudo-constructor for initializing a content from an XML element
      * @param XML JDOM element for this content
+     * @throws InvalidCellException 
      */
-    protected final void init(org.jdom2.Element rangeElement) throws InvalidImportException {
+    protected final void init(org.jdom2.Element rangeElement, Spreadsheet sheet) throws InvalidImportException, InvalidCellException {
     	org.jdom2.Element el = rangeElement.getChild("ReferenceOne").getChildren().get(0);
     	String contentName = el.getName();
 		if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
-			ref.init(el);
+			ref.init(el, sheet);
 			setReferenceOne(ref);
 		}
 		el = rangeElement.getChild("ReferenceTwo").getChildren().get(0);
 	    contentName = el.getName();
 		if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
-			ref.init(el);
+			ref.init(el, sheet);
 			setReferenceTwo(ref);
 		}
     }
@@ -56,8 +57,8 @@ public abstract class Range extends Range_Base {
 	 */
 	protected final org.jdom2.Element export() throws InvalidCellException {
 		org.jdom2.Element binElement = new org.jdom2.Element(this.getClass().getSimpleName()),
-    			referenceOneElement   = new org.jdom2.Element("ReferenceOne"),
-    			referenceTwoElement   = new org.jdom2.Element("ReferenceTwo");
+    			referenceOneElement  = new org.jdom2.Element("ReferenceOne"),
+    			referenceTwoElement  = new org.jdom2.Element("ReferenceTwo");
     	
 		referenceOneElement.addContent(getReferenceOne().export());
 		referenceTwoElement.addContent(getReferenceTwo().export());
@@ -72,6 +73,12 @@ public abstract class Range extends Range_Base {
      * Method to clean a range (from persistence)
      */
     public void clean(){
-        //TODO IMPLEMENT ME
+    	/*SimpleContent ref1 = getReferenceOne(),
+			          ref2 = getReferenceTwo();*/
+	
+    	setReferenceOne(null); //ref1.clean();
+    	setReferenceTwo(null); //ref2.clean();   	
+	
+		super.deleteDomainObject();
     }
 }

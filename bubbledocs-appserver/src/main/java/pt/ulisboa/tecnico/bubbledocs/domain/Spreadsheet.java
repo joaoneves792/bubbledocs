@@ -7,6 +7,9 @@ import java.util.TreeSet;
 
 
 
+
+
+
 import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
@@ -15,89 +18,141 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 
 public class Spreadsheet extends Spreadsheet_Base {
     
-    public Spreadsheet(String name, String author, Integer id, Integer lines, Integer columns) {
+    public Spreadsheet(String name, String author, Integer id, Integer rows, Integer columns) {
         super();
-        init(name, author, id, lines, columns);
+        init(name, author, id, rows, columns);
     }
 
-	Spreadsheet(String Username, String XMLString) throws InvalidImportException, JDOMException, IOException {
+	Spreadsheet(String Username, String XMLString) throws InvalidImportException, JDOMException, IOException, InvalidCellException {
 		
-		org.jdom2.Document document = __makeDocument__(XMLString);
+		org.jdom2.Document document = makeDocument(XMLString);
 		
 		org.jdom2.Element spreadsheet = document.getRootElement();
 		//set_id(Integer.parseInt(spreadsheet.getAttribute("id").getValue()));
-		set_lines(Integer.parseInt(spreadsheet.getAttribute("lines").getValue()));
-		set_columns(Integer.parseInt(spreadsheet.getAttribute("columns").getValue()));
+		setRows(Integer.parseInt(spreadsheet.getAttribute("rows").getValue()));
+		setColumns(Integer.parseInt(spreadsheet.getAttribute("columns").getValue()));
 		
 		String XMLAuthor = spreadsheet.getAttribute("author").getValue();
 		if(!XMLAuthor.equals(Username))
 			throw new InvalidImportException("Attempted to import spreadsheet from another user. AUTHOR: " + XMLAuthor + " RESQUESTED : " + Username);
 		
-		set_author(XMLAuthor);
-		set_name(spreadsheet.getAttribute("name").getValue());
-		set_date(spreadsheet.getAttribute("date").getValue());
+		setAuthor(XMLAuthor);
+		setName(spreadsheet.getAttribute("name").getValue());
+		setDate(org.joda.time.LocalDate.parse(spreadsheet.getAttribute("date").getValue()));
 		
 		for(org.jdom2.Element cellElement : spreadsheet.getChild("Cells").getChildren())
-			addCell(new Cell(cellElement, get_lines(), get_columns()));	
+			importCell(cellElement);	
 	}
 	
-	private org.jdom2.Document __makeDocument__(String XMLString) throws JDOMException, IOException {	
+	private void importCell(org.jdom2.Element cellElement) throws InvalidCellException, InvalidImportException {
+		int row = Integer.parseInt(cellElement.getAttribute("row").getValue()),
+				 column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+		
+		Cell cell = getCell(row, column);
+		
+		boolean protectd = Boolean.parseBoolean(cellElement.getAttribute("protected").getValue());
+		
+		if(row < 1 || getRows() < row) 
+			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet row Bounds (Bound: " + getRows() + " , Cell: " + row + ").");
+		else if(column < 1 || getColumns() < column)
+			throw new InvalidImportException("Attempted to Import a Cell outside of Spreadsheet Column Bounds (Bound: " + getColumns() + " , Cell: " + column + ").");
+		
+		cell.setRow(row);
+		cell.setColumn(column);
+		cell.setProtectd(protectd);
+		java.util.List<org.jdom2.Element> content = cellElement.getChildren();
+		
+		if(null == content) return;
+		else
+			for(org.jdom2.Element el : content)	{
+				//hack - in reality this loop should only unroll once
+				String contentName = el.getName();
+				if(contentName.equals("Add")) {
+					Add add = new Add();
+					add.init(el, this);
+					cell.setContent(add);
+				} else if(contentName.equals("Sub")) {
+					Sub sub = new Sub();
+					sub.init(el, this);
+					cell.setContent(sub);
+				} else if(contentName.equals("Mul")) {
+					Mul mul = new Mul();
+					mul.init(el, this);
+					cell.setContent(mul);
+				} else if(contentName.equals("Div")) {
+					Div div = new Div();
+					div.init(el, this);
+					cell.setContent(div);
+				} else if(contentName.equals("Literal")) {
+					Literal lit = new Literal();
+					lit.init(el, this);
+					cell.setContent(lit);
+				} else if(contentName.equals("Reference")) {
+					Reference ref = new Reference();
+					ref.init(el, this);
+					cell.setContent(ref);
+				} else if(contentName.equals("Prd")) {
+					Prd prd = new Prd();
+					prd.init(el, this);
+					cell.setContent(prd);
+				} else if(contentName.equals("Avg")) {
+					Avg avg = new Avg();
+					avg.init(el, this);
+					cell.setContent(avg);
+				} else {
+					throw new InvalidImportException("Attempted to Import Invalid Cell Content.");
+				}
+			}		
+	}
+	
+	private org.jdom2.Document makeDocument(String XMLString) throws JDOMException, IOException {	
 		return new org.jdom2.input.SAXBuilder().build(new java.io.StringReader(XMLString));
 	}
 
-	protected void init(String name, String author, Integer id, Integer lines, Integer columns) {
-        Cell newCell;
-
-        set_name(name);
-        set_author(author);
-        set_id(id);
-        set_lines(lines);
-        set_columns(columns);
-        set_date(new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()));
-        
-        for(int i=1 ; i<=lines; i++){
-                for(int j=1 ; j<=columns; j++){
-                        newCell = new Cell(i, j, false);
-                        newCell.setSpreadsheet(this);
-                        addCell(newCell);
-                }
-        }
-    }
+	protected void init(String name, String author, Integer id, Integer rows, Integer columns) {
+        setName(name);
+        setAuthor(author);
+        setId(id);
+        setRows(rows);
+        setColumns(columns);
+        setDate(org.joda.time.LocalDate.now());
+	}
     
-    public Set<Cell> getCellsByLine(int line) throws InvalidCellException {
-    	if(get_lines() < line || line < 1)
-    		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + line + ".");
+    public Set<Cell> getCellsByrow(int row) throws InvalidCellException {
+    	if(getRows() < row || row < 1)
+    		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + row + ".");
     	Set<Cell> cellSet = new TreeSet<Cell>();
     	for(Cell cell : getCellSet()) {
-    		if(cell.get_line() == line)
+    		if(cell.getRow() == row)
     			cellSet.add(cell);
     	}
     	return Collections.unmodifiableSet(cellSet);
     }
     
-    public Cell getCell(int line, int column) throws InvalidCellException {
-    	if(get_lines() < line || line < 1)
-    		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + line + ".");
-    	else if(get_columns() < column || column < 1)
+    public Cell getCell(int row, int column) throws InvalidCellException {
+    	if(getColumns() < column || column < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + column + ".");
-    	Set<Cell> cellSet = getCellsByLine(line);
+    	Set<Cell> cellSet = getCellsByrow(row);
     	for(Cell cell : cellSet) {
-    		if(column == cell.get_column()) {
+    		if(column == cell.getColumn()) {
     			return cell;
     		}
     	}
-    	return null;
+    	Cell lazyCell = new Cell(row, column, false);
+    	addCell(lazyCell);
+    	lazyCell.setSpreadsheet(this);
+    	return lazyCell;
     }
 
-    private org.jdom2.Document __export__() throws InvalidExportException {
+    private org.jdom2.Document myExport() throws InvalidExportException {
 		org.jdom2.Document document = new org.jdom2.Document();
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
 		//spreadsheet.setAttribute("id", get_id().toString());
-		spreadsheet.setAttribute("lines", get_lines().toString());
-		spreadsheet.setAttribute("columns", get_columns().toString());
-		spreadsheet.setAttribute("author", get_author());
-		spreadsheet.setAttribute("name", get_name());
-		spreadsheet.setAttribute("date", get_date());
+		spreadsheet.setAttribute("rows", getRows().toString());
+		spreadsheet.setAttribute("columns", getColumns().toString());
+		spreadsheet.setAttribute("author", getAuthor());
+		spreadsheet.setAttribute("name", getName());
+		spreadsheet.setAttribute("date", getDate().toString());
 		document.setRootElement(spreadsheet);
 		org.jdom2.Element cells = new org.jdom2.Element("Cells");
 		spreadsheet.addContent(cells);
@@ -116,31 +171,23 @@ public class Spreadsheet extends Spreadsheet_Base {
 		org.jdom2.output.XMLOutputter xml =
 				new org.jdom2.output.XMLOutputter(org.jdom2.output.Format.getPrettyFormat());
 		
-		return xml.outputString(__export__());
+		return xml.outputString(myExport());
 	}
 	    
     
     @Override
     public String toString() {
-    	return "<< ID: " + get_id() + " || NAME: " + get_name() + " || AUTHOR: " + get_author() + "|| DATE :" + get_date() + " || LINES: " + get_lines() + " || " + get_columns() + " >>";
+    	return "<< ID: " + getId() + " || NAME: " + getName() + " || AUTHOR: " + getAuthor() + "|| DATE :" + getDate() + " || rowS: " + getRows() + " || " + getColumns() + " >>";
     }
     
      /**
       * Method to recursively erase this spreadsheet (from persistence)
       **/
-      public void clean(){
-          Set<Cell> cells;
-          cells = getCellSet();
-
-          for(Cell c : cells){
+      public void clean() {
+          for(Cell c : getCellSet()){
               c.clean();
-              removeCell(c);
           }
-
-          /*for(Cell c : cells){
-              removeCell(c);
-              c.clean();
-          }*/
+          //Bubbledocs.getBubbledocs().removeSpreadsheet(this);
           super.deleteDomainObject();
       }
 }
