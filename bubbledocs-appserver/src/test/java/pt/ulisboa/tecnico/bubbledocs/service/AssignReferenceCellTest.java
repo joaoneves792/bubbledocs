@@ -37,7 +37,7 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     
     
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
  	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
  	   createUser(USERNAME, PASSWORD, NAME);
        createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);

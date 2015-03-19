@@ -22,14 +22,14 @@ import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 
 // add needed import declarations
 
-public class BubbledocsServiceTest {
+public abstract class BubbledocsServiceTest {
 
     @Before
     public void setUp() throws Exception {
 
         try {
             FenixFramework.getTransactionManager().begin(false);
-            populate4Test();
+            initializeDomain();
         } catch (WriteOnReadError | NotSupportedException | SystemException e1) {
             e1.printStackTrace();
         }
@@ -40,14 +40,14 @@ public class BubbledocsServiceTest {
         try {
             FenixFramework.getTransactionManager().rollback();
         } catch (IllegalStateException | SecurityException | SystemException e) {
+        	System.err.println(e.getMessage());
             e.printStackTrace();
         }
     }
 
     // should redefine this method in the subclasses if it is needed to specify
     // some initial state
-    public void populate4Test() {
-    }
+    protected abstract void initializeDomain() ;
 
     // auxiliary methods that access the domain layer and are needed in the test classes
     // for defining the initial state and checking that the service has the expected behavior

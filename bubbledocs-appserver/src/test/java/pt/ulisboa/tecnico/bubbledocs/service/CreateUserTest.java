@@ -27,7 +27,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     private static final String USERNAME_DOES_NOT_EXIST = "no-one";
 
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
         createUser(USERNAME, PASSWORD, "António Rito Silva");
         try {
 			root = addUserToSession("root", "root");

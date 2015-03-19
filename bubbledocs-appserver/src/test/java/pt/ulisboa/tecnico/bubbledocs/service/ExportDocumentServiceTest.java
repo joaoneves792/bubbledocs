@@ -32,11 +32,11 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private Integer _spreadsheetID;
     
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
   	    createUser(USERNAME, PASSWORD, NAME);
         createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
-        
+
         try{
      	   String token = addUserToSession(USERNAME, PASSWORD);
         

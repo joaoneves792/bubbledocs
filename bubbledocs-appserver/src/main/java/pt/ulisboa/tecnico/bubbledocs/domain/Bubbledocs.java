@@ -321,7 +321,7 @@ import pt.ist.fenixframework.FenixFramework;
     	return spreadsheet.export();    	
     }
 
-	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {
+	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {		
 		Session session = getSessionByUsername("root");
 		if(session.hasExpired()) {
 			clearSession(session);

@@ -28,7 +28,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     private static final String INVALID_PASSWORD = "jp#2";
     
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
         createUser(USERNAME, PASSWORD, NAME);
     }
 
@@ -71,12 +71,13 @@ public class LoginUserTest extends BubbledocsServiceTest {
         service.execute();
         String token2 = service.getUserToken();
 
-        User user = getUserFromSession(token1);
+        User user1 = getUserFromSession(token1);
+        User user2 = getUserFromSession(token2);
      
         //What happens if the random generator hits the same number??
-        assertNull(user);
-        user = getUserFromSession(token2);
-        assertEquals(USERNAME, user.getUsername());
+        assertNull(user1);
+        user2 = getUserFromSession(token2);
+        assertEquals(USERNAME, user2.getUsername());
     }
 
     //Test Case 3

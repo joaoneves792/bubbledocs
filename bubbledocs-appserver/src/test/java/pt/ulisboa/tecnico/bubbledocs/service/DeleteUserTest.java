@@ -28,7 +28,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     private String root;
 
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
         createUser(USERNAME, PASSWORD, "António Rito Silva");
         User smf = createUser(USERNAME_TO_DELETE, "smf", "Sérgio Fernandes");
         createSpreadSheet(smf, USERNAME_TO_DELETE, 20, 20);

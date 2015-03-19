@@ -30,7 +30,7 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     private static final int INVALID_SPREADHEET_COLUMNS = -3;
 
     @Override
-    public void populate4Test() {
+    public void initializeDomain() {
        createUser(USERNAME, PASSWORD, NAME);
     }
 
