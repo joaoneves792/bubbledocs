@@ -1,87 +1,112 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.bubbledocs.domain.Add;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.domain.Div;
-import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
-import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
-import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
-import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedOperationException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
 
 
 public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 
-    private static final String USERNAME_VALID = "ars";
-    private static final String USERNAME_INVALID ="sm";
-    private static final String USERNAME_NOT_KNOWN ="acx";
-    
-    private static final String PASSWORD = "ars";
-    private String doc;
-    private static final int DOCID_INVALID = 0;
-    private int DOCID_VALID;
+    private static final String USERNAME = "jp";
+    private static final String NAME = "João Pereira";
+    private static final String PASSWORD = "jp#";
+    private static final String USERNAME_RO = "jn";
+    private static final String NAME_RO = "João Neves";
+    private static final String PASSWORD_RO = "jn#";
+    private static final String SPREADHEET_NAME = "My Spreadsheet";
+    private static final int SPREADHEET_ROWS = 10;
+    private static final int SPREADHEET_COLUMNS = 15;
+    private static final String REFERENCE_ID = "1;1";
+    private static final String LITERAL_ID = "5;5";
+    private static final String LITERAL = "3";
+
+    private static final int DOCID_INVALID = -5;
+      
+    //This is needed throughout the tests
+    private Integer _spreadsheetID;
     
     @Override
     public void populate4Test() {
-    	
-    	User ars = new User("Paul Door", USERNAME_VALID, PASSWORD);
-    	User sm = new User("Sergio Moura", USERNAME_INVALID, PASSWORD);
-    	
-    	Bubbledocs bubble = Bubbledocs.getBubbledocs();   	
-		bubble.addUser(ars);
-		bubble.addUser(sm);
-		
-		try {
-			Spreadsheet ss = ars.createSpreadsheet("Testa Export", 10, 15);
-	    	
-	    	ss.getCell(3, 4).setContent(new Literal(5));
-			ss.getCell(1, 1).setContent(new Reference(5, 6));
-			ss.getCell(5, 6).setContent(new Add(new Literal(2), new Reference(3, 4)));
-			ss.getCell(2, 2).setContent(new Div(new Reference(1, 1), new Reference(3, 4)));
-			DOCID_VALID=ss.get_id();
-			doc = ss.export();
-		
-        } catch (BubbledocsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-    }
-
-    @Test
-    public void success() throws BubbledocsException {
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+  	    createUser(USERNAME, PASSWORD, NAME);
+        createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
         
-    	ExportDocument service = new ExportDocument(USERNAME_VALID, DOCID_VALID);
+        try{
+     	   String token = addUserToSession(USERNAME, PASSWORD);
+        
+     	   //Maybe this should be in BubbleDocsServiceTest.createSpreadSheet
+     	   CreateSpreadSheet cSSService = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+     	   cSSService.execute(); 
+     	   _spreadsheetID = cSSService.getSheetId();
+
+     	   //Assign a literal to cell
+     	   AssignLiteralCell aLCService = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
+     	   aLCService.execute();
+     	   
+     	   //Assign a reference to cell
+     	   AssignReferenceCell aRCService = new AssignReferenceCell(token, _spreadsheetID, REFERENCE_ID, LITERAL_ID);
+     	   aRCService.execute();
+     	        	   
+     	   //Give RO user read permissions
+     	   bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
+
+        }catch (BubbledocsException e) {
+     	   System.out.println("FAILED TO POPULATE FOR ExportDocumentTest");
+     	   //FIXME At this point we should probably abort!
+        }
+		
+    }
+    
+    //Test case 1
+    @Test
+    public void successUserReadPermission() throws BubbledocsException {
+  	    String token = addUserToSession(USERNAME_RO, PASSWORD_RO);
+      	ExportDocument service = new ExportDocument(token, _spreadsheetID);
         service.execute();
-        assertEquals(service.getDocXML(), doc);
+        assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
 
+    //Test case 2
+    @Test
+    public void successUserWritePermission() throws BubbledocsException {
+  	    String token = addUserToSession(USERNAME, PASSWORD);
+      	ExportDocument service = new ExportDocument(token, _spreadsheetID);
+        service.execute();
+        assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
+    }
+
+    //Test case 3
     @Test(expected = SpreadsheetNotFoundException.class)
     public void invalidDocumentExport() throws BubbledocsException {
-    	//TODO: use invalid DOCID
-    	ExportDocument service = new ExportDocument(USERNAME_VALID, DOCID_INVALID);
+	    String token = addUserToSession(USERNAME, PASSWORD);
+	    ExportDocument service = new ExportDocument(token, DOCID_INVALID);
         service.execute();
     }
 
-    @Test(expected = UserNotFoundException.class)
-    public void emptyUsername() throws BubbledocsException {
-    	ExportDocument service = new ExportDocument(USERNAME_NOT_KNOWN, DOCID_VALID);
-        service.execute();
-    }
-
-    
-    @Test(expected = UnauthorizedOperationException.class)
-    public void accessUsernameNotExist() throws BubbledocsException {
-    	ExportDocument service = new ExportDocument(USERNAME_INVALID, DOCID_VALID);
-        service.execute();
-    }
-
+    //Test case 4
+    @Test(expected = PermissionNotFoundException.class)
+    public void noPermissionsUserExport() throws BubbledocsException {
+	    Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	addUserToSession(USERNAME, PASSWORD);
+    	//Temporarily revoke RO user permissions
+    	bubble.revokeReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
+       	
+    	String token = addUserToSession(USERNAME_RO, PASSWORD_RO);    	
+	    ExportDocument service = new ExportDocument(token, _spreadsheetID);
+	    
+        try{
+        	service.execute();
+        }catch(PermissionNotFoundException e){
+        	//Give the RO user his read-only permission back
+        	bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
+        	throw e;
+        }        
+        
+    }    
 }

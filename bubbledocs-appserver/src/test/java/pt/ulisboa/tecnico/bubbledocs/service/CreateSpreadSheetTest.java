@@ -49,11 +49,11 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
      
         //Some checking to make absolutely sure it does what is expected   
         assertTrue("Generating bad IDs!",0 < ssId);
-        assertEquals(ssId, ss.get_id().intValue());
-        assertEquals(SPREADHEET_NAME, ss.get_name());
-        assertEquals(SPREADHEET_ROWS, ss.get_lines().intValue());
-        assertEquals(SPREADHEET_COLUMNS, ss.get_columns().intValue());
-        assertEquals(NAME, ss.get_author());
+        assertEquals(ssId, ss.getId().intValue());
+        assertEquals(SPREADHEET_NAME, ss.getName());
+        assertEquals(SPREADHEET_ROWS, ss.getRows().intValue());
+        assertEquals(SPREADHEET_COLUMNS, ss.getColumns().intValue());
+        assertEquals(NAME, ss.getAuthor());
         
     }
 

@@ -12,7 +12,7 @@ public class ExportDocument extends BubbledocsService {
 	private String docXML;
 
     public final String getDocXML() {
-	return docXML;
+	    return docXML;
     }
 
     public ExportDocument(String userToken, int docId) {
@@ -26,7 +26,4 @@ public class ExportDocument extends BubbledocsService {
         this.docXML = bubble.exportDocument(userToken, docId);
     }
     
-    public String getXMLString() {
-    	return docXML;
-    }
 }

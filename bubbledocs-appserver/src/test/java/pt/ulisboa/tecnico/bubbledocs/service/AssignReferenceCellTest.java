@@ -50,7 +50,7 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     	   _spreadsheetID = cSSService.getSheetId();
 
     	   //Assign a literal to cell
-    	   AssignLiteralCell aLCService = new AssignLiteralCell(token, cSSService.getSheetId(), LITERAL_ID, LITERAL);
+    	   AssignLiteralCell aLCService = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
     	   aLCService.execute();
     	   
     	   //Protect Cell 6;6
