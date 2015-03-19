@@ -16,8 +16,8 @@ public class ExportDocument extends BubbledocsService {
     }
 
     public ExportDocument(String userToken, int docId) {
-    	userToken=userToken;
-    	docId=docId;
+    	this.userToken=userToken;
+    	this.docId=docId;
     }
 
     @Override

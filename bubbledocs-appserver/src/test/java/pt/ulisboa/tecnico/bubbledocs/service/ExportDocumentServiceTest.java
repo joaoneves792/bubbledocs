@@ -4,27 +4,27 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Add;
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Div;
+import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
+import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
+import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedOperationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
-import pt.ulisboa.tecnico.bubbledocs.domain.*;
 
-
-// add needed import declarations
 
 public class ExportDocumentServiceTest extends BubbledocsServiceTest {
-
-    // the tokens
 
     private static final String USERNAME_VALID = "ars";
     private static final String USERNAME_INVALID ="sm";
     private static final String USERNAME_NOT_KNOWN ="acx";
     
     private static final String PASSWORD = "ars";
-    private static final String SPREADSHEET = null;
     private String doc;
     private static final int DOCID_INVALID = 0;
     private int DOCID_VALID;
