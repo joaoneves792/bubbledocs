@@ -1,9 +1,8 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 
 // add needed import declarations
 
@@ -24,18 +23,14 @@ public class LoginUser extends BubbledocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbledocsException {
+    protected void dispatch() throws UserNotFoundException, WrongPasswordException {
         Bubbledocs bubble;
         Integer tokenInt;
         
         bubble = Bubbledocs.getBubbledocs();
 
-        try{
-            tokenInt = bubble.loginUser(_username, _password);
-            _userToken = _username + tokenInt;
-        }catch(UserNotFoundException e){
-        	throw new UnknownBubbledocsUserException("Unknown username");
-        }
+        tokenInt = bubble.loginUser(_username, _password);
+        _userToken = _username + tokenInt;
     }
 
     public final String getUserToken() {

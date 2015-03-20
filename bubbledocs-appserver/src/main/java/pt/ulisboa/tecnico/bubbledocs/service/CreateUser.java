@@ -3,10 +3,14 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 
 // add needed import declarations
 
@@ -33,7 +37,7 @@ public class CreateUser extends BubbledocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbledocsException {
+    protected void dispatch() throws UnauthorizedUserException, UserAlreadyExistsException, UserNotInSessionException, CreateRootException, EmptyPasswordException, EmptyUsernameException, UserNotFoundException {
     	if(!userToken.matches("root\\d"))
     		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
     	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).addUser(name, newUsername, passwd);

@@ -12,7 +12,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
@@ -81,7 +81,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     }
 
     //Test Case 3
-    @Test(expected = UnknownBubbledocsUserException.class)
+    @Test(expected = UserNotFoundException.class)
     public void loginUnknownUser() throws BubbledocsException {
         LoginUser service = new LoginUser(INVALID_USERNAME, INVALID_PASSWORD);
         service.execute();

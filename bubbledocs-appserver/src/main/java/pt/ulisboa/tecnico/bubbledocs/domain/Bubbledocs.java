@@ -80,7 +80,7 @@ import pt.ist.fenixframework.FenixFramework;
      * @throws UserNotFoundException
      * @throws WrongPasswordException
      */
-    public Integer loginUser(String username, String password)throws UserNotFoundException, WrongPasswordException {
+    public Integer loginUser(String username, String password) throws UserNotFoundException, WrongPasswordException {
         User user;
         Session session;
         Random rand = new Random();

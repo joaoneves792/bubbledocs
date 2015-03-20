@@ -12,6 +12,7 @@ import org.junit.Before;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.core.WriteOnReadError;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Permission;
 import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
@@ -103,9 +104,13 @@ public abstract class BubbledocsServiceTest {
     }
     
     // returns the user registered in the application whose username is equal to username
-    User getUserFromUsername(String username) throws UserNotFoundException {
+    User getUserFromUsername(String username) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	return bubble.getUserByUsername(username);
+    	try {
+			return bubble.getUserByUsername(username);
+		} catch (UserNotFoundException e) {
+			return null;
+		}
     }
 
     /** put a user into session  and returns the token associated to it   
@@ -146,9 +151,29 @@ public abstract class BubbledocsServiceTest {
     }
 
     // return the user registered in session whose token is equal to token
-    User getUserFromSession(String token) throws UserNotInSessionException, UserNotFoundException {
+    User getUserFromSession(String token) {
        	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        return bubble.getUserByUsername(bubble.getSessionByToken(token).getUser().getUsername());
+        try {
+			return bubble.getUserByUsername(bubble.getSessionByToken(token).getUser().getUsername());
+		} catch (UserNotFoundException e) {
+			return null;
+		} catch (UserNotInSessionException e) {
+			return null;
+		}
+    }
+    
+    java.util.List<Permission> getPermissionsByUser(String username) {
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	java.util.List<Permission> permissions = new java.util.ArrayList<Permission>();
+    	for(Permission p : bubble.getPermissionsByUser(username)) {
+    		permissions.add(p);
+    	}
+    	return permissions;
+    }
+    
+    //FIXME implement me
+    boolean hasSessionUpdated(String token) {
+    	return false;
     }
 
 }
