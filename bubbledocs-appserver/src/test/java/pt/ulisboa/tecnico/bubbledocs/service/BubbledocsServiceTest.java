@@ -129,13 +129,13 @@ public abstract class BubbledocsServiceTest {
      * required because JUnit does not guarantee order of the tests */
     void addUserToSession(Integer tokInt, User user) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	Session session = null;
-    	try {
+    	//Session session = null;
+    	/*try {
     		session = bubble.getSessionByUsername(user.getUsername());  
         	session.update();
-    	} catch (UserNotInSessionException e) {
+    	} catch (UserNotInSessionException e) {*/
     		bubble.addSession(new Session(user, tokInt, org.joda.time.LocalDate.now()));
-    	}
+    	//}
     }
 
     // remove a user from session given its token
