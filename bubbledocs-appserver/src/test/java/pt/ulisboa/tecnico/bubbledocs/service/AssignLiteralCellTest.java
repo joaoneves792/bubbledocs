@@ -56,7 +56,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     	   
     	   //Give RO user read permissions
     	   bubble.addReadPermission(USERNAME, USERNAME_RO, spreadsheetID);
-
+     		   
     	   token = addUserToSession(USERNAME, PASSWORD);
      	   token_ro = addUserToSession(USERNAME_RO, PASSWORD_RO);
     	   

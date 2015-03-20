@@ -55,12 +55,13 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
         assertTrue("Session was not updated", hasSessionUpdated(token));
         
         //Some checking to make absolutely sure it does what is expected   
-        assertTrue("Generating bad IDs!",0 < ssId);
+        assertTrue("Generating bad IDs!",ssId >= 0);
         assertEquals(ssId, ss.getId().intValue());
         assertEquals(SPREADHEET_NAME, ss.getName());
         assertEquals(SPREADHEET_ROWS, ss.getRows().intValue());
         assertEquals(SPREADHEET_COLUMNS, ss.getColumns().intValue());
-        assertEquals(NAME, ss.getAuthor());
+        //IS THE AUTHOR SUPOSED TO BE STORED AS USERNAME OR AS NAME?????
+        assertEquals(USERNAME, ss.getAuthor());
         
     }
 

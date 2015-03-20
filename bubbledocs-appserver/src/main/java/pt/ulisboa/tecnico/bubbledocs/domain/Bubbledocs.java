@@ -429,7 +429,13 @@ import pt.ist.fenixframework.FenixFramework;
     			throw new UnauthorizedUserException("Attemped to change permissions of author of spreadsheet with ID = " + spreadsheetId + ".");
     		User targetUser = getUserByUsername(targetUsername);
     		if(getPermission(requestUsername, spreadsheetId).getWritePermission()) {
-    	    			Permission permission = getPermission(targetUsername, spreadsheetId);
+    					Permission permission = null;
+    					try{
+    	    				permission = getPermission(targetUsername, spreadsheetId);
+    	    			}catch(PermissionNotFoundException e){//Side-effect: revoking a non existing permission is now silent!
+    	    				dispatch(targetUser, spreadsheet, null);
+    	    				return;
+    	    			}
     	    			dispatch(targetUser, spreadsheet, permission);
     		} else {
     			throw new UnauthorizedUserException
