@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -75,8 +76,14 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     //Test case 2
     @Test(expected = InvalidCellException.class)
     public void assignLiteralToInvalidCell() throws BubbledocsException, NumberFormatException {
-    	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, INVALID_CELL_ID, LITERAL);
-        service.execute();
+    	try{
+    		AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, INVALID_CELL_ID, LITERAL);
+    		service.execute();
+        //This test case also checks if in case of failure the session is still updated
+		}catch(BubbledocsException e){
+			assertTrue("Session was not updated", hasSessionUpdated(token));
+			throw e;
+		}
     }
     
     //Test case 3
@@ -122,6 +129,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
  	    AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, LITERAL_ID, LITERAL);
         service.execute();
         assertEquals("Not returning the expected value for the cell!", LITERAL, service.getResult().intValue());
+        assertTrue("Session was not updated", hasSessionUpdated(token));
     }
     
 }

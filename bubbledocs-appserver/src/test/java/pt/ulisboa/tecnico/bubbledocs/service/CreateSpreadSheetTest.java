@@ -52,6 +52,8 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
         int ssId = service.getSheetId();
         ss = bubble.getSpreadsheetById(ssId);
      
+        assertTrue("Session was not updated", hasSessionUpdated(token));
+        
         //Some checking to make absolutely sure it does what is expected   
         assertTrue("Generating bad IDs!",0 < ssId);
         assertEquals(ssId, ss.getId().intValue());
@@ -74,8 +76,14 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     //Test case 3
     @Test(expected = EmptySpreadsheetNameException.class)
     public void createEmptyNameSpreadsheet() throws BubbledocsException {
-        CreateSpreadSheet service = new CreateSpreadSheet(token, EMPTY_STRING, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
-        service.execute();
+        try{
+    		CreateSpreadSheet service = new CreateSpreadSheet(token, EMPTY_STRING, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+        	service.execute();
+        //This test case also checks if in case of failure the session is still updated
+    	}catch(BubbledocsException e){
+            assertTrue("Session was not updated", hasSessionUpdated(token));
+            throw e;
+    	}
     }
    
     //Test case 4

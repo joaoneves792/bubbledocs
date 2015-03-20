@@ -74,6 +74,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
+        assertTrue("Session was not updated", hasSessionUpdated(token_ro));
     }
 
     //Test case 2
@@ -87,8 +88,14 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 3
     @Test(expected = SpreadsheetNotFoundException.class)
     public void invalidDocumentExport() throws BubbledocsException {
-	    ExportDocument service = new ExportDocument(token, DOCID_INVALID);
-        service.execute();
+    	try{
+    		ExportDocument service = new ExportDocument(token, DOCID_INVALID);
+    		service.execute();
+        //This test case also checks if in case of failure the session is still updated
+    	}catch(BubbledocsException e){
+            assertTrue("Session was not updated", hasSessionUpdated(token));
+            throw e;
+    	}
     }
 
     //Test case 4

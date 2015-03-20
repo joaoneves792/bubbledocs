@@ -5,9 +5,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Seconds;
-
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
@@ -34,18 +31,13 @@ public class LoginUserTest extends BubbledocsServiceTest {
     public void success() throws BubbledocsException {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
         service.execute();
-        LocalDateTime currentTime = new LocalDateTime();
-	
         String token = service.getUserToken();
 
         User user = getUserFromSession(token);
         assertEquals(USERNAME, user.getUsername());
-
-        int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
-
-	    assertTrue("Access time in session not correctly set", difference >= 0);
-	    assertTrue("diference in seconds greater than expected", difference < 2);
-    }
+        
+        assertTrue("Session was not updated", hasSessionUpdated(token));
+   }
 
     //Test Case 2
     @Test
@@ -58,6 +50,8 @@ public class LoginUserTest extends BubbledocsServiceTest {
         service.execute();
         String token2 = service.getUserToken();
 
+        assertTrue("Session was not updated", hasSessionUpdated(token2));
+        
         User user1 = getUserFromSession(token1);
         User user2 = getUserFromSession(token2);
      
