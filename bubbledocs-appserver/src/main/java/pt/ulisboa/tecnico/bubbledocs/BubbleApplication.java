@@ -152,8 +152,8 @@ public class BubbleApplication{
     	if(!bubble.getUserSet().isEmpty()) 
     		return;
     	
-    	Root root = new Root();
-    	bubble.addUser(root);
+    	//Root root = new Root();
+    	//bubble.addUser(root);
     	
     	User pf = new User("Paul Door", "pf", "sub");
     	User ra = new User("Step Rabbit", "ra", "cor");

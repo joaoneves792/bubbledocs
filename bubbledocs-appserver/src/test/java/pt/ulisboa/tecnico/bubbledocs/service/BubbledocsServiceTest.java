@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
+import org.joda.time.LocalDate;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Seconds;
 import org.junit.After;
@@ -176,20 +177,20 @@ public abstract class BubbledocsServiceTest {
    
     boolean hasSessionUpdated(String token) throws UserNotInSessionException, InvalidSessionTimeException {
     	final int MAXIMUM_ACCEPTABLE_VALUE = 2; //in seconds, plenty of time to execute a service
-    	org.joda.time.LocalDateTime time = getLastAccessTimeInSession(token);
-    	int difference = Seconds.secondsBetween(time, new org.joda.time.LocalDateTime()).getSeconds();
-    	if(difference <= 0)
+    	org.joda.time.LocalDate time = getLastAccessTimeInSession(token);
+    	int difference = Seconds.secondsBetween(time, new org.joda.time.LocalDate()).getSeconds();
+    	if(difference < 0)
     		throw new InvalidSessionTimeException("Session Time is incorrectly set.");
     	return difference < MAXIMUM_ACCEPTABLE_VALUE;
     }
 
     // returns the time of the last access for the user with token userToken.
     // It must get this data from the session object of the application
-    protected LocalDateTime getLastAccessTimeInSession(String userToken) throws UserNotInSessionException {
+    protected LocalDate getLastAccessTimeInSession(String userToken) throws UserNotInSessionException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	Session session = bubble.getSessionByToken(userToken);
     	
     	//Not 100% sure the next line works!!
-    	return new LocalDateTime(session.getDate());
+    	return session.getDate();
     }
 }

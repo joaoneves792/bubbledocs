@@ -116,7 +116,7 @@ import pt.ist.fenixframework.FenixFramework;
     public Session getSessionByUsername(String username) throws UserNotInSessionException {
     	Set<Session> sessions;
     	
-    	sessions = getSessionSet();
+     	sessions = getSessionSet();
     	for(Session s : sessions)
     		if(s.getUser().getUsername().equals(username))
     			return s;

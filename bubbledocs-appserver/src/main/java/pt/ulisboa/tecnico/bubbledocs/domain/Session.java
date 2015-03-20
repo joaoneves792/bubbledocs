@@ -2,6 +2,8 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import java.text.ParseException;
 
+import org.joda.time.Hours;
+
 public class Session extends Session_Base {
     
     public Session() {
@@ -36,7 +38,7 @@ public class Session extends Session_Base {
      * @throws ParseException 
      */
     public boolean hasExpired() {
-        java.util.Date date;
+        /*java.util.Date date;
         java.util.Date sessionDate;
         long differenceMilliseconds;
         final long TWO_HOURS = 7200000; //Two hours in milliseconds
@@ -47,7 +49,11 @@ public class Session extends Session_Base {
 
         if(TWO_HOURS < differenceMilliseconds)
         	return true;
-        else return false;
+        else 
+        	return false;
+        */	
+    	
+    	return (2 <= Hours.hoursBetween(getDate(), org.joda.time.LocalDate.now()).getHours());
     }
     
     
