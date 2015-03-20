@@ -36,17 +36,18 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private static final int DOCID_INVALID = -5;
       
     //This is needed throughout the tests
-    private Integer _spreadsheetID;
+    private Integer spreadsheetID;
+    private String token;
+    private String token_ro;
     
     @Override
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
   	    User user = createUser(USERNAME, PASSWORD, NAME);
         createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
-
         try{
     	   Spreadsheet ss = createSpreadSheet(user, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
-     	   _spreadsheetID = ss.getId();
+     	   spreadsheetID = ss.getId();
 
      	   //Assign a literal to cell
      	   ss.getCell(LITERAL_ROW ,LITERAL_COLUMN).setContent(new Literal(LITERAL));
@@ -55,8 +56,11 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
      	   ss.getCell(REFERENCE_ROW, REFERENCE_COLUMN).setContent(new Reference(ss.getCell(LITERAL_ROW, LITERAL_COLUMN)));     	        	   
      	   
      	   //Give RO user read permissions
-     	   bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
+     	   bubble.addReadPermission(USERNAME, USERNAME_RO, spreadsheetID);
 
+           token = addUserToSession(USERNAME, PASSWORD);
+       	   token_ro = addUserToSession(USERNAME_RO, PASSWORD_RO);
+     	   
         }catch (BubbledocsException e) {
      	   System.out.println("FAILED TO POPULATE FOR ExportDocumentTest");
      	   //FIXME At this point we should probably abort!
@@ -67,8 +71,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 1
     @Test
     public void successUserReadPermission() throws BubbledocsException {
-  	    String token = addUserToSession(USERNAME_RO, PASSWORD_RO);
-      	ExportDocument service = new ExportDocument(token, _spreadsheetID);
+      	ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
@@ -76,8 +79,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 2
     @Test
     public void successUserWritePermission() throws BubbledocsException {
-  	    String token = addUserToSession(USERNAME, PASSWORD);
-      	ExportDocument service = new ExportDocument(token, _spreadsheetID);
+      	ExportDocument service = new ExportDocument(token, spreadsheetID);
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
@@ -85,7 +87,6 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 3
     @Test(expected = SpreadsheetNotFoundException.class)
     public void invalidDocumentExport() throws BubbledocsException {
-	    String token = addUserToSession(USERNAME, PASSWORD);
 	    ExportDocument service = new ExportDocument(token, DOCID_INVALID);
         service.execute();
     }
@@ -94,20 +95,10 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     @Test(expected = PermissionNotFoundException.class)
     public void noPermissionsUserExport() throws BubbledocsException {
 	    Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	addUserToSession(USERNAME, PASSWORD);
     	//Temporarily revoke RO user permissions
-    	bubble.revokeReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
-       	
-    	String token = addUserToSession(USERNAME_RO, PASSWORD_RO);    	
-	    ExportDocument service = new ExportDocument(token, _spreadsheetID);
-	    
-        try{
-        	service.execute();
-        }catch(PermissionNotFoundException e){
-        	//Give the RO user his read-only permission back
-        	bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
-        	throw e;
-        }        
-        
+    	bubble.revokeReadPermission(USERNAME, USERNAME_RO, spreadsheetID);
+       	    	
+	    ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
+      	service.execute();
     }    
 }

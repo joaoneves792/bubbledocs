@@ -34,7 +34,9 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     private static final String INVALID_CELL_ID = "100;100";
     
     //This is needed throughout the tests
-    private Integer _spreadsheetID;
+    private Integer spreadsheetID;
+    private String token;
+    private String token_ro;
     
     
     @Override
@@ -44,14 +46,17 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
        createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
        try{
     	   Spreadsheet ss = createSpreadSheet(user, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
-     	   _spreadsheetID = ss.getId();
+     	   spreadsheetID = ss.getId();
 
     	   //Protect Cell 6;6
-    	   bubble.protectSpreadsheetCell(USERNAME, _spreadsheetID, 6, 6);
+    	   bubble.protectSpreadsheetCell(USERNAME, spreadsheetID, 6, 6);
     	   
     	   //Give RO user read permissions
-    	   bubble.addReadPermission(USERNAME, USERNAME_RO, _spreadsheetID);
+    	   bubble.addReadPermission(USERNAME, USERNAME_RO, spreadsheetID);
 
+    	   token = addUserToSession(USERNAME, PASSWORD);
+     	   token_ro = addUserToSession(USERNAME_RO, PASSWORD_RO);
+    	   
        } catch (BubbledocsException e) {
     	   System.out.println("FAILED TO POPULATE FOR AssignLiteralCellTest");
     	   //FIXME At this point we should probably abort!
@@ -61,57 +66,50 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     //Test case 1
     @Test(expected = NumberFormatException.class)
     public void assignLiteralToInvalidId() throws BubbledocsException, NumberFormatException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
-    	AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, INVALID_ID, LITERAL);
+    	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, INVALID_ID, LITERAL);
         service.execute();
     }
     
     //Test case 2
     @Test(expected = InvalidCellException.class)
     public void assignLiteralToInvalidCell() throws BubbledocsException, NumberFormatException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
-    	AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, INVALID_CELL_ID, LITERAL);
+    	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, INVALID_CELL_ID, LITERAL);
         service.execute();
     }
     
     //Test case 3
     @Test(expected = NumberFormatException.class)
     public void assignLiteralWithInvalidLiteral() throws BubbledocsException, NumberFormatException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
-    	AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, INVALID_LITERAL);
+    	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, LITERAL_ID, INVALID_LITERAL);
         service.execute();
     }
     
     //Test case 4
     @Test(expected = SpreadsheetNotFoundException.class)
     public void assignLiteralOnNonExistingSpreadsheet() throws BubbledocsException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
-    	AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID+5, LITERAL_ID, LITERAL);
+    	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID+5, LITERAL_ID, LITERAL);
         service.execute();
     }
     
     //Test case 5
     @Test(expected = ProtectedCellException.class)
     public void assignLiteralOnProtectedCell() throws BubbledocsException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
-    	AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, PROTECTED_ID, LITERAL);
+    	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, PROTECTED_ID, LITERAL);
         service.execute();
     }
     
     //Test case 6
     @Test(expected = UserNotInSessionException.class)
     public void assignLiteralUserNotInSession() throws BubbledocsException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
  	    removeUserFromSession(token);
- 	    AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
+ 	    AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, LITERAL_ID, LITERAL);
         service.execute();
     }
     
     //Test case 7
     @Test(expected = UnauthorizedUserException.class)
     public void assignLiteralUserReadOnlyPermission() throws BubbledocsException {
- 	    String token = addUserToSession(USERNAME_RO, PASSWORD_RO);
- 	    AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
+ 	    AssignLiteralCell service = new AssignLiteralCell(token_ro, spreadsheetID, LITERAL_ID, LITERAL);
         service.execute();   
     }
     
@@ -119,8 +117,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     //Test case 8
     @Test
     public void success() throws BubbledocsException {
- 	    String token = addUserToSession(USERNAME, PASSWORD);
- 	    AssignLiteralCell service = new AssignLiteralCell(token, _spreadsheetID, LITERAL_ID, LITERAL);
+ 	    AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, LITERAL_ID, LITERAL);
         service.execute();
     }
     

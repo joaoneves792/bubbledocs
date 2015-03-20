@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
-import java.util.List;
+//import java.util.List;
 import java.util.Set;
 
 import javax.transaction.NotSupportedException;
@@ -55,12 +55,8 @@ public abstract class BubbledocsServiceTest {
     User createUser(String username, String password, String name) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	User user = null;
-    	try {
-    		user = bubble.getUserByUsername(username);
-		} catch (UserNotFoundException e) {
-			user = new User(name, username, password);
-			bubble.addUser(user);
-		} 
+		user = new User(name, username, password);
+		bubble.addUser(user);
     	return user;
     }
 
@@ -70,17 +66,6 @@ public abstract class BubbledocsServiceTest {
         return bubble.createSpreadsheet(user, name, row, column);
     }
     
-    /** create spreadsheet is not exists */
-    public Spreadsheet createSpreadSheetIfNotExists(User user, String name, int row, int column) {
-    	final int FIRST = 0;
-        Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        List<Spreadsheet> sheets = getSpreadsheetsByName(name);
-		if(sheets.isEmpty()) {
-        	return bubble.createSpreadsheet(user, name, row, column);
-        } else {
-        	return sheets.get(FIRST);
-        }
-    }
     // returns a spreadsheet whose name is equal to name
     //THIS IS BAD since there can be more than one spreadsheet with the same name...
     //FIXME This is just a quick hack
@@ -123,22 +108,21 @@ public abstract class BubbledocsServiceTest {
     	return bubble.getUserByUsername(username);
     }
 
-    /** put a user into session (if not already) and returns the token associated to it
-     *  required because JUnit does not guarantee order of the tests 
+    /** put a user into session  and returns the token associated to it   
      */
     String addUserToSession(String username, String password) throws BubbledocsException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	Session session;
+    	//Session session;
     	
-    	try {
+    	/*try {
     		session = bubble.getSessionByUsername(username);
     		session.update();
         	return username + session.getTokenInt();
-    	} catch (UserNotInSessionException e) {
+    	} catch (UserNotInSessionException e) {*/
     		int tok = new java.util.Random().nextInt(10);
     		bubble.addSession(new Session(bubble.getUserByUsername(username), tok, org.joda.time.LocalDate.now()));
     		return username + tok;
-    	}    	   	
+    	/*}*/    	   	
     }
     
     /**put a user in session (if not already)

@@ -5,14 +5,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptySpreadsheetNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.OutOfBoundsSpreadsheetException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
-
 import pt.ulisboa.tecnico.bubbledocs.service.CreateSpreadSheet;
 
 // add needed import declarations
@@ -29,9 +27,17 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     private static final int INVALID_SPREADHEET_ROWS = -1;
     private static final int INVALID_SPREADHEET_COLUMNS = -3;
 
+    private String token;
+    
     @Override
     public void initializeDomain() {
        createUser(USERNAME, PASSWORD, NAME);
+       try{
+           token = addUserToSession(USERNAME, PASSWORD);
+       }catch (BubbledocsException e) {
+    	   System.out.println("FAILED TO POPULATE FOR ExportDocumentTest");
+    	   //FIXME At this point we should probably abort!
+       }
     }
 
     //Test case 1
@@ -39,7 +45,6 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     public void success() throws BubbledocsException {
         Bubbledocs bubble = Bubbledocs.getBubbledocs();
         Spreadsheet ss;
-        String token = addUserToSession(USERNAME, PASSWORD);
     	
         CreateSpreadSheet service = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
         service.execute();
@@ -60,17 +65,15 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     //Test case 2
     @Test
     public void successSameName() throws BubbledocsException{
-        String token = addUserToSession(USERNAME, PASSWORD);
-        
         CreateSpreadSheet service = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
         service.execute();
+        CreateSpreadSheet service2 = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+        service2.execute();
     }
      
     //Test case 3
     @Test(expected = EmptySpreadsheetNameException.class)
     public void createEmptyNameSpreadsheet() throws BubbledocsException {
-        String token = addUserToSession(USERNAME, PASSWORD);
-
         CreateSpreadSheet service = new CreateSpreadSheet(token, EMPTY_STRING, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
         service.execute();
     }
@@ -78,9 +81,7 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     //Test case 4
     @Test(expected = UserNotInSessionException.class)
     public void createSpreadsheetUserNotInSession() throws BubbledocsException {
-        String token = addUserToSession(USERNAME, PASSWORD);
         removeUserFromSession(token);
-
         CreateSpreadSheet service = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
         service.execute();
     }
@@ -89,8 +90,6 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     //Test case 5
     @Test(expected = OutOfBoundsSpreadsheetException.class)
     public void createInvalidSizeSpreadsheetNegativeRows() throws BubbledocsException {
-        String token = addUserToSession(USERNAME, PASSWORD);
-
         CreateSpreadSheet service = new CreateSpreadSheet(token, SPREADHEET_NAME, INVALID_SPREADHEET_ROWS, SPREADHEET_COLUMNS);
         service.execute();
     }
@@ -98,8 +97,6 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     //Test case 6 
     @Test(expected = OutOfBoundsSpreadsheetException.class)
     public void createInvalidSizeSpreadsheetNegativeColumns() throws BubbledocsException {
-        String token = addUserToSession(USERNAME, PASSWORD);
-
         CreateSpreadSheet service = new CreateSpreadSheet(token, SPREADHEET_NAME, SPREADHEET_ROWS, INVALID_SPREADHEET_COLUMNS);
         service.execute();
     }
