@@ -1,7 +1,12 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.IOException;
+
+import org.jdom2.JDOMException;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
@@ -31,22 +36,24 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private static final String PASSWORD_WRITE = "bal";
     
     private static final String SPREADHEET_NAME = "Argonian Account Book";
-    private static final int SPREADHEET_ROWS = 10;
-    private static final int SPREADHEET_COLUMNS = 15;
-    private static final int REFERENCE_ROW = 1;
-    private static final int REFERENCE_COLUMN = 1;
-    private static final int LITERAL_ROW = 1;
-    private static final int LITERAL_COLUMN = 1;
+    private static final Integer SPREADHEET_ROWS = 10;
+    private static final Integer SPREADHEET_COLUMNS = 15;
+    private static final Integer REFERENCE_ROW = 1;
+    private static final Integer REFERENCE_COLUMN = 1;
+    private static final Integer LITERAL_ROW = 1;
+    private static final Integer LITERAL_COLUMN = 1;
 
-    private static final int LITERAL_VALUE = 3;
+    private static final Integer LITERAL_VALUE = 3;
 
-    private static final int DOCID_INVALID = -5;
+    private static final Integer DOCID_INVALID = -5;
       
     //This is needed throughout the tests
     private Integer spreadsheetID;
     private String token_author;
     private String token_ro;
 	private String token_write;
+	
+	private org.jdom2.Document doc = new org.jdom2.Document();
 	
     
     @Override
@@ -74,10 +81,58 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
            token_author = addUserToSession(AUTHOR_USERNAME, AUTHOR_PASSWORD);
        	   token_ro = addUserToSession(USERNAME_RO, PASSWORD_RO);
        	   token_write = addUserToSession(USERNAME_WRITE, PASSWORD_WRITE);
-     	   
+       	   
+       	   org.jdom2.Element spreadsheetElement = new org.jdom2.Element("Spreadsheet");
+	       spreadsheetElement.setAttribute("rows", ss.getRows().toString());
+	       spreadsheetElement.setAttribute("columns", ss.getColumns().toString());
+	       spreadsheetElement.setAttribute("author", ss.getAuthor());
+	       spreadsheetElement.setAttribute("name", ss.getName());
+	       spreadsheetElement.setAttribute("date", ss.getDate().toString());
+	       doc.setRootElement(spreadsheetElement);
+	       org.jdom2.Element cells = new org.jdom2.Element("Cells");
+	       spreadsheetElement.addContent(cells);
+	       
+	       org.jdom2.Element litCell = new org.jdom2.Element("Cell");
+	       org.jdom2.Element lit     = new org.jdom2.Element("Literal");
+	       org.jdom2.Element refCell = new org.jdom2.Element("Cell");
+	       org.jdom2.Element ref     = new org.jdom2.Element("Reference");
+	       
+	       cells.addContent(litCell);
+	       cells.addContent(refCell);
+	       litCell.addContent(lit);
+	       refCell.addContent(ref);
+	       
+	       litCell.setAttribute("protected", ss.getCell(LITERAL_ROW, LITERAL_COLUMN).getProtectd().toString());
+	       litCell.setAttribute("row", LITERAL_ROW.toString());
+	       litCell.setAttribute("column", LITERAL_COLUMN.toString());
+	       refCell.setAttribute("protected", ss.getCell(REFERENCE_ROW, REFERENCE_COLUMN).getProtectd().toString());
+	       refCell.setAttribute("row", REFERENCE_ROW.toString());
+	       refCell.setAttribute("column", REFERENCE_COLUMN.toString());
+	       
+	       lit.setAttribute("value", LITERAL_VALUE.toString());	
+	       ref.setAttribute("row", LITERAL_ROW.toString());
+	       ref.setAttribute("column", LITERAL_COLUMN.toString());
+	       
         } catch (BubbledocsException e) {
      	   assertTrue(false);
         }		
+    }
+    
+    @Test
+    public void successCorrectExport() throws BubbledocsException {
+      	ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
+        service.execute();
+        org.jdom2.Document exported = null;
+        try {
+			exported = new org.jdom2.input.SAXBuilder().build(new java.io.StringReader(service.getDocXML()));
+		} catch (IOException | JDOMException e) {
+			assertTrue(false);
+		} 
+        assertNotNull(exported);
+        assertEquals(exported, doc);
+        /* alternative - I have no idea if any of them work
+         * assertTrue(doc.equals(exported));
+         */
     }
     
     //Test case 1
