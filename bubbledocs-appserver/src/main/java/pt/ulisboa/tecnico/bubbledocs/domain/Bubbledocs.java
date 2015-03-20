@@ -92,23 +92,20 @@ import pt.ist.fenixframework.FenixFramework;
         user = getUserByUsername(username);
         if(!password.equals(user.getPasswd()))
             throw new WrongPasswordException("Failed to login user " + username + "due to password mismatch.");
-        tokenInt = rand.nextInt(10);
-        
+       
         try { 
             session = getSessionByUsername(username);
         } catch(UserNotInSessionException e) {
             //Some code duplication... (but its better than an empty catch block)
+        	tokenInt = rand.nextInt(10);
             session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
             addSession(session);
             return tokenInt;
         }
         
-        //If a session for this user was already set then delete it and create a new one
-        clearSession(session);
-        session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
-        addSession(session);
-
-        return tokenInt;
+        //If a session for this user was already set then update it
+        session.update();
+        return session.getTokenInt();
     }
 
     /**
@@ -232,23 +229,22 @@ import pt.ist.fenixframework.FenixFramework;
         Session session;
         User author;
         Spreadsheet spreadsheet;
-       
-        //Sanity checks 
-        if(name.isEmpty())
-            throw new EmptySpreadsheetNameException("Operation not permited: create a Spreadsheet with an empty name!");
-        if(1 > rows || 1 > columns)
-            throw new OutOfBoundsSpreadsheetException("Operation not permited: create a spreadheet with 0 or less rows/columns!");
-
         try{
-            session = getSessionByToken(userToken);
+        	session = getSessionByToken(userToken);
 
-            //This if block should be in everyones functions called from the service layer!!
+        	//This if block should be in everyones functions called from the service layer!!
             if(session.hasExpired()){
                 clearSession(session);
                 throw new UserNotInSessionException(userToken + "'s Session expired!");
             }else
                 session.update();
             //-----------------------------
+
+        	//Sanity checks 
+        	if(name.isEmpty())
+        		throw new EmptySpreadsheetNameException("Operation not permited: create a Spreadsheet with an empty name!");
+        	if(1 > rows || 1 > columns)
+        		throw new OutOfBoundsSpreadsheetException("Operation not permited: create a spreadheet with 0 or less rows/columns!");
 
             author = getUserByUsername(session.getUser().getUsername());
             spreadsheet = createSpreadsheet(author, name, rows, columns);
