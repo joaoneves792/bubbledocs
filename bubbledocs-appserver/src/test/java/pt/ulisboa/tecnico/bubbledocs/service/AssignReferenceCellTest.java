@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import static org.junit.Assert.assertEquals;
+
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
@@ -131,7 +133,9 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     @Test
     public void success() throws BubbledocsException {
  	    AssignReferenceCell service = new AssignReferenceCell(token, spreadsheetID, REFERENCE_ID, LITERAL_ID);
-        service.execute();   
+        service.execute();
+        assertEquals("Not returning the expected value for the cell!", LITERAL, service.getResult().intValue());
+        
     }
     
 }
