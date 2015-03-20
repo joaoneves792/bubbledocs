@@ -31,9 +31,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private static final String NAME_RO = "Molag Bal";
     private static final String PASSWORD_RO = "bal";
 
-    private static final String USERNAME_WRITE = "mb";
-    private static final String NAME_WRITE = "Molag Bal";
-    private static final String PASSWORD_WRITE = "bal";
+    private static final String USERNAME_WRITE = "hm";
+    private static final String NAME_WRITE = "Hermaeus Mora";
+    private static final String PASSWORD_WRITE = "mora";
     
     private static final String SPREADHEET_NAME = "Argonian Account Book";
     private static final Integer SPREADHEET_ROWS = 10;
