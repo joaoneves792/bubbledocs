@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Root;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;

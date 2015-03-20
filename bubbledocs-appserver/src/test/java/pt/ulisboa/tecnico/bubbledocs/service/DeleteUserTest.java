@@ -68,8 +68,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
         assertNull("Spreadsheet was not Deleted", getSpreadSheet(SPREADSHEET_NAME));
         assertNull("Session was not Deleted", getUserFromSession(EXISTING_TOKEN));
         assertTrue("Permissions were not Deleted", getPermissionsByUser(EXISTING_USERNAME).isEmpty());
-        
-        //FIXME TEST SESSION UPDATE        
+        assertTrue("Root session was not updated", hasSessionUpdated(ROOT_TOKEN));     
     }
 
 
@@ -85,7 +84,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     }
     
     @Test
-    public void rootFailSessionUpdate() {
+    public void rootFailSessionUpdate() throws BubbledocsException {
     	try {
     		new DeleteUser(ROOT_TOKEN, NON_EXISTING_USERNAME).execute();
     	} catch (BubbledocsException e) {
@@ -97,7 +96,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     }
     
     @Test
-    public void unauthorizedFailSessionUpdate() {
+    public void unauthorizedFailSessionUpdate() throws BubbledocsException {
     	try {
     		new DeleteUser(UNAUTHORIZED_TOKEN, EXISTING_USERNAME).execute();
     	} catch (BubbledocsException e) {

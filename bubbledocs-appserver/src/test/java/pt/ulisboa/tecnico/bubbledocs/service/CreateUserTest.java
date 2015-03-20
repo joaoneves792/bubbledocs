@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidSessionTimeException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
@@ -70,8 +71,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
         assertEquals(NON_EXSTING_USERNAME, user.getUsername());
         assertEquals(NON_EXISTING_PASSWORD, user.getPasswd());
         assertEquals(NON_EXISTING_NAME, user.getName());
-        
-        //FIXME TEST IF SESSION UPDATED
+        assertTrue("Root session was not updated", hasSessionUpdated(ROOT_TOKEN));
     }
 
     @Test(expected = UserAlreadyExistsException.class)
@@ -85,7 +85,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     }
     
     @Test
-    public void rootFailSessionUpdate() {
+    public void rootFailSessionUpdate() throws UserNotInSessionException, InvalidSessionTimeException {
     	try {
 			new CreateUser(ROOT_TOKEN, EXISTING_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME).execute();
 		} catch (BubbledocsException e) {
@@ -117,7 +117,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     }
     
     @Test
-    public void unauthorizedFailSessionUpdate() {
+    public void unauthorizedFailSessionUpdate() throws BubbledocsException {
     	try {
 			new CreateUser(UNAUTHORIZED_TOKEN, EXISTING_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME).execute();
 		} catch (BubbledocsException e) {

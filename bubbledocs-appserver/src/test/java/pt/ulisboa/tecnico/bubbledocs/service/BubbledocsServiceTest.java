@@ -6,6 +6,8 @@ import java.util.Set;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
+import org.joda.time.LocalDateTime;
+import org.joda.time.Seconds;
 import org.junit.After;
 import org.junit.Before;
 
@@ -17,6 +19,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidSessionTimeException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
@@ -170,10 +173,23 @@ public abstract class BubbledocsServiceTest {
     	}
     	return permissions;
     }
-    
-    //FIXME implement me
-    boolean hasSessionUpdated(String token) {
-    	return false;
+   
+    boolean hasSessionUpdated(String token) throws UserNotInSessionException, InvalidSessionTimeException {
+    	final int MAXIMUM_ACCEPTABLE_VALUE = 2; //in seconds, plenty of time to execute a service
+    	org.joda.time.LocalDateTime time = getLastAccessTimeInSession(token);
+    	int difference = Seconds.secondsBetween(time, new org.joda.time.LocalDateTime()).getSeconds();
+    	if(difference <= 0)
+    		throw new InvalidSessionTimeException("Session Time is incorrectly set.");
+    	return difference < MAXIMUM_ACCEPTABLE_VALUE;
     }
 
+    // returns the time of the last access for the user with token userToken.
+    // It must get this data from the session object of the application
+    protected LocalDateTime getLastAccessTimeInSession(String userToken) throws UserNotInSessionException {
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	Session session = bubble.getSessionByToken(userToken);
+    	
+    	//Not 100% sure the next line works!!
+    	return new LocalDateTime(session.getDate());
+    }
 }
