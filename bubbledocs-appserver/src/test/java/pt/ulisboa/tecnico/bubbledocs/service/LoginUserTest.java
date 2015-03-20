@@ -21,11 +21,9 @@ public class LoginUserTest extends BubbledocsServiceTest {
     private static final String INVALID_USERNAME = "hm";
     private static final String INVALID_PASSWORD = "mora";
     
-    private static User USER;
-        
     @Override
     public void initializeDomain() {
-        USER = createUser(USERNAME, PASSWORD, NAME);
+        createUser(USERNAME, PASSWORD, NAME);
     }
 
     //Test Case 1 
@@ -73,9 +71,4 @@ public class LoginUserTest extends BubbledocsServiceTest {
         service.execute();
     }
     
-    @Test
-    public void loginInSession() throws BubbledocsException {
-    	addUserToSession(TOKEN_INT, USER);
-    	success();
-    }
 }
