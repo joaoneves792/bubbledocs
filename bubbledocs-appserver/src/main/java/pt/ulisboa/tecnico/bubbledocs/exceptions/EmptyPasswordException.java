@@ -1,12 +1,12 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class UnauthorizedOperationException extends BubbledocsException {
+public class EmptyPasswordException extends BubbledocsException {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public UnauthorizedOperationException (String m) {
+	public EmptyPasswordException(String m) {
 		super(m);
 	}
 }

@@ -171,6 +171,7 @@ public class BubbleApplication{
 		} catch (InvalidCellException e) {
 			e.printStackTrace();
 		}
+    	
     	return;
 	}
     

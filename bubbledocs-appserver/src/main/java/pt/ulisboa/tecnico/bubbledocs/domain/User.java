@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.jdom2.JDOMException;
 
-import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
@@ -20,10 +19,8 @@ public class User extends User_Base {
         super();
     }
 	
-    public User(String name, String username, String passwd) throws CreateRootException {
+    public User(String name, String username, String passwd) {
     	super();
-    	if(username.equals("root"))
-    		throw new CreateRootException("Attempted to create User with root username");
     	init(name, username, passwd);
     }
     

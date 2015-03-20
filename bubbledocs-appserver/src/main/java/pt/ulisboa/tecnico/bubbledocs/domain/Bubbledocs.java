@@ -60,6 +60,17 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     	throw new UserNotFoundException("User with username " + username + " was not found.");
     }
+    
+	public Root getSuperUser() {
+		Root root;
+		try {
+			root = (Root) getUserByUsername("root");
+		} catch (UserNotFoundException e) {
+			root = new Root();
+			addUser(root);
+		}
+		return root;
+	}
 
     /**
      * Method to create a session for a user
@@ -105,7 +116,7 @@ import pt.ist.fenixframework.FenixFramework;
      * @param username
      * @return Session or null
      */
-    private Session getSessionByUsername(String username) throws UserNotInSessionException {
+    public Session getSessionByUsername(String username) throws UserNotInSessionException {
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
@@ -320,7 +331,7 @@ import pt.ist.fenixframework.FenixFramework;
     public String export(Spreadsheet spreadsheet) throws InvalidExportException {
     	return spreadsheet.export();    	
     }
-
+  
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {		
 		Session session = getSessionByUsername("root");
 		if(session.hasExpired()) {
@@ -334,15 +345,15 @@ import pt.ist.fenixframework.FenixFramework;
 			User user = getUserByUsername(newUser.getUsername());
     		if(null != user) {
     			throw new UserAlreadyExistsException("User with username " + newUser.getUsername() + " already exists.");
-    		}    		
+    		}		
     	} catch (UserNotFoundException e) {
     		addUser(newUser);
     	} 
 	}
-    
+	
     public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException, RootRemoveException {
     	if(deadUserUsername.equals("root"))
-    		throw new RootRemoveException("Don't delete yourself!");
+    		throw new RootRemoveException("Super User, you may not delete yourself...");
     	
     	Session session = getSessionByUsername("root");
     	if(session.hasExpired()) {

@@ -5,10 +5,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedOperationException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnknownBubbledocsUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.DeleteUser;
 
@@ -16,41 +19,64 @@ import pt.ulisboa.tecnico.bubbledocs.service.DeleteUser;
 
 public class DeleteUserTest extends BubbledocsServiceTest {
 
-    private static final String USERNAME_TO_DELETE = "smf";
-    private static final String USERNAME = "ars";
-    private static final String PASSWORD = "ars";
-    private static final String ROOT_USERNAME = "root";
-    private static final String ROOT_PASSWORD = "root";
-    private static final String USERNAME_DOES_NOT_EXIST = "no-one";
-    private static final String SPREADSHEET_NAME = "spread";
+    private static final String ROOT_TOKEN          = "root8";
+    private static final int ROOT_TOKEN_INT         = 8;
+    private static final String EXISTING_TOKEN      = "md4";
+    private static final int EXISTING_TOKEN_INT     = 4;
+    private static final String UNAUTHORIZED_TOKEN  = "cv3";
+    private static final int UNAUTHORIZED_TOKEN_INT = 3;
+ 
+    private static final String EXISTING_USERNAME     = "md";
+    private static final String NON_EXSTING_USERNAME  = "mb";
+    private static final String UNAUTHORIZED_USERNAME = "cv";
 
-    // the tokens for user root
-    private String root;
+    private static final String EXISTING_PASSWORD      = "dagon";
+    private static final String UNAUTHORIZED_PASSWORD  = "vile";
+
+    private static final String EXISTING_NAME      = "Mehrunes Dagon";
+    private static final String UNAUTHORIZED_NAME  = "Clavicus Vile";
+
+    private static final String EMPTY_USERNAME = "";
+    
+    private static final String SPREADSHEET_NAME = "Argonian Account Book";
+    private static final Integer SPREADSHEET_ROWS = 42;
+    private static final Integer SPREADSHEET_COLUMNS = 42;
+
+    private static Integer SPREADSHEET_ID;    
 
     @Override
     public void initializeDomain() {
-        createUser(USERNAME, PASSWORD, "António Rito Silva");
-        User smf = createUser(USERNAME_TO_DELETE, "smf", "Sérgio Fernandes");
-        createSpreadSheet(smf, USERNAME_TO_DELETE, 20, 20);
+        Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	User userToDelete       = createUser(EXISTING_USERNAME, EXISTING_PASSWORD, EXISTING_NAME),
+        	 unauthorizedUser   = createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME);
+        Root root = bubble.getSuperUser();
+        
+        createSpreadSheetIfNotExists(userToDelete, SPREADSHEET_NAME, SPREADSHEET_ROWS, SPREADSHEET_COLUMNS);
+        
+        addUserToSession(ROOT_TOKEN_INT, root);
+        addUserToSession(EXISTING_TOKEN_INT, userToDelete);
+        addUserToSession(UNAUTHORIZED_TOKEN_INT, unauthorizedUser);        
+    }
+
+    @Test
+    public void success() throws BubbledocsException {
+    	createUser(EXISTING_USERNAME, EXISTING_PASSWORD, EXISTING_NAME);
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	User userToDelete = bubble.getUserByUsername(EXISTING_USERNAME);
+    	createSpreadSheetIfNotExists(userToDelete, SPREADSHEET_NAME, SPREADSHEET_ROWS, SPREADSHEET_COLUMNS);
+    	
+        new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME).execute();
+        
+        boolean isUserDeleted = false;
 
         try {
-			root = addUserToSession(ROOT_USERNAME, ROOT_PASSWORD);
-		} catch (BubbledocsException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    };
-
-    public void success() throws BubbledocsException {
-        DeleteUser service = new DeleteUser(root, USERNAME_TO_DELETE);
-        service.execute();
-
-        boolean deleted = getUserFromUsername(USERNAME_TO_DELETE) == null;
-
-        assertTrue("user was not deleted", deleted);
-
-        assertNull("Spreadsheet was not deleted",
-                getSpreadSheet(SPREADSHEET_NAME));
+        	getUserFromUsername(EXISTING_USERNAME);
+        } catch(UserNotFoundException e) {
+        	isUserDeleted = true;
+        } 
+        
+        assertTrue("user was not deleted", isUserDeleted);
+        assertNull("Spreadsheet was not deleted", getSpreadsheetsByName(SPREADSHEET_NAME).isEmpty());
     }
 
     /*
@@ -78,7 +104,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
         new DeleteUser(root, USERNAME_DOES_NOT_EXIST).execute();
     }
 
-    @Test(expected = UnauthorizedOperationException.class)
+    @Test(expected = UnauthorizedUserException.class)
     public void notRootUser() throws BubbledocsException {
         String ars = addUserToSession(USERNAME, PASSWORD);
         new DeleteUser(ars, USERNAME_TO_DELETE).execute();

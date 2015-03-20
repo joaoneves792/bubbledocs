@@ -1,13 +1,13 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
-public class DuplicateUsernameException extends BubbledocsException {
+public class EmptyNameException extends BubbledocsException {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
-	public DuplicateUsernameException (String m) {
+
+	public EmptyNameException(String m) {
 		super(m);
 	}
 

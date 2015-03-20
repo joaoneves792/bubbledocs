@@ -17,6 +17,7 @@ public class Session extends Session_Base {
         setUser(user);
         setTokenInt(tokenInt);
         setDate(date);
+        user.setSession(this);
     }    
 
 
