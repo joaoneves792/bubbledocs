@@ -171,15 +171,6 @@ import pt.ist.fenixframework.FenixFramework;
     	throw new SpreadsheetNotFoundException("No spreadsheet found for ID: " + spreadsheetId);
     }
     
-    private Permission __getPermission__(String username, int spreadsheetId) {
-    	for(Permission permission : getPermissionSet()) {
-    		if(permission.getUser().getUsername().equals(username) &&
-    				permission.getSpreadsheet().getId() == spreadsheetId)
-    			return permission;
-    	}
-		return null;
-    }
-    
     public Permission getPermission(String username, int spreadsheetId) throws PermissionNotFoundException {
     	for(Permission permission : getPermissionSet()) {
     		if(permission.getUser().getUsername().equals(username) && 
@@ -437,33 +428,34 @@ import pt.ist.fenixframework.FenixFramework;
     private abstract class ReadWriteRoutine {
     	protected final void execute(String requestUsername, String targetUsername, int spreadsheetId) 
     			throws UserNotFoundException, SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException {
-    		getUserByUsername(targetUsername);
     		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-    		if(requestUsername.equals(spreadsheet.getAuthor()) ||
-    				getPermission(requestUsername, spreadsheetId).getWritePermission()) {
-    	    			Permission permission = __getPermission__(targetUsername, spreadsheetId);
-    	    			dispatch(targetUsername, spreadsheetId, permission);
+    		if(targetUsername.equals(spreadsheet.getAuthor()))
+    			throw new UnauthorizedUserException("Attemped to change permissions of author of spreadsheet with ID = " + spreadsheetId + ".");
+    		User targetUser = getUserByUsername(targetUsername);
+    		if(getPermission(requestUsername, spreadsheetId).getWritePermission()) {
+    	    			Permission permission = getPermission(targetUsername, spreadsheetId);
+    	    			dispatch(targetUser, spreadsheet, permission);
     		} else {
     			throw new UnauthorizedUserException
     			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");
     		}
     	}
     	
-    	protected abstract void dispatch(String targetUsername, int spreadsheetId, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException;	    
+    	protected abstract void dispatch(User targetUser, Spreadsheet spreadsheet, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException;	    
     }
     
     private class AddReadRoutine extends ReadWriteRoutine {
-    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException {
+    	protected void dispatch(User targetUser, Spreadsheet spreadsheet, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException {
     		if(null == permission) {
-    			addPermission(new Permission(getSpreadsheetById(spreadsheetId), getUserByUsername(targetUsername), false));
+    			addPermission(new Permission(spreadsheet, targetUser, false));
     		} else return;
     	}
     }
     
     private class AddWriteRoutine extends ReadWriteRoutine {
-    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException {
+    	protected void dispatch(User targetUser, Spreadsheet spreadsheet, Permission permission) throws SpreadsheetNotFoundException, UserNotFoundException {
     		if(null == permission) {
-    			addPermission(new Permission(getSpreadsheetById(spreadsheetId), getUserByUsername(targetUsername), true));
+    			addPermission(new Permission(spreadsheet, targetUser, true));
     		} else {
     			permission.setWritePermission(true);
     		}
@@ -471,7 +463,7 @@ import pt.ist.fenixframework.FenixFramework;
     }
     
     private class RevokeReadRoutine extends ReadWriteRoutine {
-    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    	protected void dispatch(User targetUser, Spreadsheet spreadsheet, Permission permission) {
     		if(null != permission) {
     			removePermission(permission);
     			permission.clean();
@@ -480,7 +472,7 @@ import pt.ist.fenixframework.FenixFramework;
     }
     
     private class RevokeWriteRoutine extends ReadWriteRoutine {
-    	protected void dispatch(String targetUsername, int spreadsheetId, Permission permission) {
+    	protected void dispatch(User targetUser, Spreadsheet spreadsheet, Permission permission) {
     		if(null != permission) {
     			permission.setWritePermission(false);
     		} else return;
@@ -491,8 +483,7 @@ import pt.ist.fenixframework.FenixFramework;
     	protected final void execute(String requestUsername, int spreadsheetId, int row, int column)
     			throws SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException, UnauthorizedUserException {
     		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
-        	if(requestUsername.equals(spreadsheet.getAuthor()) ||
-        			getPermission(requestUsername, spreadsheetId).getWritePermission()) {
+        	if(getPermission(requestUsername, spreadsheetId).getWritePermission()) {
         		dispatch(spreadsheet, row, column);
         	} else {
         		throw new UnauthorizedUserException

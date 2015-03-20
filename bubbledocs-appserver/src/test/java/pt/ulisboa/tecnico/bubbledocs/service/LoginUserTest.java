@@ -13,7 +13,6 @@ import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 
 public class LoginUserTest extends BubbledocsServiceTest {
 
-	private static final int TOKEN_INT = 1;
     private static final String USERNAME = "md";
     private static final String PASSWORD = "dagon";
     private static final String NAME = "Mehrunes Dagon";

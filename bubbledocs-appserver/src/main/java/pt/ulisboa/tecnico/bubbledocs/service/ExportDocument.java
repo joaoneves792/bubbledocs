@@ -15,15 +15,15 @@ public class ExportDocument extends BubbledocsService {
 	    return docXML;
     }
 
-    public ExportDocument(String userToken, int docId) {
-    	this.userToken=userToken;
-    	this.docId=docId;
+    public ExportDocument(String userTok, int ssId) {
+    	userToken=userTok;
+    	docId=ssId;
     }
 
     @Override
     protected void dispatch() throws BubbledocsException {
         Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        this.docXML = bubble.exportDocument(userToken, docId);
+        docXML = bubble.exportDocument(userToken, docId);
     }
     
 }
