@@ -71,7 +71,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     	   //Give RO user read permission
     	   bubble.addReadPermission(AUTHOR_USERNAME, USERNAME_RO, spreadsheetID);
     	   //Give Write user write permission
-    	   bubble.addReadPermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);
+    	   bubble.addWritePermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);
      		   
     	   tokenAuthor = addUserToSession(AUTHOR_USERNAME, AUTHOR_PASSWORD);
      	   tokenRo = addUserToSession(USERNAME_RO, PASSWORD_RO);
@@ -149,7 +149,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     public void success() throws BubbledocsException {
  	    AssignLiteralCell service = new AssignLiteralCell(tokenAuthor, spreadsheetID, LITERAL_ID, LITERAL_VALUE);
         service.execute();
-        assertEquals("Not returning the expected value for the cell!", LITERAL_VALUE, service.getResult().intValue());
+        assertEquals("Not returning the expected value for the cell!", LITERAL_VALUE.toString(), service.getResult().toString());
         assertTrue("Session was not updated", hasSessionUpdated(tokenAuthor));
     }
     
