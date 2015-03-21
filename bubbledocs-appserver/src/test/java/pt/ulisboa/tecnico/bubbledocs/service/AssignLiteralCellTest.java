@@ -89,7 +89,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
         service.execute();
     }
     
-    //Test case 2 FAIL
+    //Test case 2
     @Test(expected = InvalidCellException.class)
     public void assignLiteralToInvalidCell() throws BubbledocsException, NumberFormatException {
     	try{
@@ -116,7 +116,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
         service.execute();
     }
     
-    //Test case 5 FAIL
+    //Test case 5
     @Test(expected = ProtectedCellException.class)
     public void assignLiteralOnProtectedCell() throws BubbledocsException {
     	AssignLiteralCell service = new AssignLiteralCell(tokenAuthor, spreadsheetID, PROTECTED_ID, LITERAL_VALUE);
@@ -144,7 +144,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
         service.execute();   
     }
     
-    //Test case 8 FAIL
+    //Test case 8
     @Test
     public void success() throws BubbledocsException {
  	    AssignLiteralCell service = new AssignLiteralCell(tokenAuthor, spreadsheetID, LITERAL_ID, LITERAL_VALUE);
