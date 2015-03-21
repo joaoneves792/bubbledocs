@@ -7,7 +7,6 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
 import org.joda.time.LocalDate;
-import org.joda.time.LocalDateTime;
 import org.joda.time.Seconds;
 import org.junit.After;
 import org.junit.Before;

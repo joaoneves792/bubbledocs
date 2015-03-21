@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
@@ -152,8 +151,7 @@ public class BubbleApplication{
     	if(!bubble.getUserSet().isEmpty()) 
     		return;
     	
-    	//Root root = new Root();
-    	//bubble.addUser(root);
+    	bubble.getSuperUser();
     	
     	User pf = new User("Paul Door", "pf", "sub");
     	User ra = new User("Step Rabbit", "ra", "cor");

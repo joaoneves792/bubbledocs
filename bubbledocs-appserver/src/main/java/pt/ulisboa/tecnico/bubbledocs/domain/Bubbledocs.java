@@ -398,7 +398,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
     
-    public Integer AssignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferenceRow, Integer cellReferenceColumn) throws BubbledocsException {
+    public Integer assignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferenceRow, Integer cellReferenceColumn) throws BubbledocsException {
     	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdrow, cellIdColumn);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
@@ -438,11 +438,11 @@ import pt.ist.fenixframework.FenixFramework;
     					Permission permission = null;
     					try{
     	    				permission = getPermission(targetUsername, spreadsheetId);
-    	    			}catch(PermissionNotFoundException e){//Side-effect: revoking a non existing permission is now silent!
-    	    				dispatch(targetUser, spreadsheet, null);
-    	    				return;
+    	    			} catch(PermissionNotFoundException e) {
+    	    				permission = null;
+    	    			} finally {
+    	    				dispatch(targetUser, spreadsheet, permission);
     	    			}
-    	    			dispatch(targetUser, spreadsheet, permission);
     		} else {
     			throw new UnauthorizedUserException
     			("User " + requestUsername + " is not authorized to change spreadsheet " + spreadsheetId + ".");

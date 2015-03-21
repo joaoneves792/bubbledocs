@@ -49,9 +49,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       
     //This is needed throughout the tests
     private Integer spreadsheetID;
-    private String token_author;
-    private String token_ro;
-	private String token_write;
+    private String tokenAuthor;
+    private String tokenRo;
+	private String tokenWrite;
 	
 	private org.jdom2.Document doc = new org.jdom2.Document();
 	
@@ -78,9 +78,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
      	   //Give WRITE user write permissions
      	   bubble.addWritePermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);     	   
 
-           token_author = addUserToSession(AUTHOR_USERNAME, AUTHOR_PASSWORD);
-       	   token_ro = addUserToSession(USERNAME_RO, PASSWORD_RO);
-       	   token_write = addUserToSession(USERNAME_WRITE, PASSWORD_WRITE);
+           tokenAuthor = addUserToSession(AUTHOR_USERNAME, AUTHOR_PASSWORD);
+       	   tokenRo = addUserToSession(USERNAME_RO, PASSWORD_RO);
+       	   tokenWrite = addUserToSession(USERNAME_WRITE, PASSWORD_WRITE);
        	   
        	   org.jdom2.Element spreadsheetElement = new org.jdom2.Element("Spreadsheet");
 	       spreadsheetElement.setAttribute("rows", ss.getRows().toString());
@@ -120,7 +120,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     
     @Test
     public void successCorrectExport() throws BubbledocsException {
-      	ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
+      	ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
         service.execute();
         org.jdom2.Document exported = null;
         try {
@@ -138,23 +138,23 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 1
     @Test
     public void successUserReadPermission() throws BubbledocsException {
-      	ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
+      	ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
-        assertTrue("Session was not updated", hasSessionUpdated(token_ro));
+        assertTrue("Session was not updated", hasSessionUpdated(tokenRo));
     }
 
     //Test case 2
     @Test
     public void successUserWritePermission() throws BubbledocsException {
-      	ExportDocument service = new ExportDocument(token_write, spreadsheetID);
+      	ExportDocument service = new ExportDocument(tokenWrite, spreadsheetID);
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
     
     @Test
     public void successAuthor() throws BubbledocsException {
-      	ExportDocument service = new ExportDocument(token_author, spreadsheetID);
+      	ExportDocument service = new ExportDocument(tokenAuthor, spreadsheetID);
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
@@ -162,15 +162,15 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 3
     @Test(expected = SpreadsheetNotFoundException.class)
     public void invalidDocumentExport() throws BubbledocsException {
-    	new ExportDocument(token_author, DOCID_INVALID).execute();
+    	new ExportDocument(tokenAuthor, DOCID_INVALID).execute();
     }
     
 	@Test
 	public void failToExportSessionTime() throws BubbledocsException {
 		try{
-    		new ExportDocument(token_author, DOCID_INVALID).execute();
+    		new ExportDocument(tokenAuthor, DOCID_INVALID).execute();
     	}catch(BubbledocsException e){
-            assertTrue("Session was not updated", hasSessionUpdated(token_author));
+            assertTrue("Session was not updated", hasSessionUpdated(tokenAuthor));
             return;
     	}
 		assertTrue(false);
@@ -183,14 +183,14 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     	//Temporarily revoke RO user permissions
     	bubble.revokeReadPermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);
        	    	
-	    ExportDocument service = new ExportDocument(token_ro, spreadsheetID);
+	    ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
       	service.execute();
     }    
     
     @Test(expected = UserNotInSessionException.class)
     public void noSessionUserExport() throws BubbledocsException {
-    	removeUserFromSession(token_author);
-    	new ExportDocument(token_author, spreadsheetID).execute();
+    	removeUserFromSession(tokenAuthor);
+    	new ExportDocument(tokenAuthor, spreadsheetID).execute();
     }    
     
     

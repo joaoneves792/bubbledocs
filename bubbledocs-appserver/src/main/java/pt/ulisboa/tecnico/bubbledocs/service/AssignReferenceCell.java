@@ -7,11 +7,11 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
 public class AssignReferenceCell extends BubbledocsService {
 	
-	private String _userToken;
-    private Integer _spreadsheetId;
-    private String _cellId;
-    private String _cellReference;
-    private Integer _result;
+	private String userToken;
+    private Integer spreadsheetId;
+    private String myCellId;
+    private String referencedCell;
+    private Integer result;
     
     /*
      * Assigns a reference to a cell
@@ -20,13 +20,11 @@ public class AssignReferenceCell extends BubbledocsService {
      * @param string with cellId
      * @param string with cellReference
      */
-    public AssignReferenceCell(String tokenUser, int spreadsheetId, String cellId, String cellReference) {
-
-    	_userToken = tokenUser;
-    	_spreadsheetId = spreadsheetId;
-    	_cellId = cellId;
-    	_cellReference = cellReference;
-
+    public AssignReferenceCell(String tokenUser, int ssId, String cellID, String cellRef) {
+    	userToken = tokenUser;
+    	spreadsheetId = ssId;
+    	myCellId = cellID;
+    	referencedCell = cellRef;
     }
 
     @Override
@@ -37,8 +35,8 @@ public class AssignReferenceCell extends BubbledocsService {
    	   	
    	   	//Parse the cells id's
    	   	String delims = "[;]";
-    	String[] tokensCellId= _cellId.split(delims);
-    	String[] tokensCellReference = _cellReference.split(delims);
+    	String[] tokensCellId= myCellId.split(delims);
+    	String[] tokensCellReference = referencedCell.split(delims);
     	
     	cellLine = Integer.parseInt(tokensCellId[0]);
     	cellColumn = Integer.parseInt(tokensCellId[1]);
@@ -46,10 +44,10 @@ public class AssignReferenceCell extends BubbledocsService {
     	refCellColumn = Integer.parseInt(tokensCellReference[1]);
    	   	
     	//Assign it and get the value of this cell
-    	_result = bubble.AssignReferenceCell(_userToken, _spreadsheetId, cellLine, cellColumn, refCellLine, refCellColumn);
+    	result = bubble.assignReferenceCell(userToken, spreadsheetId, cellLine, cellColumn, refCellLine, refCellColumn);
     }
     
     public final Integer getResult(){
-    	return _result;
+    	return result;
     }
 }
