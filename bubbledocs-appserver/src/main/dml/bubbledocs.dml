@@ -133,15 +133,17 @@ relation BubbledocsHasSessions {
 	}
 }
 
-relation PermissionHasSpreadsheet {
-	Permission playsRole permission{
+relation SpreadsheetHasPermissions {
+	Permission playsRole permission {
 		multiplicity *;
 	}
 	Spreadsheet playsRole spreadsheet;
 }
 
-relation PermissionHasUser {
-	Permission playsRole permission;
+relation UserHasPermissions {
+	Permission playsRole permission {
+		multiplicity *;
+	}
 	User playsRole user;
 }
 

@@ -132,9 +132,10 @@ import pt.ist.fenixframework.FenixFramework;
     	Set<Session> sessions;
     	
     	sessions = getSessionSet();
-    	for(Session s : sessions)
+    	for(Session s : sessions) {
     		if(token.equals(s.getUser().getUsername() + s.getTokenInt()))
     			return s;
+    	}
         throw new UserNotInSessionException("No existing session for " + token + " found!");
     }
     
