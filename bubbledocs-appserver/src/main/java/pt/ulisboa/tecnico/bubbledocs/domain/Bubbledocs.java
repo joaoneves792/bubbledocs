@@ -257,7 +257,9 @@ import pt.ist.fenixframework.FenixFramework;
     public Spreadsheet createSpreadsheet(User author, String name, int rows, int columns) {
     	Spreadsheet spreadsheet = new Spreadsheet(name, author.getUsername(), generateId(), rows, columns);
     	addSpreadsheet(spreadsheet);
-        addPermission(new Permission(spreadsheet, author, true));
+    	Permission permission = new Permission(spreadsheet, author, true);
+        addPermission(permission);
+        //spreadsheet.addPermission(permission);
     	return spreadsheet;
     }
     
@@ -361,9 +363,10 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     	
     	for(Permission p : getPermissionSet()) {
-    		if(p.getUser().getUsername().equals(deadUserUsername));
-    		removePermission(p);
-    		p.clean();
+    		if(p.getUser().getUsername().equals(deadUserUsername)){
+        		removePermission(p);
+        		p.clean();
+    		}
     	}
     	
     	for(Spreadsheet spreadsheet : getSpreadsheetsByAuthor(deadUserUsername)) {
@@ -381,6 +384,9 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     	
     	session.update();
+    	
+    	//Make sure the spreadsheet exists
+    	getSpreadsheetById(spreadsheetId);
 
     	Permission userPermission = getPermission(session.getUser().getUsername(), spreadsheetId);
     	if(!userPermission.getWritePermission()) {

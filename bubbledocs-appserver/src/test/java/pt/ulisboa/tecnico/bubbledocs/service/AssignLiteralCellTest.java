@@ -56,7 +56,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     	   
     	   //Give RO user read permissions
     	   bubble.addReadPermission(USERNAME, USERNAME_RO, spreadsheetID);
-     		   
+    	   
     	   token = addUserToSession(USERNAME, PASSWORD);
      	   token_ro = addUserToSession(USERNAME_RO, PASSWORD_RO);
     	   
@@ -73,7 +73,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
         service.execute();
     }
     
-    //Test case 2
+    //Test case 2 FAIL
     @Test(expected = InvalidCellException.class)
     public void assignLiteralToInvalidCell() throws BubbledocsException, NumberFormatException {
     	try{
@@ -100,7 +100,7 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
         service.execute();
     }
     
-    //Test case 5
+    //Test case 5 FAIL
     @Test(expected = ProtectedCellException.class)
     public void assignLiteralOnProtectedCell() throws BubbledocsException {
     	AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, PROTECTED_ID, LITERAL);
@@ -123,12 +123,12 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     }
     
     
-    //Test case 8
+    //Test case 8 FAIL
     @Test
     public void success() throws BubbledocsException {
  	    AssignLiteralCell service = new AssignLiteralCell(token, spreadsheetID, LITERAL_ID, LITERAL);
         service.execute();
-        assertEquals("Not returning the expected value for the cell!", LITERAL, service.getResult().intValue());
+        assertEquals("Not returning the expected value for the cell!", Integer.parseInt(LITERAL), service.getResult().intValue());
         assertTrue("Session was not updated", hasSessionUpdated(token));
     }
     

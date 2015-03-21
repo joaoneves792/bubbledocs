@@ -134,7 +134,9 @@ relation BubbledocsHasSessions {
 }
 
 relation PermissionHasSpreadsheet {
-	Permission playsRole permission;
+	Permission playsRole permission{
+		multiplicity *;
+	}
 	Spreadsheet playsRole spreadsheet;
 }
 
