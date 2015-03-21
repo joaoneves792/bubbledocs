@@ -21,11 +21,11 @@ public class CreateUser extends BubbledocsService {
 
     public CreateUser(String userToken, String username, String passwd, String name) throws EmptyPasswordException, EmptyUsernameException, EmptyNameException {
 
-    	if(username != null && !username.isEmpty())
+    	if(username == null || username.isEmpty())
     		throw new EmptyUsernameException("Attempted to create user with no username");
-    	else if(passwd != null && !passwd.isEmpty()) {
+    	else if(passwd == null || passwd.isEmpty()) {
     		throw new EmptyPasswordException("Attempted to create a user with no password.");
-    	} else if(name != null && !name.isEmpty()) {
+    	} else if(name == null || name.isEmpty()) {
     		throw new EmptyNameException("Attempted to create a user with no name.");
     	} 
     	

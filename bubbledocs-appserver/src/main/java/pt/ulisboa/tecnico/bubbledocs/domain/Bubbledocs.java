@@ -55,6 +55,7 @@ import pt.ist.fenixframework.FenixFramework;
 
     public User getUserByUsername(String username) throws UserNotFoundException {
     	for(User user : getUserSet()) {
+    		if(user == null) System.out.println("FUCK YOU");
     		if(user.getUsername().equals(username))
     			return user;
     	}
@@ -67,7 +68,7 @@ import pt.ist.fenixframework.FenixFramework;
 			root = (Root) getUserByUsername("root");
 		} catch (UserNotFoundException e) {
 			root = new Root();
-			addUser(root);
+			addUser((User)root);
 		}
 		return root;
 	}
@@ -117,9 +118,10 @@ import pt.ist.fenixframework.FenixFramework;
     	Set<Session> sessions;
     	
      	sessions = getSessionSet();
-    	for(Session s : sessions)
+    	for(Session s : sessions) {
     		if(s.getUser().getUsername().equals(username))
     			return s;
+    	}
         throw new UserNotInSessionException("No existing session for " + username + " found!");
     }
     

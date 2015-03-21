@@ -62,4 +62,8 @@ public class Session extends Session_Base {
         super.deleteDomainObject();
     }
 
+    public String toString() {
+    	return "<< SESSION || USER : " + getUser().toString() + ">>";
+    }
+    
 }

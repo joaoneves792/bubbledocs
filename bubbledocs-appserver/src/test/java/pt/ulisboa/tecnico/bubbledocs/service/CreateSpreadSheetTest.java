@@ -42,7 +42,7 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     	createUser(USERNAME, PASSWORD, NAME);
     	createUser(ANOTHER_USERNAME, ANOTHER_PASSWORD, ANOTHER_NAME);
     	try{
-    		token = addUserToSession(ANOTHER_USERNAME, ANOTHER_PASSWORD);
+    		token = addUserToSession(USERNAME, PASSWORD);
     		anotherToken = addUserToSession(ANOTHER_USERNAME, ANOTHER_PASSWORD);
     	}catch (BubbledocsException e) {
     		assertTrue("FAILED TO POPULATE FOR CreateSpreadsheetTest", false);
@@ -59,7 +59,7 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
         
         int ssId = service.getSheetId();
         Spreadsheet ss = bubble.getSpreadsheetById(ssId);        
-        boolean writePermission = bubble.getPermission(ANOTHER_USERNAME, ssId).getWritePermission();        
+        boolean writePermission = bubble.getPermission(USERNAME, ssId).getWritePermission();        
         
         assertTrue("Session was not updated", hasSessionUpdated(token));
         
@@ -70,7 +70,7 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
         assertEquals(SPREADSHEET_NAME, ss.getName());
         assertEquals(SPREADSHEET_ROWS, ss.getRows().intValue());
         assertEquals(SPREADSHEET_COLUMNS, ss.getColumns().intValue());
-        assertEquals(ANOTHER_USERNAME, ss.getAuthor());
+        assertEquals(USERNAME, ss.getAuthor());
         assertTrue("Author does not have write permission", writePermission);
         //FIXME date?
     }

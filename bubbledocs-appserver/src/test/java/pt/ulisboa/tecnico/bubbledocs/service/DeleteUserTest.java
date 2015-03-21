@@ -62,7 +62,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     @Test
     public void success() throws BubbledocsException {    	
         new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME).execute();
-        boolean isUserDeleted = getUserFromUsername(EXISTING_USERNAME) == null;
+        boolean isUserDeleted = Bubbledocs.getBubbledocs().getUserByUsername(EXISTING_USERNAME) == null;
         
         assertTrue("User was not Deleted", isUserDeleted);
         assertNull("Spreadsheet was not Deleted", getSpreadSheet(SPREADSHEET_NAME));
