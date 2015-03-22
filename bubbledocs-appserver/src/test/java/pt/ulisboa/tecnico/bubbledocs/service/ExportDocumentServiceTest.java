@@ -134,8 +134,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 		} catch (IOException | JDOMException e) {
 			assertTrue(false);
 		} 
+        assertTrue("Session was not updated", hasSessionUpdated(tokenRo));
         assertNotNull(exported);
-        //assertEquals(exported, doc);
+
         Spreadsheet imported = null;
         try {
 			imported = Bubbledocs.getBubbledocs().createSpreadsheet(author, service.getDocXML());
