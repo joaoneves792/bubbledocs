@@ -16,4 +16,12 @@ public class Sub extends Sub_Base {
 		return getArgumentOne().calculate() - getArgumentTwo().calculate();		
 	}
 	
+    @Override
+    public boolean equals(Content other) {
+    	if(!(other instanceof Sub))
+    		return false;
+    	else return getArgumentOne().equals(((Sub)other).getArgumentOne()) &&
+    		    	getArgumentTwo().equals(((Sub)other).getArgumentTwo());
+    }
+	
 }

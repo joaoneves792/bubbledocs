@@ -46,4 +46,10 @@ public class Literal extends Literal_Base {
         super.deleteDomainObject();
     }
 
+    @Override
+    public boolean equals(Content other) {
+    	if(!(other instanceof Literal))
+    		return false;
+    	else return getValue() == ((Literal)other).getValue();    				
+    }
 }

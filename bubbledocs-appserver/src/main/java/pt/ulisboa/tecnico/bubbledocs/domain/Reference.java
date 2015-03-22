@@ -27,7 +27,6 @@ public class Reference extends Reference_Base {
     	return content.calculate();
     }
 
-        
     /**
      * Defines XML element for this class
      * @throws InvalidCellException 
@@ -64,4 +63,12 @@ public class Reference extends Reference_Base {
         super.deleteDomainObject();
     }
 
+    @Override
+    public boolean equals(Content other) {
+    	if(!(other instanceof Reference))
+    		return false;
+    	else return getReferencedCell().getRow() == ((Reference)other).getReferencedCell().getRow() &&
+    			    getReferencedCell().getColumn() == ((Reference)other).getReferencedCell().getColumn();
+    }
+    
 }

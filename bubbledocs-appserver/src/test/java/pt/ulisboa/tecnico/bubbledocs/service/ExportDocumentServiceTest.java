@@ -53,18 +53,22 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private String tokenRo;
 	private String tokenWrite;
 	
-	private org.jdom2.Document doc = new org.jdom2.Document();
+	private User author;
+	private Spreadsheet ss; 
 	
+	/* TODO not used, but may be useful in future (e.g. import tests)
+	private org.jdom2.Document doc = new org.jdom2.Document();
+	*/
     
     @Override
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-  	    User author = createUser(AUTHOR_USERNAME, AUTHOR_PASSWORD, AUTHOR_NAME);
+  	    author = createUser(AUTHOR_USERNAME, AUTHOR_PASSWORD, AUTHOR_NAME);
         createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
         createUser(USERNAME_WRITE, PASSWORD_WRITE, NAME_WRITE);
         
         try{
-    	   Spreadsheet ss = createSpreadSheet(author, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+    	   ss = createSpreadSheet(author, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
      	   spreadsheetID = ss.getId();
 
      	   //Assign a literal to cell
@@ -82,6 +86,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
        	   tokenRo = addUserToSession(USERNAME_RO, PASSWORD_RO);
        	   tokenWrite = addUserToSession(USERNAME_WRITE, PASSWORD_WRITE);
        	   
+       	   /* TODO not used, but it may be useful in the future (e.g. import tests)
        	   org.jdom2.Element spreadsheetElement = new org.jdom2.Element("Spreadsheet");
 	       spreadsheetElement.setAttribute("rows", ss.getRows().toString());
 	       spreadsheetElement.setAttribute("columns", ss.getColumns().toString());
@@ -112,6 +117,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 	       lit.setAttribute("value", LITERAL_VALUE.toString());	
 	       ref.setAttribute("row", LITERAL_ROW.toString());
 	       ref.setAttribute("column", LITERAL_COLUMN.toString());
+	       */
 	       
         } catch (BubbledocsException e) {
      	   assertTrue(false);
@@ -129,10 +135,22 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 			assertTrue(false);
 		} 
         assertNotNull(exported);
-        assertEquals(exported, doc);
-        /* alternative - I have no idea if any of them work
-         * assertTrue(doc.equals(exported));
-         */
+        //assertEquals(exported, doc);
+        Spreadsheet imported = null;
+        try {
+			imported = Bubbledocs.getBubbledocs().createSpreadsheet(author, service.getDocXML());
+		} catch (IOException | JDOMException e) {
+			assertTrue("Failed to import export spreadsheet", false);
+		}     
+        assertNotNull(imported);
+        assertEquals(ss.getAuthor(), imported.getAuthor());
+        assertEquals(ss.getRows(), imported.getRows());
+        assertEquals(ss.getColumns(), imported.getColumns());
+        assertEquals(ss.getName(), imported.getName());
+        assertTrue(!ss.getId().equals(imported.getId()));
+        
+        assertTrue(ss.getCell(LITERAL_ROW, LITERAL_COLUMN).equals(imported.getCell(LITERAL_ROW, LITERAL_COLUMN)));
+        assertTrue(ss.getCell(REFERENCE_ROW, REFERENCE_COLUMN).equals(imported.getCell(REFERENCE_ROW, REFERENCE_COLUMN)));        
     }
     
     //Test case 1
@@ -181,7 +199,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     public void noPermissionsUserExport() throws BubbledocsException {
 	    Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	//Temporarily revoke RO user permissions
-    	bubble.revokeReadPermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);
+    	bubble.revokeReadPermission(AUTHOR_USERNAME, USERNAME_RO, spreadsheetID);
        	    	
 	    ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
       	service.execute();

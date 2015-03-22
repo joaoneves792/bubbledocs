@@ -12,5 +12,11 @@ public class Prd extends Prd_Base {
 		return 0;
 	}
 
- 	
+    @Override
+    public boolean equals(Content other) {
+    	if(!(other instanceof Prd))
+    		return false;
+    	else return getReferenceOne().equals(((Prd)other).getReferenceOne()) &&
+    		    	getReferenceTwo().equals(((Prd)other).getReferenceTwo());
+    }
 }

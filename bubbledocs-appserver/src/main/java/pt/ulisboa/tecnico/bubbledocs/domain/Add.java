@@ -15,5 +15,12 @@ public class Add extends Add_Base {
 	protected final int myValue() {
 		return getArgumentOne().calculate() + getArgumentTwo().calculate();		
 	}
-
+    
+    @Override
+    public boolean equals(Content other) {
+    	if(!(other instanceof Add))
+    		return false;
+    	else return getArgumentOne().equals(((Add)other).getArgumentOne()) &&
+    		    	getArgumentTwo().equals(((Add)other).getArgumentTwo());
+    }
 }

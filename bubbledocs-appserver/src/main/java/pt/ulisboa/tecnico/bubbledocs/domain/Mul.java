@@ -16,4 +16,12 @@ public class Mul extends Mul_Base {
 		return getArgumentOne().calculate() * getArgumentTwo().calculate();	
 	}	
 	
+    @Override
+    public boolean equals(Content other) {
+    	if(!(other instanceof Mul))
+    		return false;
+    	else return getArgumentOne().equals(((Mul)other).getArgumentOne()) &&
+    		    	getArgumentTwo().equals(((Mul)other).getArgumentTwo());
+    }
+	
 }

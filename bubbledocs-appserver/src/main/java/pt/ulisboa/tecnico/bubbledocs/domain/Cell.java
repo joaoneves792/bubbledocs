@@ -75,4 +75,10 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
         }
         super.deleteDomainObject();
 	}
+	
+	public boolean equals(Cell other) {
+		return other.getRow() == getRow() &&
+			   other.getColumn() == getColumn() &&
+			   other.getContent().equals(getContent());
+	}
 }

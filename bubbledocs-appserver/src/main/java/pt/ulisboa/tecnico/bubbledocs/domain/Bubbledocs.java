@@ -287,9 +287,9 @@ import pt.ist.fenixframework.FenixFramework;
     	if(requestUsername.equals(spreadsheet.getAuthor())) {
     		removeSpreadsheet(spreadsheet);
     		//remove all permissions for this spreadsheet
-			for(Permission permission_it : getPermissionsBySpreadsheet(spreadsheetId)) {
-				removePermission(permission_it);
-                permission_it.clean();
+			for(Permission permission : getPermissionsBySpreadsheet(spreadsheetId)) {
+				removePermission(permission);
+                permission.clean();
 			}
             spreadsheet.clean();			
     	} else {	
@@ -419,15 +419,17 @@ import pt.ist.fenixframework.FenixFramework;
     		throw new UserNotInSessionException(userToken + "'s Session expired!");
     	}
     	session.update();
-    	getPermission(userToken, docId);	     
+    	if(docId < 0) throw new SpreadsheetNotFoundException("Invalid Document ID");
+    	String username = userToken.split("\\d")[0];
+    	getPermission(username, docId);	     
     	return getSpreadsheetById(docId).export();
     }
 
-    public Integer AssignLiteralCell(String _userToken, Integer _spreadsheetId, Integer _cellIdrow, Integer _cellIdColumn, Integer _literal) throws BubbledocsException{
-    	assertSessionAndWritePermission(_userToken,_spreadsheetId, _cellIdrow, _cellIdColumn);
-        Spreadsheet spreadsheet = getSpreadsheetById(_spreadsheetId);
-        spreadsheet.getCell(_cellIdrow, _cellIdColumn).setContent(new Literal(_literal));        
-        return spreadsheet.getCell(_cellIdrow, _cellIdColumn).calculate();
+    public Integer AssignLiteralCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer literal) throws BubbledocsException{
+    	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdrow, cellIdColumn);
+        Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
+        spreadsheet.getCell(cellIdrow, cellIdColumn).setContent(new Literal(literal));        
+        return spreadsheet.getCell(cellIdrow, cellIdColumn).calculate();
     }
         
     private abstract class ReadWriteRoutine {

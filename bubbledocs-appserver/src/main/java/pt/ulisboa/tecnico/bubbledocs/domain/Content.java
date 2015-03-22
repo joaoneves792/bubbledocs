@@ -59,4 +59,11 @@ public abstract class Content extends Content_Base {
      * Method to erase this Content (from persistence)
      */
     public abstract void clean();
+    
+    /**
+     * compare two contents
+     * @param the content to compare against
+     * @return true if and only if the contents have the same properties
+     */
+    public abstract boolean equals(Content other);
 }
