@@ -8,18 +8,18 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 
 public class LoginUser extends BubbledocsService {
 
-    private String _userToken;
-    private String _username;
-    private String _password;
+    private String userToken;
+    private String username;
+    private String password;
 
     /**
      * Perform a user login
      * @param string with a username
      * @param string with the users password
      */
-    public LoginUser(String username, String password) {
-        _username = username;
-        _password = password;
+    public LoginUser(String usrname, String passwd) {
+        username = usrname;
+        password = passwd;
     }
 
     @Override
@@ -29,11 +29,11 @@ public class LoginUser extends BubbledocsService {
         
         bubble = Bubbledocs.getBubbledocs();
 
-        tokenInt = bubble.loginUser(_username, _password);
-        _userToken = _username + tokenInt;
+        tokenInt = bubble.loginUser(username, password);
+        userToken = username + tokenInt;
     }
 
     public final String getUserToken() {
-    	return _userToken;
+    	return userToken;
     }
 }

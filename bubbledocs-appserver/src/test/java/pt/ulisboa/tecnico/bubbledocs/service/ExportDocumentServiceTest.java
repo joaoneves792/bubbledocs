@@ -141,7 +141,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
         try {
 			imported = Bubbledocs.getBubbledocs().createSpreadsheet(author, service.getDocXML());
 		} catch (IOException | JDOMException e) {
-			assertTrue("Failed to import export spreadsheet", false);
+			assertTrue("Failed to import exported spreadsheet", false);
 		}     
         assertNotNull(imported);
         assertEquals(ss.getAuthor(), imported.getAuthor());

@@ -13,12 +13,12 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 // add needed import declarations
 
 public class CreateUser extends BubbledocsService {
-	private String userToken;
+	private String rootToken;
 	private String newUsername;
 	private String passwd;
 	private String name;
 
-    public CreateUser(String userToken, String username, String passwd, String name) throws EmptyPasswordException, EmptyUsernameException, EmptyNameException {
+    public CreateUser(String rootTok, String username, String passwd, String name) throws EmptyPasswordException, EmptyUsernameException, EmptyNameException {
 
     	if(username == null || username.isEmpty())
     		throw new EmptyUsernameException("Attempted to create user with no username");
@@ -28,48 +28,21 @@ public class CreateUser extends BubbledocsService {
     		throw new EmptyNameException("Attempted to create a user with no name.");
     	} 
     	
-    	setUserToken(userToken);
-    	setNewUsername(username);
-    	setPasswd(passwd);
-    	setName(name);
+    	rootToken = rootTok;
+    	newUsername = username;
+    	this.passwd = passwd;
+    	this.name = name;
     }
 
     @Override
     protected void dispatch() throws UnauthorizedUserException, UserAlreadyExistsException, UserNotInSessionException, EmptyPasswordException, EmptyUsernameException, UserNotFoundException {
-    	if(!userToken.matches("root\\d"))
-    		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
+    	if(!rootToken.matches("root\\d"))
+    		throw new UnauthorizedUserException("The user in session ["+ rootToken + "] is not authorized to create new users.");
     	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).addUser(name, newUsername, passwd);
     }
 
-	public String getUserToken() {
-		return userToken;
+	public String getRootToken() {
+		return rootToken;
 	}
-
-	public void setUserToken(String userToken) {
-		this.userToken = userToken;
-	}
-
-	public String getNewUsername() {
-		return newUsername;
-	}
-
-	public void setNewUsername(String newUsername) {
-		this.newUsername = newUsername;
-	}
-
-	public String getPasswd() {
-		return passwd;
-	}
-
-	public void setPasswd(String passwd) {
-		this.passwd = passwd;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+	
 }
