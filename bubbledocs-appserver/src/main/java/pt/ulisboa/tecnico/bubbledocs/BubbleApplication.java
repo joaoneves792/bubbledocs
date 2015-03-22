@@ -16,6 +16,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.CreateSpreadSheet;
 import pt.ulisboa.tecnico.bubbledocs.service.CreateUser;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
+import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.TransactionManager;
 
@@ -39,52 +40,66 @@ public class BubbleApplication{
         TransactionManager tm = FenixFramework.getTransactionManager();
         boolean committed = false;
         
-        try{
+        try{ 
+        	//Beware: don't ever place exception throwing instructions between a commit and the next begin otherwise rollback will crash!
+        	//		what you can do is place committed=true; committed=false; around your non transactional code to avoid the rollback
+        	
+        	//FIXME Do we really need a transaction for everything or can we group some of these things
         	tm.begin();
-        	
         	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-        	
         	populateDomain(bubble);
+        	tm.commit();
         	
+        	tm.begin();        	
         	User pf = bubble.getUserByUsername("pf"); //still needed for import
-        	
         	String ss = null;
-            
-        	printRegisteredUsers();
-        	
-        	printSpreadsheetsByUsername("pf");
+            printRegisteredUsers();
+        	tm.commit();
 
-        	printSpreadsheetsByUsername("ra");        	
+        	tm.begin();        	
+        	printSpreadsheetsByUsername("pf");
+        	tm.commit();
         	
+        	tm.begin();
+        	printSpreadsheetsByUsername("ra");        	
+        	tm.commit();
+        	
+        	tm.begin();
         	ExportDocument exportSpreadsheet = new ExportDocument(pfToken, spreadsheetID);
     		exportSpreadsheet.execute();
     		ss = exportSpreadsheet.getDocXML();
     		System.out.println(ss);
+        	tm.commit();
         	
+        	tm.begin();
         	deleteSpreadsheetByNameAndUsername("Notas ES", pf);   
+        	tm.commit();
         	
+        	tm.begin();
         	System.out.println("====================== AFTER DELETING NOTAS ES ============================");
-        	
         	printSpreadsheetsByUsername("pf");
+        	tm.commit();
         	
+        	tm.begin();
         	System.out.println("======================== IMPORTING NOTAS ES ===============================");
-        	
         	importSpreadsheetForUser(pf, ss); 
+        	tm.commit();
         	
+        	tm.begin();
         	System.out.println("====================== AFTER IMPORTING NOTAS ES ===========================");
-        	        	
         	printSpreadsheetsByUsername("pf");
-
+        	tm.commit();
+        	
+        	tm.begin();
         	ExportDocument exportSpreadsheet2 = new ExportDocument(pfToken, spreadsheetID+1); //yuck
     		exportSpreadsheet2.execute();
     		ss = exportSpreadsheet2.getDocXML();
     		System.out.println(ss);
-        	
         	tm.commit();
         	committed = true;
         
         } catch (SystemException| NotSupportedException | RollbackException| HeuristicMixedException | HeuristicRollbackException ex) {
-            //System.err.println("Error in execution of transaction: " + ex);
+            System.err.println("Error in execution of transaction: " + ex);
         } catch (InvalidExportException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();

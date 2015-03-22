@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
@@ -72,7 +73,10 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
         assertEquals(SPREADSHEET_COLUMNS, ss.getColumns().intValue());
         assertEquals(USERNAME, ss.getAuthor());
         assertTrue("Author does not have write permission", writePermission);
-        //FIXME date?
+        //Warning: this might not work well at midnight!!
+        assertEquals(DateTime.now().getDayOfMonth(), ss.getDate().getDayOfMonth());
+        assertEquals(DateTime.now().getMonthOfYear(), ss.getDate().getMonthOfYear());
+        assertEquals(DateTime.now().getYear(), ss.getDate().getYear());
     }
 
     @Test
