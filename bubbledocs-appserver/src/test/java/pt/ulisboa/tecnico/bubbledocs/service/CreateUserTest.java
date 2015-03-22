@@ -8,7 +8,6 @@ import org.junit.Test;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
@@ -22,6 +21,8 @@ public class CreateUserTest extends BubbledocsServiceTest {
 
 	private static final String ROOT_PASSWORD = "root";
     private static final String ROOT_USERNAME = "root";
+    @SuppressWarnings("unused")
+	private static final String ROOT_NAME = "Super User";
 
     private static final String UNAUTHORIZED_USERNAME = "cv";
     private static final String EXISTING_USERNAME     = "md";
@@ -44,8 +45,8 @@ public class CreateUserTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	bubble.getSuperUser();    	
+    	//createUser(ROOT_USERNAME, ROOT_PASSWORD, ROOT_NAME);
+    	Bubbledocs.getBubbledocs().getSuperUser();
     	createUser(EXISTING_USERNAME, EXISTING_PASSWORD, EXISTING_NAME);
     	createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME);
     	
@@ -75,7 +76,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     	new CreateUser(rootToken, EXISTING_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME).execute();
     }
     
-    @Test(expected = CreateRootException.class)
+    @Test(expected = UserAlreadyExistsException.class)
     public void createRoot() throws BubbledocsException {
     	new CreateUser(rootToken, ROOT_USERNAME, EXISTING_PASSWORD, EXISTING_NAME).execute();
     }
@@ -94,28 +95,28 @@ public class CreateUserTest extends BubbledocsServiceTest {
 
     @Test(expected = EmptyUsernameException.class)
     public void emptyUsername() throws BubbledocsException {
-        new CreateUser(rootToken, EMPTY_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME).execute();
+        new CreateUser(rootToken, EMPTY_USERNAME, NON_EXISTING_PASSWORD, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = EmptyPasswordException.class)
     public void emptyPassword() throws BubbledocsException {
-        new CreateUser(rootToken, UNAUTHORIZED_USERNAME, EMPTY_PASSWORD, UNAUTHORIZED_NAME).execute();
+        new CreateUser(rootToken, NON_EXISTING_USERNAME, EMPTY_PASSWORD, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = EmptyNameException.class)
     public void emptyName() throws BubbledocsException {
-        new CreateUser(rootToken, UNAUTHORIZED_USERNAME, UNAUTHORIZED_PASSWORD, EMPTY_NAME).execute();
+        new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_PASSWORD, EMPTY_NAME).execute();
     }
 
     @Test(expected = UnauthorizedUserException.class)
     public void unauthorizedUserCreation() throws BubbledocsException {
-        new CreateUser(unauthorizedUserToken, EXISTING_USERNAME, EMPTY_PASSWORD, EMPTY_NAME).execute();
+        new CreateUser(unauthorizedUserToken, NON_EXISTING_USERNAME, NON_EXISTING_PASSWORD, NON_EXISTING_NAME).execute();
     }
     
     @Test
     public void unauthorizedFailSessionUpdate() throws BubbledocsException {
     	try {
-			new CreateUser(unauthorizedUserToken, EXISTING_USERNAME, UNAUTHORIZED_PASSWORD, UNAUTHORIZED_NAME).execute();
+            new CreateUser(unauthorizedUserToken, NON_EXISTING_USERNAME, NON_EXISTING_PASSWORD, NON_EXISTING_NAME).execute();
 		} catch (BubbledocsException e) {
 			boolean isSessionUpdated = hasSessionUpdated(unauthorizedUserToken);
 			assertTrue("Unauthorized Session was not updated", isSessionUpdated);
@@ -128,6 +129,6 @@ public class CreateUserTest extends BubbledocsServiceTest {
     @Test(expected = UserNotInSessionException.class)
     public void accessUsernameNotExist() throws BubbledocsException {
     	removeUserFromSession(rootToken);
-        new CreateUser(rootToken, EMPTY_USERNAME, EMPTY_PASSWORD, EMPTY_NAME).execute();
+        new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_PASSWORD, NON_EXISTING_NAME).execute();
     }
 }

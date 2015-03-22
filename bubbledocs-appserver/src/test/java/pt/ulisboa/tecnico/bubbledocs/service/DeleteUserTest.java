@@ -26,7 +26,8 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     private static final int EXISTING_TOKEN_INT     = 4;
     private static final String UNAUTHORIZED_TOKEN  = "cv3";
     private static final int UNAUTHORIZED_TOKEN_INT = 3;
-    private static final String NON_EXISTING_TOKEN  = "hm2";
+    @SuppressWarnings("unused")
+	private static final String NON_EXISTING_TOKEN  = "hm2";
  
     private static final String ROOT_USERNAME          = "root";
     private static final String EXISTING_USERNAME      = "md";
@@ -62,7 +63,13 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     @Test
     public void success() throws BubbledocsException {    	
         new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME).execute();
-        boolean isUserDeleted = Bubbledocs.getBubbledocs().getUserByUsername(EXISTING_USERNAME) == null;
+        boolean isUserDeleted = false;
+        
+        try {
+        	Bubbledocs.getBubbledocs().getUserByUsername(EXISTING_USERNAME);
+        } catch (UserNotFoundException e) {
+        	isUserDeleted = true;
+        }
         
         assertTrue("User was not Deleted", isUserDeleted);
         assertNull("Spreadsheet was not Deleted", getSpreadSheet(SPREADSHEET_NAME));
@@ -116,11 +123,6 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     public void rootNotInSession() throws BubbledocsException {
         removeUserFromSession(ROOT_TOKEN);
         new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME).execute();
-    }
-
-    @Test(expected = UserNotInSessionException.class)
-    public void accessUserDoesNotExist() throws BubbledocsException {
-        new DeleteUser(NON_EXISTING_TOKEN, EXISTING_USERNAME).execute();
     }
     
     @Test(expected = EmptyUsernameException.class)

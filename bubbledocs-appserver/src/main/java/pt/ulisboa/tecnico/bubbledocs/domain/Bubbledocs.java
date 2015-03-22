@@ -55,7 +55,6 @@ import pt.ist.fenixframework.FenixFramework;
 
     public User getUserByUsername(String username) throws UserNotFoundException {
     	for(User user : getUserSet()) {
-    		if(user == null) System.out.println("FUCK YOU");
     		if(user.getUsername().equals(username))
     			return user;
     	}
@@ -312,7 +311,6 @@ import pt.ist.fenixframework.FenixFramework;
     public List<Spreadsheet> getSpreadsheetsByAuthor(String author) {
     	List<Spreadsheet> spreadsheets = new ArrayList<Spreadsheet>();
     	for(Spreadsheet sheet : getSpreadsheetSet()) {
-    		System.out.println(sheet.toString());
     		if(author.equals(sheet.getAuthor())) {    			
     			spreadsheets.add(sheet);
     		}    			
@@ -323,7 +321,8 @@ import pt.ist.fenixframework.FenixFramework;
     public String export(Spreadsheet spreadsheet) throws InvalidExportException {
     	return spreadsheet.export();    	
     }
-  
+    
+    
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {		
 		Session session = getSessionByUsername("root");
 		if(session.hasExpired()) {
@@ -342,7 +341,7 @@ import pt.ist.fenixframework.FenixFramework;
     		addUser(newUser);
     	} 
 	}
-	
+
     public void destroyUser(Root root, String deadUserUsername) throws UserNotFoundException, UserNotInSessionException, RootRemoveException {
     	if(deadUserUsername.equals("root"))
     		throw new RootRemoveException("Super User, you may not delete yourself...");
@@ -378,6 +377,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}    	
     }
     
+       
     private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int row, int column) throws BubbledocsException {
     	Session session = getSessionByToken(userToken);
     	

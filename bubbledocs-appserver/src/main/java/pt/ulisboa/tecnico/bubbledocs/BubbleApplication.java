@@ -82,9 +82,6 @@ public class BubbleApplication{
 		} catch (InvalidCellException e) {
 			System.err.println(e.getMessage());
 			e.printStackTrace();
-		} catch (CreateRootException e) {
-			System.err.println(e.getMessage());
-			e.printStackTrace();
 		}  finally {
              if (!committed)
              try {
@@ -147,7 +144,7 @@ public class BubbleApplication{
 	}
 
    //@Atomic
-    private static void populateDomain(Bubbledocs bubble) throws CreateRootException {
+    private static void populateDomain(Bubbledocs bubble) {
     	if(!bubble.getUserSet().isEmpty()) 
     		return;
     	

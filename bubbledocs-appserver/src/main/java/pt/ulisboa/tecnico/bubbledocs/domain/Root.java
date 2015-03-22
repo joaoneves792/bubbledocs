@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 import java.util.Collections;
 import java.util.Set;
 
-import pt.ulisboa.tecnico.bubbledocs.exceptions.CreateRootException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
@@ -22,7 +21,7 @@ public class Root extends Root_Base {
         //setBubbledocs(Bubbledocs.getBubbledocs());
     }    
    
-    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException, UserNotInSessionException, CreateRootException, EmptyPasswordException, EmptyUsernameException {
+    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException, UserNotInSessionException, EmptyPasswordException, EmptyUsernameException {
     	Bubbledocs.getBubbledocs().createUser(this, new User(name, username, passwd));
     }
     
@@ -33,4 +32,5 @@ public class Root extends Root_Base {
     public Set<User> getUsers() {
     	return Collections.unmodifiableSet(Bubbledocs.getBubbledocs().getUserSet());
     }
+    
 }
