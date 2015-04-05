@@ -12,6 +12,7 @@ import java.util.Set;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidLoginException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
@@ -72,14 +73,7 @@ import pt.ist.fenixframework.FenixFramework;
 		return root;
 	}
 
-    /**
-     * Method to create a session for a user
-     * @param username
-     * @param password
-     * @return the session token int
-     * @throws UserNotFoundException
-     * @throws WrongPasswordException
-     */
+
     public Integer loginUser(String username, String password) throws UserNotFoundException, WrongPasswordException {
         User user;
         Session session;
@@ -108,6 +102,63 @@ import pt.ist.fenixframework.FenixFramework;
         return session.getTokenInt();
     }
 
+    /**
+     * Perform a local login (to be used only if the remote service is unavailable)
+     * @param username
+     * @param password
+     * @throws UserNotFoundException
+     * @throws InvalidLoginException
+     */
+    public void localLogin(String username, String password) throws UserNotFoundException, InvalidLoginException{
+    	User user = getUserByUsername(username);
+    	
+    	if(!password.equals(user.getPasswd()))
+    		throw new InvalidLoginException("Unable to login localy: Password mismatch");	
+    }
+    
+    /**
+     * Update the local password of a user
+     * @param username
+     * @param password
+     * @throws UserNotFoundException
+     */
+    public void updateLocalPassword(String username, String password) throws UserNotFoundException{
+    	User user = getUserByUsername(username);
+    	
+    	if(!password.equals(user.getPasswd()))
+    		user.setPasswd(password);    	
+    }
+    
+    /**
+     * Method to create a session for a user that successfully logged in
+     * @param username
+     * @return the session token int
+     * @throws UserNotFoundException
+     */
+    public int createSession(String username)throws UserNotFoundException{
+        int tokenInt;
+        User user;
+        Session session;
+    	
+    	//Before anything else perform a check on all Sessions
+        performSessionClean();
+        
+        user = getUserByUsername(username);
+        try { 
+            session = getSessionByUsername(username);
+        } catch(UserNotInSessionException e) {
+            //Some code duplication... (but its better than an empty catch block)
+        	tokenInt = (new Random()).nextInt(10);
+			session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
+            addSession(session);
+            return tokenInt;
+        }
+        
+        //If a session for this user was already set then update it
+        session.update();
+        return session.getTokenInt();
+    }
+    
     /**
      * Method to get the session belonging to username
      * @param username
