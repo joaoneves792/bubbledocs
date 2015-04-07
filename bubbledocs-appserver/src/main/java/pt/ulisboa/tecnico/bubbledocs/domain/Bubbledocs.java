@@ -74,34 +74,6 @@ import pt.ist.fenixframework.FenixFramework;
 	}
 
 
-    public Integer loginUser(String username, String password) throws UserNotFoundException, WrongPasswordException {
-        User user;
-        Session session;
-        Random rand = new Random();
-        Integer tokenInt;
-
-        //Before anything else perform a check on all Sessions
-        performSessionClean();
-        
-        user = getUserByUsername(username);
-        if(!password.equals(user.getPasswd()))
-            throw new WrongPasswordException("Failed to login user " + username + "due to password mismatch.");
-       
-        try { 
-            session = getSessionByUsername(username);
-        } catch(UserNotInSessionException e) {
-            //Some code duplication... (but its better than an empty catch block)
-        	tokenInt = rand.nextInt(10);
-            session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
-            addSession(session);
-            return tokenInt;
-        }
-        
-        //If a session for this user was already set then update it
-        session.update();
-        return session.getTokenInt();
-    }
-
     /**
      * Perform a local login (to be used only if the remote service is unavailable)
      * @param username
