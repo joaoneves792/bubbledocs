@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 
+@SuppressWarnings("unused")
 public class BubbleApplication{
 	
 	private static String pfToken;
@@ -241,7 +242,7 @@ public class BubbleApplication{
 			raCreation.execute();
 		} catch (BubbledocsException e) {
 			throw new CreateUserException("Failed to create users on domain population");
-		}
+		} 
     	
 		LoginUser loginPf = new LoginUser("pf", "sub");
 		try {

@@ -5,6 +5,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameLengthException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
@@ -18,7 +19,7 @@ public class CreateUser extends BubbledocsService {
 	private String passwd;
 	private String name;
 
-    public CreateUser(String rootTok, String username, String passwd, String name) throws EmptyPasswordException, EmptyUsernameException, EmptyNameException {
+    public CreateUser(String rootTok, String username, String passwd, String name) throws EmptyPasswordException, EmptyUsernameException, EmptyNameException, InvalidUsernameLengthException {
 
     	if(username == null || username.isEmpty())
     		throw new EmptyUsernameException("Attempted to create user with no username");
@@ -26,7 +27,9 @@ public class CreateUser extends BubbledocsService {
     		throw new EmptyPasswordException("Attempted to create a user with no password.");
     	} else if(name == null || name.isEmpty()) {
     		throw new EmptyNameException("Attempted to create a user with no name.");
-    	} 
+    	} else if(username.length() < 3 || username.length() > 8) {
+    		throw new InvalidUsernameLengthException("User usernames must have 3 to 8 characters.");
+    	}
     	
     	rootToken = rootTok;
     	newUsername = username;
