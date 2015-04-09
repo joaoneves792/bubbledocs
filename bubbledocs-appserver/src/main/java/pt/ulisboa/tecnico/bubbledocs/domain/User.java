@@ -19,15 +19,16 @@ public class User extends User_Base {
         super();
     }
 	
-    public User(String name, String username, String passwd) {
+    public User(String name, String username, String email) {
     	super();
-    	init(name, username, passwd);
+    	init(name, username, email);
     }
     
-    protected void init(String name, String username, String passwd) {
+    protected void init(String name, String username, String email) {
     	setName(name);
-    	setPasswd(passwd);
-    	setUsername(username);    	
+    	setEmail(email);
+    	setUsername(username);  
+    	setPasswd(null);
     }
     
     public void addReadPermission(String granted, int spreadsheetId) throws UserNotFoundException, UnauthorizedUserException, SpreadsheetNotFoundException, PermissionNotFoundException {

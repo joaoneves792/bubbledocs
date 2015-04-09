@@ -27,6 +27,7 @@ relation BubbledocsHasPermissions {
 class User {
 	String name;
 	String passwd;
+	String email;
 	String username;
 }
 

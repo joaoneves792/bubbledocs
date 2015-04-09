@@ -16,13 +16,13 @@ public class Root extends Root_Base {
 	 */
     Root() {
         super();
-        init("Super User", "root", "root");
+        init("Super User", "root", "root@bubbledocs.tecnico.ulisboa.pt");
         //Bubbledocs.getBubbledocs().addUser(this);
         //setBubbledocs(Bubbledocs.getBubbledocs());
     }    
    
-    public void addUser(String name, String username, String passwd) throws UserAlreadyExistsException, UserNotInSessionException, EmptyPasswordException, EmptyUsernameException {
-    	Bubbledocs.getBubbledocs().createUser(this, new User(name, username, passwd));
+    public void addUser(String name, String username, String email) throws UserAlreadyExistsException, UserNotInSessionException, EmptyPasswordException, EmptyUsernameException {
+    	Bubbledocs.getBubbledocs().createUser(this, new User(name, username, email));
     }
     
     public void removeUser(String username) throws UserNotFoundException, UserNotInSessionException, RootRemoveException {
