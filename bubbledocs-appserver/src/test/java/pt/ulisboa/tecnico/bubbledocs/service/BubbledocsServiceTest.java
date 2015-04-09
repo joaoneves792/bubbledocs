@@ -116,6 +116,15 @@ public abstract class BubbledocsServiceTest {
 		}
     }
 
+    /** Set the local password of a user
+     * @throws UserNotFoundException 
+     */
+    void setLocalPassword(String username, String password) throws UserNotFoundException{
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+    	User user = bubble.getUserByUsername(username);
+    	user.setPasswd(password);
+    }
+    
     /** put a user into session  and returns the token associated to it   
      */
     String addUserToSession(String username, String password) throws BubbledocsException {

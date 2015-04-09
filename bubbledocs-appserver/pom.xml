@@ -15,7 +15,8 @@
         <version.fenixframework>2.6.0</version.fenixframework>
         <version.java>1.8</version.java>
         <version.junit>4.11</version.junit>
-        <version.maven.build-helper-plugin>1.7</version.maven.build-helper-plugin>
+	<version.jmockit>1.16</version.jmockit>
+	<version.maven.build-helper-plugin>1.7</version.maven.build-helper-plugin>
         <version.org.jdom.jdom>2.0.5</version.org.jdom.jdom>
         <version.org.joda.time>2.7</version.org.joda.time>
         <version.slf4j.api>1.7.2</version.slf4j.api>
@@ -90,6 +91,12 @@
             <artifactId>fenix-framework-backend-jvstm-ojb-runtime</artifactId>
             <version>${version.fenixframework}</version>
         </dependency>
+        <dependency> 
+   	    <groupId>org.jmockit</groupId> 
+            <artifactId>jmockit</artifactId>
+            <version>${version.jmockit}</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -107,11 +114,11 @@
             <version>${version.org.jdom.jdom}</version>
         </dependency>
         <dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>${version.org.joda.time}</version>
-		</dependency>
-        
+	    <groupId>joda-time</groupId>
+	    <artifactId>joda-time</artifactId>
+	    <version>${version.org.joda.time}</version>
+        </dependency>
+	        
     </dependencies>
 
     <repositories>

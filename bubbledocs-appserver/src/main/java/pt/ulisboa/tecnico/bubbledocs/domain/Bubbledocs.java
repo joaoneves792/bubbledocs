@@ -22,7 +22,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.WrongPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptySpreadsheetNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.OutOfBoundsSpreadsheetException;
 import pt.ist.fenixframework.FenixFramework;
