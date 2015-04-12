@@ -140,7 +140,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -180,7 +180,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -196,7 +196,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_WRITE, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      			sdStore.storeDocument(USERNAME_WRITE, SPREADHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -210,7 +210,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(AUTHOR_USERNAME, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      			sdStore.storeDocument(AUTHOR_USERNAME, SPREADHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -256,7 +256,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     public void failRemote() throws UnsupportedEncodingException, BubbledocsException {
     	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, (byte[]) any);
       			result = new RemoteInvocationException("");
       		}
       	};
