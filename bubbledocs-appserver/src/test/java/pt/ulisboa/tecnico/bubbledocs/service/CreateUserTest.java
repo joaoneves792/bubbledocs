@@ -229,7 +229,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     	new Expectations() {
     		{
     			sdId.createUser(NON_EXISTING_USERNAME, EMPTY_EMAIL);
-    			result = new InvalidUsernameException("");
+    			result = new InvalidEmailException("");
     		}
     	};
     	
