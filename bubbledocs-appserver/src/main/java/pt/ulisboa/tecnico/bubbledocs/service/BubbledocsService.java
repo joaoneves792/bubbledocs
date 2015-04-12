@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ist.fenixframework.Atomic;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.domain.Session;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 
@@ -20,7 +21,7 @@ public abstract class BubbledocsService {
 
     protected abstract void dispatch() throws BubbledocsException;
     
-    private void checkUserInSession() throws UserNotInSessionException{
+    protected void checkUserInSession() throws UserNotInSessionException{
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	Session session = bubble.getSessionByUsername(userToken.split("\\d")[0]);
         if(session.hasExpired()){

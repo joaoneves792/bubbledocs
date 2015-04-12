@@ -7,6 +7,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 
 // add needed import declarations
 
@@ -26,7 +27,7 @@ public class LoginUser extends BubbledocsService {
     }
 
     @Override
-    private void checkUserInSession() throws UserNotInSessionException{
+	protected void checkUserInSession() throws UserNotInSessionException{
     	//EMPTY ON PURPOSE
     }
     
