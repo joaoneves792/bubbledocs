@@ -51,7 +51,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-    	
+    	Bubbledocs.getBubbledocs().getSuperUser();
     	User userToDelete       = createUser(EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME);
         createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
         
