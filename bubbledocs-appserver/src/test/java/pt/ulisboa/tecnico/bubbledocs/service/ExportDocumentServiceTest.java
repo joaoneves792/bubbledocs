@@ -29,6 +29,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 
+	
     private static final String AUTHOR_USERNAME = "mehrunes";
     private static final String AUTHOR_NAME = "Mehrunes Dagon";
     private static final String AUTHOR_EMAIL = "mehrunes@deadlands.oblivion";
