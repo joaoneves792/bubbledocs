@@ -12,7 +12,6 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 // add needed import declarations
 
 public class DeleteUser extends BubbledocsService {
-	private String userToken;
 	private String deadUsername;
 	
 	IDRemoteServices sdId;
