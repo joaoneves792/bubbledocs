@@ -19,17 +19,17 @@ import pt.ulisboa.tecnico.bubbledocs.service.AssignReferenceCell;
 
 public class AssignReferenceCellTest extends BubbledocsServiceTest {
 
-    private static final String AUTHOR_USERNAME = "md";
+    private static final String AUTHOR_USERNAME = "mehrunes";
     private static final String AUTHOR_NAME = "Mehrunes Dagon";
-    private static final String AUTHOR_PASSWORD = "md4";
+    private static final String AUTHOR_EMAIL = "mehrunes@deadlands.oblivion";
     
     private static final String USERNAME_RO = "mb";
     private static final String NAME_RO = "Molag Bal";
-    private static final String PASSWORD_RO = "mb8";
+    private static final String EMAIL_RO = "molag@cold-harbor.oblivion";
     
-    private static final String USERNAME_WRITE = "hm";
+    private static final String USERNAME_WRITE = "hermaeus";
     private static final String NAME_WRITE = "Hermaeus Mora";
-    private static final String PASSWORD_WRITE = "hm2";
+    private static final String EMAIL_WRITE = "hermaeus@apocrypha.oblivion";
     
     private static final int SPREADHEET_ROWS = 10;
     private static final int SPREADHEET_COLUMNS = 15;
@@ -48,6 +48,7 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     
     private static final String INVALID_ID = "abc";
     private static final String OUTBOUND_CELL_ID = "100;100";
+    //FIXME VARIEDADE NO RANGEs
     
     //This is needed throughout the tests
     private Integer spreadsheetID;
@@ -59,9 +60,9 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     @Override
     public void initializeDomain() {
  	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
- 	   User user = createUser(AUTHOR_USERNAME, AUTHOR_PASSWORD, AUTHOR_NAME);
-       createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
-       createUser(USERNAME_WRITE, PASSWORD_WRITE, NAME_WRITE);
+ 	   User user = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
+       createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
+       createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
        try{
     	   Spreadsheet ss = createSpreadSheet(user, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
      	   spreadsheetID = ss.getId();

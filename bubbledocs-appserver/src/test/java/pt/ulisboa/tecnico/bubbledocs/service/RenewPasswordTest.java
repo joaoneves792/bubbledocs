@@ -17,7 +17,7 @@ public class RenewPasswordTest extends BubbledocsServiceTest {
 
     private static final String USER_NAME = "Molag Bal";
     private static final String USER_EMAIL = "molag@cold-harbour.oblivion";
-    private static final String USERNAME = "mbal";
+    private static final String USERNAME = "molag";
     
     private String userToken;
     

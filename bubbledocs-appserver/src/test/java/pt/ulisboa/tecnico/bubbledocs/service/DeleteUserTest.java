@@ -24,22 +24,20 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class DeleteUserTest extends BubbledocsServiceTest {
 
-    private String rootToken          = "";
-    private String existingToken      = "";
-    private String unauthorizedToken  = "";
-    @SuppressWarnings("unused")
-	private static final String NON_EXISTING_TOKEN  = "hm2";
+    private String rootToken;
+    private String existingToken;
+    private String unauthorizedToken;
  
     private static final String ROOT_USERNAME          = "root";
-    private static final String EXISTING_USERNAME      = "md";
-    private static final String NON_EXISTING_USERNAME  = "mb";
-    private static final String UNAUTHORIZED_USERNAME  = "cv";
+    private static final String EXISTING_USERNAME      = "mehrunes";
+    private static final String NON_EXISTING_USERNAME  = "molag";
+    private static final String UNAUTHORIZED_USERNAME  = "hermaeus";
 
     private static final String UNAUTHORIZED_EMAIL = "hermaeus@apocrypha.oblivion";
     private static final String EXISTING_EMAIL     = "mehrunes@deadlands.oblivion";
 
     private static final String EXISTING_NAME      = "Mehrunes Dagon";
-    private static final String UNAUTHORIZED_NAME  = "Clavicus Vile";
+    private static final String UNAUTHORIZED_NAME  = "Hermaeus Mora";
 
     private static final String EMPTY_USERNAME = "";
     

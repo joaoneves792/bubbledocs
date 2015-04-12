@@ -16,13 +16,13 @@ import pt.ulisboa.tecnico.bubbledocs.service.CreateSpreadSheet;
 
 public class CreateSpreadSheetTest extends BubbledocsServiceTest {
 
-    private static final String USERNAME = "md";
+    private static final String USERNAME = "mehrunes";
     private static final String NAME = "Mehrunes Dagon";
-    private static final String PASSWORD = "md3";
+    private static final String EMAIL = "mehrunes@deadlands.oblivion";
 	
     private static final String ANOTHER_USERNAME = "mb";
     private static final String ANOTHER_NAME = "Molag Bal";
-    private static final String ANOTHER_PASSWORD = "mb8";
+    private static final String ANOTHER_EMAIL = "molag@cold-harbor.oblivion";
     
     private static final String EMPTY_STRING = "";
     
@@ -40,8 +40,8 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-    	createUser(USERNAME, PASSWORD, NAME);
-    	createUser(ANOTHER_USERNAME, ANOTHER_PASSWORD, ANOTHER_NAME);
+    	createUser(USERNAME, EMAIL, NAME);
+    	createUser(ANOTHER_USERNAME, ANOTHER_EMAIL, ANOTHER_NAME);
     	try{
     		token = addUserToSession(USERNAME);
     		anotherToken = addUserToSession(ANOTHER_USERNAME);

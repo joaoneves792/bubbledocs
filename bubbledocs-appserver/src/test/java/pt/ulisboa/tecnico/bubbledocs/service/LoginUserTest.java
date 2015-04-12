@@ -19,12 +19,12 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUserTest extends BubbledocsServiceTest {
 
-    private static final String USERNAME = "md";
+    private static final String USERNAME = "mehrunes";
     private static final String PASSWORD = "dagon";
     private static final String OLD_PASSWORD = "mehrunes";
     private static final String NAME = "Mehrunes Dagon";
     private static final String EMAIL = "mehrunes@dagon.com";
-    private static final String INVALID_USERNAME = "hm";
+    private static final String INVALID_USERNAME = "hermaeus";
     private static final String INVALID_PASSWORD = "mora";
     private static final String EMPTY_PASSWORD = "";
     
