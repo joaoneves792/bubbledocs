@@ -26,8 +26,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class CreateUserTest extends BubbledocsServiceTest {
 
-	private static final String ROOT_PASSWORD = "root";
-    private static final String ROOT_USERNAME = "root";
+	private static final String ROOT_USERNAME = "root";
 	private static final String ROOT_NAME     = "Super User";
     private static final String ROOT_EMAIL    = "root@bubbledocs.tecnico.ulisboa.pt";
     
@@ -65,8 +64,8 @@ public class CreateUserTest extends BubbledocsServiceTest {
     	createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
     	
     	try {
-			rootToken = addUserToSession(ROOT_USERNAME, ROOT_PASSWORD);
-	    	unauthorizedUserToken = addUserToSession(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL);
+			rootToken = addUserToSession(ROOT_USERNAME);
+	    	unauthorizedUserToken = addUserToSession(UNAUTHORIZED_USERNAME);
 		} catch (BubbledocsException e) {
 			assertTrue("Failed to populate domain for CreateUseTest", false);
 		}

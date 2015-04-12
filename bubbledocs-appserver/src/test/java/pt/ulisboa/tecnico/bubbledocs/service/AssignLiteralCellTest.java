@@ -73,9 +73,9 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     	   //Give Write user write permission
     	   bubble.addWritePermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);
      		   
-    	   tokenAuthor = addUserToSession(AUTHOR_USERNAME, AUTHOR_PASSWORD);
-     	   tokenRo = addUserToSession(USERNAME_RO, PASSWORD_RO);
-     	   tokenWrite = addUserToSession(USERNAME_WRITE, PASSWORD_WRITE);
+    	   tokenAuthor = addUserToSession(AUTHOR_USERNAME);
+     	   tokenRo = addUserToSession(USERNAME_RO);
+     	   tokenWrite = addUserToSession(USERNAME_WRITE);
     	   
        } catch (BubbledocsException e) {
     	   assertTrue("Failed to populate for AssignReferenceCellTest", false);

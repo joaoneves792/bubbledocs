@@ -82,9 +82,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
      	   //Give WRITE user write permissions
      	   bubble.addWritePermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);     	   
 
-           tokenAuthor = addUserToSession(AUTHOR_USERNAME, AUTHOR_PASSWORD);
-       	   tokenRo = addUserToSession(USERNAME_RO, PASSWORD_RO);
-       	   tokenWrite = addUserToSession(USERNAME_WRITE, PASSWORD_WRITE);
+           tokenAuthor = addUserToSession(AUTHOR_USERNAME);
+       	   tokenRo = addUserToSession(USERNAME_RO);
+       	   tokenWrite = addUserToSession(USERNAME_WRITE);
        	   
        	   /* TODO not used, but it may be useful in the future (e.g. import tests)
        	   org.jdom2.Element spreadsheetElement = new org.jdom2.Element("Spreadsheet");

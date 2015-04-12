@@ -126,8 +126,9 @@ public abstract class BubbledocsServiceTest {
     }
     
     /** put a user into session  and returns the token associated to it   
+     * @throws BubbledocsException 
      */
-    String addUserToSession(String username){
+    String addUserToSession(String username) throws BubbledocsException{
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	//Session session;
     	

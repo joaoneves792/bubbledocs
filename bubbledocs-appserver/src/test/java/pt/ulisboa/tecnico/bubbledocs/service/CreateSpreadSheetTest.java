@@ -43,8 +43,8 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     	createUser(USERNAME, PASSWORD, NAME);
     	createUser(ANOTHER_USERNAME, ANOTHER_PASSWORD, ANOTHER_NAME);
     	try{
-    		token = addUserToSession(USERNAME, PASSWORD);
-    		anotherToken = addUserToSession(ANOTHER_USERNAME, ANOTHER_PASSWORD);
+    		token = addUserToSession(USERNAME);
+    		anotherToken = addUserToSession(ANOTHER_USERNAME);
     	}catch (BubbledocsException e) {
     		assertTrue("FAILED TO POPULATE FOR CreateSpreadsheetTest", false);
     	}
