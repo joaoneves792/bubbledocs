@@ -16,7 +16,7 @@ public class DeleteUser extends BubbledocsService {
 	private String deadUsername;
 	
 	IDRemoteServices sdId;
-	
+	 
     public DeleteUser(String userToken, String deadUsername) throws EmptyUsernameException {
     	
     	if(deadUsername == null || deadUsername.isEmpty())
