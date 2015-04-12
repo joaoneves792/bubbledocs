@@ -22,6 +22,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
@@ -252,7 +253,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     	new ExportDocument(tokenAuthor, spreadsheetID).execute();
     }    
     
-    @Test(expected = RemoteInvocationException.class)
+    @Test(expected = UnavailableServiceException.class)
     public void failRemote() throws UnsupportedEncodingException, BubbledocsException {
     	new Expectations() {
       		{
