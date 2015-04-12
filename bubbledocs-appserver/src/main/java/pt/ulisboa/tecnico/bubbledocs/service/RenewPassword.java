@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
@@ -27,8 +28,10 @@ public class RenewPassword extends BubbledocsService {
            try{
         	   sdId.renewPassword(username);
            	   bubble.updateLocalPassword(username, null);
-           }catch(UserNotFoundException | RemoteInvocationException e) {
+           }catch(RemoteInvocationException e) {
         	   throw new UnavailableServiceException("The renew service is unavailable");
+           }catch(UserNotFoundException e){
+        	   throw new LoginBubbleDocsException("Login failed");
            }
     }
    
