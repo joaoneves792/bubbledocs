@@ -15,6 +15,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.DeleteUser;
@@ -151,7 +152,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     }
     
     //Test Case 7
-    @Test(expected = RemoteInvocationException.class)
+    @Test(expected = UnavailableServiceException.class)
     public void removeUserWithUnavailableSDID() throws BubbledocsException {
     	DeleteUser service = new DeleteUser(rootToken, EXISTING_USERNAME);
     	
