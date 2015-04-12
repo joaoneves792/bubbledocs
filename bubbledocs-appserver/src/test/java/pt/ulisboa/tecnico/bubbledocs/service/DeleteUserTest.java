@@ -8,7 +8,6 @@ import mockit.Mocked;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
@@ -24,12 +23,9 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class DeleteUserTest extends BubbledocsServiceTest {
 
-    private static final String ROOT_TOKEN          = "root8";
-    private static final int ROOT_TOKEN_INT         = 8;
-    private static final String EXISTING_TOKEN      = "md4";
-    private static final int EXISTING_TOKEN_INT     = 4;
-    private static final String UNAUTHORIZED_TOKEN  = "cv3";
-    private static final int UNAUTHORIZED_TOKEN_INT = 3;
+    private String rootToken          = "";
+    private String existingToken      = "";
+    private String unauthorizedToken  = "";
     @SuppressWarnings("unused")
 	private static final String NON_EXISTING_TOKEN  = "hm2";
  
@@ -55,23 +51,27 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-        Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	User userToDelete       = createUser(EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME),
-        	 unauthorizedUser   = createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
-        Root root = bubble.getSuperUser();
+    	
+    	User userToDelete       = createUser(EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME);
+        createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
         
         createSpreadSheet(userToDelete, SPREADSHEET_NAME, SPREADSHEET_ROWS, SPREADSHEET_COLUMNS);
         
-        addUserToSession(ROOT_TOKEN_INT, root);
-        addUserToSession(EXISTING_TOKEN_INT, userToDelete);
-        addUserToSession(UNAUTHORIZED_TOKEN_INT, unauthorizedUser);        
+        try {
+			rootToken          = addUserToSession(ROOT_USERNAME);
+			existingToken      = addUserToSession(EXISTING_USERNAME);
+	        unauthorizedToken  = addUserToSession(UNAUTHORIZED_USERNAME);
+		} catch (BubbledocsException e) {
+			e.printStackTrace();
+		}
+              
     }
 
     
     //Test case 1 
     @Test(expected = LoginBubbleDocsException.class)
     public void userToDeleteDoesNotExist() throws BubbledocsException {
-    	DeleteUser service = new DeleteUser(ROOT_TOKEN, NON_EXISTING_USERNAME);
+    	DeleteUser service = new DeleteUser(rootToken, NON_EXISTING_USERNAME);
     	
     	new Expectations() {
             {
@@ -87,7 +87,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     @Test
     public void success() throws BubbledocsException {
     	
-    	DeleteUser service = new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME);
+    	DeleteUser service = new DeleteUser(rootToken, EXISTING_USERNAME);
     	
     	new Expectations() {
             {
@@ -106,16 +106,16 @@ public class DeleteUserTest extends BubbledocsServiceTest {
         
         assertTrue("User was not Deleted", isUserDeleted);
         assertNull("Spreadsheet was not Deleted", getSpreadSheet(SPREADSHEET_NAME));
-        assertNull("Session was not Deleted", getUserFromSession(EXISTING_TOKEN));
+        assertNull("Session was not Deleted", getUserFromSession(existingToken));
         assertTrue("Permissions were not Deleted", getPermissionsByUser(EXISTING_USERNAME).isEmpty());
-        assertTrue("Root session was not updated", hasSessionUpdated(ROOT_TOKEN));     
+        assertTrue("Root session was not updated", hasSessionUpdated(rootToken));     
     }
     
     //Test case 3
     @Test(expected = LoginBubbleDocsException.class)
     public void emptyUsername() throws BubbledocsException {
     	
-    	DeleteUser service = new DeleteUser(ROOT_TOKEN, EMPTY_USERNAME);
+    	DeleteUser service = new DeleteUser(rootToken, EMPTY_USERNAME);
     	
     	new Expectations() {
             {
@@ -130,9 +130,9 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     //Test case 4
     @Test(expected = UserNotInSessionException.class)
     public void rootNotInSession() throws BubbledocsException {
-        removeUserFromSession(ROOT_TOKEN);
+        removeUserFromSession(rootToken);
         
-        DeleteUser service = new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME);
+        DeleteUser service = new DeleteUser(rootToken, EXISTING_USERNAME);
         
         service.execute();
     }
@@ -141,7 +141,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     @Test(expected = RootRemoveException.class)
     public void rootUsername() throws BubbledocsException {
     	
-    	DeleteUser service = new DeleteUser(ROOT_TOKEN, ROOT_USERNAME);
+    	DeleteUser service = new DeleteUser(rootToken, ROOT_USERNAME);
     	
     	service.execute();
     }
@@ -149,13 +149,13 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     //Test case 6
     @Test(expected = UnauthorizedUserException.class)
     public void notRootUser() throws BubbledocsException {
-        new DeleteUser(UNAUTHORIZED_TOKEN, EXISTING_USERNAME).execute();    	
+        new DeleteUser(unauthorizedToken, EXISTING_USERNAME).execute();    	
     }
     
     //Test Case 7
     @Test(expected = RemoteInvocationException.class)
     public void removeUserWithUnavailableSDID() throws BubbledocsException {
-    	DeleteUser service = new DeleteUser(ROOT_TOKEN, EXISTING_USERNAME);
+    	DeleteUser service = new DeleteUser(rootToken, EXISTING_USERNAME);
     	
         new Expectations() {
             {
@@ -169,7 +169,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     
     @Test
     public void successToDeleteIsNotInSession() throws BubbledocsException {
-    	removeUserFromSession(EXISTING_TOKEN);
+    	removeUserFromSession(existingToken);
         success();
     }
     
@@ -184,9 +184,9 @@ public class DeleteUserTest extends BubbledocsServiceTest {
         };
     	
     	try {
-    		new DeleteUser(ROOT_TOKEN, NON_EXISTING_USERNAME).execute();
+    		new DeleteUser(rootToken, NON_EXISTING_USERNAME).execute();
     	} catch (BubbledocsException e) {
-    		boolean isSessionUpdated = hasSessionUpdated(ROOT_TOKEN);
+    		boolean isSessionUpdated = hasSessionUpdated(rootToken);
     		assertTrue("Root Session was not updated", isSessionUpdated);
     		return;    	
     	}
@@ -196,9 +196,9 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     @Test
     public void unauthorizedFailSessionUpdate() throws BubbledocsException {
     	try {
-    		new DeleteUser(UNAUTHORIZED_TOKEN, EXISTING_USERNAME).execute();
+    		new DeleteUser(unauthorizedToken, EXISTING_USERNAME).execute();
     	} catch (BubbledocsException e) {
-    		boolean isSessionUpdated = hasSessionUpdated(UNAUTHORIZED_TOKEN);
+    		boolean isSessionUpdated = hasSessionUpdated(unauthorizedToken);
     		assertTrue("Unauthorized Session was not updated", isSessionUpdated);
     		return;
     	}
