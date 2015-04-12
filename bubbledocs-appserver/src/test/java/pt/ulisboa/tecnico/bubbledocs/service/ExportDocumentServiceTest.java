@@ -5,7 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
+import mockit.Expectations;
 import mockit.Mocked;
 
 import org.jdom2.JDOMException;
@@ -18,6 +20,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
@@ -131,9 +134,17 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     }
     
     @Test
-    public void successCorrectExport() throws BubbledocsException {
+    public void successCorrectExport() throws BubbledocsException, UnsupportedEncodingException {
       	ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
+      	
+      	new Expectations() {
+      		{
+      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      		}
+      	};
+      	
         service.execute();
+        
         org.jdom2.Document exported = null;
         try {
 			exported = new org.jdom2.input.SAXBuilder().build(new java.io.StringReader(service.getDocXML()));
@@ -163,8 +174,15 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     
     //Test case 1
     @Test
-    public void successUserReadPermission() throws BubbledocsException {
+    public void successUserReadPermission() throws BubbledocsException, UnsupportedEncodingException {
       	ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
+      	
+      	new Expectations() {
+      		{
+      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      		}
+      	};
+      	
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
         assertTrue("Session was not updated", hasSessionUpdated(tokenRo));
@@ -172,15 +190,29 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 
     //Test case 2
     @Test
-    public void successUserWritePermission() throws BubbledocsException {
+    public void successUserWritePermission() throws BubbledocsException, UnsupportedEncodingException {
       	ExportDocument service = new ExportDocument(tokenWrite, spreadsheetID);
+      	
+      	new Expectations() {
+      		{
+      			sdStore.storeDocument(USERNAME_WRITE, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      		}
+      	};
+      	
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
     
     @Test
-    public void successAuthor() throws BubbledocsException {
+    public void successAuthor() throws BubbledocsException, UnsupportedEncodingException {
       	ExportDocument service = new ExportDocument(tokenAuthor, spreadsheetID);
+      	
+      	new Expectations() {
+      		{
+      			sdStore.storeDocument(AUTHOR_USERNAME, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      		}
+      	};
+      	
         service.execute();
         assertTrue("Returning empty XML string!", !service.getDocXML().isEmpty());
     }
@@ -218,6 +250,18 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     	removeUserFromSession(tokenAuthor);
     	new ExportDocument(tokenAuthor, spreadsheetID).execute();
     }    
+    
+    @Test(expected = RemoteInvocationException.class)
+    public void failRemote() throws UnsupportedEncodingException, BubbledocsException {
+    	new Expectations() {
+      		{
+      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, ss.export().getBytes("UTF-8"));
+      			result = new RemoteInvocationException("");
+      		}
+      	};
+
+	    new ExportDocument(tokenRo, spreadsheetID).execute();
+    }
     
     
 }
