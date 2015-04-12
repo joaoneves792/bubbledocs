@@ -103,10 +103,10 @@ import pt.ist.fenixframework.FenixFramework;
     /**
      * Method to create a session for a user that successfully logged in
      * @param username
-     * @return the session token int
+     * @return the session token
      * @throws UserNotFoundException
      */
-    public int createSession(String username)throws UserNotFoundException{
+    public String createSession(String username)throws UserNotFoundException{
         int tokenInt;
         User user;
         Session session;
@@ -122,12 +122,12 @@ import pt.ist.fenixframework.FenixFramework;
         	tokenInt = (new Random()).nextInt(10);
 			session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
             addSession(session);
-            return tokenInt;
+            return username + tokenInt;
         }
         
         //If a session for this user was already set then update it
         session.update();
-        return session.getTokenInt();
+        return username + session.getTokenInt();
     }
     
     /**

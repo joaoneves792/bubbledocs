@@ -30,7 +30,6 @@ public class LoginUser extends BubbledocsService {
     protected void dispatch() throws UnavailableServiceException, LoginBubbleDocsException {
         Bubbledocs bubble;
         IDRemoteServices sdId;
-        Integer tokenInt;
         
         bubble = Bubbledocs.getBubbledocs();
         sdId = new IDRemoteServices();
@@ -49,8 +48,7 @@ public class LoginUser extends BubbledocsService {
         try{
         	bubble.updateLocalPassword(username, password);
     	
-        	tokenInt = bubble.createSession(username);
-        	userToken = username + tokenInt;
+        	userToken = bubble.createSession(username);
         }catch(UserNotFoundException e){
         	//This should only happen if the user was deleted on the domain but still managed to login remotely!
         	throw new LoginBubbleDocsException("Login failed");
