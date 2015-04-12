@@ -6,6 +6,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 
+import mockit.Mocked;
+
 import org.jdom2.JDOMException;
 import org.junit.Test;
 
@@ -19,21 +21,22 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
+import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 
 public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 
-    private static final String AUTHOR_USERNAME = "md";
+    private static final String AUTHOR_USERNAME = "mehrunes";
     private static final String AUTHOR_NAME = "Mehrunes Dagon";
-    private static final String AUTHOR_PASSWORD = "dagon";
+    private static final String AUTHOR_EMAIL = "mehrunes@deadlands.oblivion";
     
-    private static final String USERNAME_RO = "mb";
+    private static final String USERNAME_RO = "molag";
     private static final String NAME_RO = "Molag Bal";
-    private static final String PASSWORD_RO = "bal";
+    private static final String EMAIL_RO = "molag@coldharbor.oblivion";
 
-    private static final String USERNAME_WRITE = "hm";
+    private static final String USERNAME_WRITE = "hermaeus";
     private static final String NAME_WRITE = "Hermaeus Mora";
-    private static final String PASSWORD_WRITE = "mora";
+    private static final String EMAIL_WRITE = "mora";
     
     private static final String SPREADHEET_NAME = "Argonian Account Book";
     private static final Integer SPREADHEET_ROWS = 10;
@@ -56,6 +59,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 	private User author;
 	private Spreadsheet ss; 
 	
+	@Mocked
+	StoreRemoteServices sdStore;
+	
 	/* TODO not used, but may be useful in future (e.g. import tests)
 	private org.jdom2.Document doc = new org.jdom2.Document();
 	*/
@@ -63,9 +69,9 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     @Override
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-  	    author = createUser(AUTHOR_USERNAME, AUTHOR_PASSWORD, AUTHOR_NAME);
-        createUser(USERNAME_RO, PASSWORD_RO, NAME_RO);
-        createUser(USERNAME_WRITE, PASSWORD_WRITE, NAME_WRITE);
+  	    author = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
+        createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
+        createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
         
         try{
     	   ss = createSpreadSheet(author, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
@@ -134,6 +140,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 		} catch (IOException | JDOMException e) {
 			assertTrue(false);
 		} 
+        
         assertTrue("Session was not updated", hasSessionUpdated(tokenRo));
         assertNotNull(exported);
 

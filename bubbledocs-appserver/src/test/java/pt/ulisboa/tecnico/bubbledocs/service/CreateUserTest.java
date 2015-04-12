@@ -95,25 +95,11 @@ public class CreateUserTest extends BubbledocsServiceTest {
 
     @Test(expected = InvalidUsernameException.class)
     public void usernameTooShort() throws BubbledocsException {
-    	
-    	new Expectations() {
-    		{
-    			sdId.createUser(USERNAME_TOO_SHORT, NON_EXISTING_EMAIL);
-    		}
-    	};
-    	
     	new CreateUser(rootToken, USERNAME_TOO_SHORT, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();    	
     }
     
     @Test(expected = InvalidUsernameException.class)
     public void usernameTooLong() throws BubbledocsException {
-    	
-    	new Expectations() {
-    		{
-    			sdId.createUser(USERNAME_TOO_LONG, NON_EXISTING_EMAIL);
-    		}
-    	};
-    	
     	new CreateUser(rootToken, USERNAME_TOO_LONG, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
 
