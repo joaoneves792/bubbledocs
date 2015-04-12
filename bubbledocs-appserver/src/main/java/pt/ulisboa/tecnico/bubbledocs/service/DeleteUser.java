@@ -9,7 +9,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 // add needed import declarations
 
 public class DeleteUser extends BubbledocsService {
-	private String userToken;
 	private String deadUsername;
 
     public DeleteUser(String userToken, String deadUsername) throws EmptyUsernameException {

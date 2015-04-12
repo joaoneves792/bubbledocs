@@ -12,7 +12,6 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUser extends BubbledocsService {
 
-    private String userToken;
     private String username;
     private String password;
 
@@ -26,6 +25,11 @@ public class LoginUser extends BubbledocsService {
         password = passwd;
     }
 
+    @Override
+    private void checkUserInSession() throws UserNotInSessionException{
+    	//EMPTY ON PURPOSE
+    }
+    
     @Override
     protected void dispatch() throws UnavailableServiceException, LoginBubbleDocsException {
         Bubbledocs bubble;

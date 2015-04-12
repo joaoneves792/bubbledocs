@@ -7,7 +7,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
 public class ExportDocument extends BubbledocsService {
 	
-	private String userToken;
 	private int docId;
 	private String docXML;
 

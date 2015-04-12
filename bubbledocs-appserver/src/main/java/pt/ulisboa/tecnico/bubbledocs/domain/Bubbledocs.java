@@ -125,8 +125,6 @@ import pt.ist.fenixframework.FenixFramework;
             return username + tokenInt;
         }
         
-        //If a session for this user was already set then update it
-        session.update();
         return username + session.getTokenInt();
     }
     
@@ -256,13 +254,6 @@ import pt.ist.fenixframework.FenixFramework;
         try{
         	session = getSessionByToken(userToken);
 
-        	//This if block should be in everyones functions called from the service layer!!
-            if(session.hasExpired()){
-                clearSession(session);
-                throw new UserNotInSessionException(userToken + "'s Session expired!");
-            }else
-                session.update();
-            //-----------------------------
 
         	//Sanity checks 
         	if(name.isEmpty())
@@ -347,13 +338,7 @@ import pt.ist.fenixframework.FenixFramework;
     
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {		
 		Session session = getSessionByUsername("root");
-		if(session.hasExpired()) {
-			clearSession(session);
-			throw new UserNotInSessionException("Root is not logged in.");
-		}
 		
-		session.update();
-    	
 		try {
 			User user = getUserByUsername(newUser.getUsername());
     		if(null != user) {
@@ -369,13 +354,7 @@ import pt.ist.fenixframework.FenixFramework;
     		throw new RootRemoveException("Super User, you may not delete yourself...");
     	
     	Session session = getSessionByUsername("root");
-    	if(session.hasExpired()) {
-    		clearSession(session);
-    		throw new UserNotInSessionException("Root is not logged in.");
-    	}
     		
-    	session.update();
-    	
     	User user = getUserByUsername(deadUserUsername);
     	removeUser(user);
     	
@@ -403,13 +382,6 @@ import pt.ist.fenixframework.FenixFramework;
     private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int row, int column) throws BubbledocsException {
     	Session session = getSessionByToken(userToken);
     	
-    	if(session.hasExpired()){
-    		clearSession(session);
-    		throw new UserNotInSessionException("User session has expired.");
-    	}
-    	
-    	session.update();
-    	
     	//Make sure the spreadsheet exists
     	getSpreadsheetById(spreadsheetId);
 
@@ -435,12 +407,6 @@ import pt.ist.fenixframework.FenixFramework;
     }
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {
-    	Session session = getSessionByToken(userToken);
-    	if(session.hasExpired()){
-    		clearSession(session);
-    		throw new UserNotInSessionException(userToken + "'s Session expired!");
-    	}
-    	session.update();
     	if(docId < 0) throw new SpreadsheetNotFoundException("Invalid Document ID");
     	String username = userToken.split("\\d")[0];
     	getPermission(username, docId);	     

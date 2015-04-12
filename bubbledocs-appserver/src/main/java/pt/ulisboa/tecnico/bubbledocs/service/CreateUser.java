@@ -20,7 +20,6 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 // add needed import declarations
 
 public class CreateUser extends BubbledocsService {
-	private String rootToken;
 	private String newUsername;
 	private String email;
 	private String name;
@@ -37,7 +36,7 @@ public class CreateUser extends BubbledocsService {
     		throw new InvalidUsernameException("User usernames must have 3 to 8 characters.");
     	}
     	
-    	rootToken = rootTok;
+    	userToken = rootTok;
     	newUsername = username;
     	this.email = email;
     	this.name = name;
@@ -45,8 +44,8 @@ public class CreateUser extends BubbledocsService {
 
     @Override
     protected void dispatch() throws UnauthorizedUserException, UserAlreadyExistsException, UserNotInSessionException, EmptyPasswordException, EmptyUsernameException, UserNotFoundException, InvalidUsernameException, DuplicateUsernameException, DuplicateEmailException, InvalidEmailException, UnavailableServiceException {
-    	if(!rootToken.matches("root\\d"))
-    		throw new UnauthorizedUserException("The user in session ["+ rootToken + "] is not authorized to create new users.");
+    	if(!userToken.matches("root\\d"))
+    		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
 
     	IDRemoteServices sdId = new IDRemoteServices();
     	
@@ -55,12 +54,11 @@ public class CreateUser extends BubbledocsService {
     	} catch (RemoteInvocationException e) {
     		throw new UnavailableServiceException("SD-ID is offline.");
     	}
-    	
     	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).addUser(name, newUsername, email);
     }
 
-	public String getRootToken() {
-		return rootToken;
+	public String getuserToken() {
+		return userToken;
 	}
 	
 }

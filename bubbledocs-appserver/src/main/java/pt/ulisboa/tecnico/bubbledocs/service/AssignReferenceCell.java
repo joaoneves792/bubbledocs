@@ -7,7 +7,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 
 public class AssignReferenceCell extends BubbledocsService {
 	
-	private String userToken;
     private Integer spreadsheetId;
     private String myCellId;
     private String referencedCell;

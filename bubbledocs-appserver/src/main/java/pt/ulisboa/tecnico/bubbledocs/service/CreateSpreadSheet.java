@@ -10,7 +10,6 @@ public class CreateSpreadSheet extends BubbledocsService {
     private int rows;
     private int columns;
     private String name;
-    private String userToken;
 
     public int getSheetId() {
         return sheetId;

@@ -6,7 +6,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 public class AssignLiteralCell extends BubbledocsService {
 
     private int spreadSheetId;
-    private String userToken;
     private Integer cellIdLine;
     private Integer cellIdColumn;
     private Integer literal;
