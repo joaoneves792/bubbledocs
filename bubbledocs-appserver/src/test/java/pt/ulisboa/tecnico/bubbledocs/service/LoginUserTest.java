@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
@@ -22,7 +23,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     private static final String PASSWORD = "dagon";
     private static final String OLD_PASSWORD = "mehrunes";
     private static final String NAME = "Mehrunes Dagon";
-    
+    private static final String EMAIL = "mehrunes@dagon.com";
     private static final String INVALID_USERNAME = "hm";
     private static final String INVALID_PASSWORD = "mora";
     private static final String EMPTY_PASSWORD = "";
@@ -33,7 +34,13 @@ public class LoginUserTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-        createUser(USERNAME, PASSWORD, NAME);
+        createUser(USERNAME, EMAIL, NAME);
+        try {
+			setLocalPassword(USERNAME, PASSWORD);
+		} catch (UserNotFoundException e) {
+			assertTrue("Fail to initialize Domain for LoginUserTest", false);
+		}
+        
     }
 
     //Test Case 1 

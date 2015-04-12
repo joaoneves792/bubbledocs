@@ -9,11 +9,9 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class RenewPassword extends BubbledocsService {
-	
-	private String userToken;
-	
-	public RenewPassword(String userToken) {
-		this.userToken=userToken;
+		
+	public RenewPassword(String token) {
+		userToken=token;
 	}
 	
     @Override

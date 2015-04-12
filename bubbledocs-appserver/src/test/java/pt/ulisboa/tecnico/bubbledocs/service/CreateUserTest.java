@@ -205,14 +205,8 @@ public class CreateUserTest extends BubbledocsServiceTest {
         new CreateUser(rootToken, EMPTY_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
-    @Test(expected = EmptyEmailException.class)
+    @Test(expected = InvalidEmailException.class)
     public void emptyEmail() throws BubbledocsException {
-    	new Expectations() {
-    		{
-    			sdId.createUser(NON_EXISTING_USERNAME, EMPTY_EMAIL);
-    			result = new InvalidEmailException("");
-    		}
-    	};
     	
         new CreateUser(rootToken, NON_EXISTING_USERNAME, EMPTY_EMAIL, NON_EXISTING_NAME).execute();
     }

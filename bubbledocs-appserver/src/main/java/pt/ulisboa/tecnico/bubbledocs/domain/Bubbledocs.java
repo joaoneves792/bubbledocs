@@ -95,8 +95,9 @@ import pt.ist.fenixframework.FenixFramework;
      */
     public void updateLocalPassword(String username, String password) throws UserNotFoundException{
     	User user = getUserByUsername(username);
-    	
-    	if(!password.equals(user.getPasswd()))
+    	if(null==password)
+    		user.setPasswd(null);
+    	else if(!password.equals(user.getPasswd()))
     		user.setPasswd(password);    	
     }
     
