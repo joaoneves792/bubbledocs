@@ -10,6 +10,7 @@ import org.junit.Test;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
@@ -111,7 +112,7 @@ public class DeleteUserTest extends BubbledocsServiceTest {
     }
     
     //Test case 3
-    @Test(expected = LoginBubbleDocsException.class)
+    @Test(expected = EmptyUsernameException.class)
     public void emptyUsername() throws BubbledocsException {
     	
     	DeleteUser service = new DeleteUser(rootToken, EMPTY_USERNAME);
