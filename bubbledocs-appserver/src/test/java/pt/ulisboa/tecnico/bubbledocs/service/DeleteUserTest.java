@@ -64,7 +64,6 @@ public class DeleteUserTest extends BubbledocsServiceTest {
 		} catch (BubbledocsException e) {
 			e.printStackTrace();
 		}
-              
     }
 
     
