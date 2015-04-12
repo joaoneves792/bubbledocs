@@ -13,7 +13,6 @@ import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.DuplicateEmailException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.DuplicateUsernameException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyEmailException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidEmailException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
