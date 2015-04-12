@@ -338,7 +338,7 @@ import pt.ist.fenixframework.FenixFramework;
     
     
 	public void createUser(Root root, User newUser) throws UserAlreadyExistsException, UserNotInSessionException {		
-		Session session = getSessionByUsername("root");
+		getSessionByUsername("root");
 		
 		try {
 			User user = getUserByUsername(newUser.getUsername());
@@ -354,7 +354,7 @@ import pt.ist.fenixframework.FenixFramework;
     	if(deadUserUsername.equals("root"))
     		throw new RootRemoveException("Super User, you may not delete yourself...");
     	
-    	Session session = getSessionByUsername("root");
+    	getSessionByUsername("root");
     		
     	User user = getUserByUsername(deadUserUsername);
     	removeUser(user);
