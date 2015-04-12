@@ -15,9 +15,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.DuplicateEmailException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.DuplicateUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyEmailException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyNameException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidEmailException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidSessionTimeException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
@@ -30,8 +28,8 @@ public class CreateUserTest extends BubbledocsServiceTest {
 
 	private static final String ROOT_PASSWORD = "root";
     private static final String ROOT_USERNAME = "root";
-	private static final String ROOT_NAME = "Super User";
-    private static final String ROOT_EMAIL = "root@bubbledocs.tecnico.ulisboa.pt";
+	private static final String ROOT_NAME     = "Super User";
+    private static final String ROOT_EMAIL    = "root@bubbledocs.tecnico.ulisboa.pt";
     
 
     private static final String UNAUTHORIZED_USERNAME  = "hermaeus";
@@ -214,13 +212,28 @@ public class CreateUserTest extends BubbledocsServiceTest {
     	assertTrue("Root Session was not Updated", false);
     }
 
-    @Test(expected = EmptyUsernameException.class)
+    @Test(expected = InvalidUsernameException.class)
     public void emptyUsername() throws BubbledocsException {
+    	
+    	new Expectations() {
+    		{
+    			sdId.createUser(EMPTY_USERNAME, NON_EXISTING_EMAIL);
+    			result = new InvalidUsernameException("");
+    		}
+    	};
+    	
         new CreateUser(rootToken, EMPTY_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = EmptyEmailException.class)
-    public void emptyPassword() throws BubbledocsException {
+    public void emptyEmail() throws BubbledocsException {
+    	new Expectations() {
+    		{
+    			sdId.createUser(NON_EXISTING_USERNAME, EMPTY_EMAIL);
+    			result = new InvalidUsernameException("");
+    		}
+    	};
+    	
         new CreateUser(rootToken, NON_EXISTING_USERNAME, EMPTY_EMAIL, NON_EXISTING_NAME).execute();
     }
     
@@ -247,7 +260,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     }
 
     @Test(expected = UserNotInSessionException.class)
-    public void accessUsernameNotExist() throws BubbledocsException {
+    public void rootNotInSession() throws BubbledocsException {
     	removeUserFromSession(rootToken);
         new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
