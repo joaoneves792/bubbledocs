@@ -4,13 +4,19 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Root;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
+import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations
 
 public class DeleteUser extends BubbledocsService {
+	private String userToken;
 	private String deadUsername;
-
+	
+	IDRemoteServices sdId;
+	
     public DeleteUser(String userToken, String deadUsername) throws EmptyUsernameException {
     	
     	if(deadUsername == null || deadUsername.isEmpty())
@@ -24,8 +30,16 @@ public class DeleteUser extends BubbledocsService {
     protected void dispatch() throws BubbledocsException {
     	if(!userToken.matches("root\\d"))
     		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
+
+    	IDRemoteServices sdId = new IDRemoteServices();
+    	
+    	try{
+    		sdId.removeUser(deadUsername);
+    	} catch(RemoteInvocationException  e){
+    		throw new UnavailableServiceException("SD-ID offline");
+    	}
+    	
     	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).removeUser(deadUsername);
-    	//Bubbledocs.getBubbledocs().destroyUser(userToken, deadUsername);
     }
 
 	public String getUserToken() {
