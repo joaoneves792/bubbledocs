@@ -46,8 +46,8 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     private static final Integer PROTECTED_COLUMN = 6;
     
     private static final String INVALID_ID = "abc";
-    private static final String INVALID_CELL_ID = "100;100";
-    //FIXME VARIEDADE NOS RANGES
+    private static final String OUTBOUND_CELL_ID_ROW = "100;1";
+    private static final String OUTBOUND_CELL_ID_COL = "1;100";
     
     //This is needed throughout the tests
     private Integer spreadsheetID;
@@ -92,9 +92,23 @@ public class AssignLiteralCellTest extends BubbledocsServiceTest {
     
     //Test case 2
     @Test(expected = InvalidCellException.class)
-    public void assignLiteralToInvalidCell() throws BubbledocsException, NumberFormatException {
+    public void assignLiteralToInvalidCellRow() throws BubbledocsException, NumberFormatException {
     	try{
-    		AssignLiteralCell service = new AssignLiteralCell(tokenAuthor, spreadsheetID, INVALID_CELL_ID, LITERAL_VALUE);
+    		AssignLiteralCell service = new AssignLiteralCell(tokenAuthor, spreadsheetID, OUTBOUND_CELL_ID_ROW, LITERAL_VALUE);
+    		service.execute();
+        //This test case also checks if in case of failure the session is still updated
+		}catch(BubbledocsException e){
+			assertTrue("Session was not updated", hasSessionUpdated(tokenAuthor));
+			throw e;
+		}
+    }
+    
+    
+    //Test case 2
+    @Test(expected = InvalidCellException.class)
+    public void assignLiteralToInvalidCellCol() throws BubbledocsException, NumberFormatException {
+    	try{
+    		AssignLiteralCell service = new AssignLiteralCell(tokenAuthor, spreadsheetID, OUTBOUND_CELL_ID_COL, LITERAL_VALUE);
     		service.execute();
         //This test case also checks if in case of failure the session is still updated
 		}catch(BubbledocsException e){

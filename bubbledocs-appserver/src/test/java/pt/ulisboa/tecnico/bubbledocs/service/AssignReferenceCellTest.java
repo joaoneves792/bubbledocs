@@ -47,8 +47,8 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     private static final int LITERAL_VALUE = 3;
     
     private static final String INVALID_ID = "abc";
-    private static final String OUTBOUND_CELL_ID = "100;100";
-    //FIXME VARIEDADE NO RANGEs
+    private static final String OUTBOUND_CELL_ID_ROW = "100;1";
+    private static final String OUTBOUND_CELL_ID_COL = "1;100";
     
     //This is needed throughout the tests
     private Integer spreadsheetID;
@@ -97,9 +97,22 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     
     //Test case 2
     @Test(expected = InvalidCellException.class)
-    public void assignReferenceToOutOfBoundsCell() throws BubbledocsException, NumberFormatException {
+    public void assignReferenceToOutOfBoundsCellRow() throws BubbledocsException, NumberFormatException {
     	try{
-    		AssignReferenceCell service = new AssignReferenceCell(tokenAuthor, spreadsheetID, OUTBOUND_CELL_ID, LITERAL_ID);
+    		AssignReferenceCell service = new AssignReferenceCell(tokenAuthor, spreadsheetID, OUTBOUND_CELL_ID_ROW, LITERAL_ID);
+    		service.execute(); 
+        //This test case also checks if in case of failure the session is still updated
+		}catch(BubbledocsException e){
+			assertTrue("Session was not updated", hasSessionUpdated(tokenAuthor));
+			throw e;
+		}
+    }
+    
+    //Test case 2
+    @Test(expected = InvalidCellException.class)
+    public void assignReferenceToOutOfBoundsCellCol() throws BubbledocsException, NumberFormatException {
+    	try{
+    		AssignReferenceCell service = new AssignReferenceCell(tokenAuthor, spreadsheetID, OUTBOUND_CELL_ID_COL, LITERAL_ID);
     		service.execute(); 
         //This test case also checks if in case of failure the session is still updated
 		}catch(BubbledocsException e){
@@ -118,7 +131,7 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     //Test case 4
     @Test(expected = InvalidCellException.class)
     public void assignReferenceWithInvalidReferenceCell() throws BubbledocsException, NumberFormatException {
-    	AssignReferenceCell service = new AssignReferenceCell(tokenAuthor, spreadsheetID, REFERENCE_ID, OUTBOUND_CELL_ID);
+    	AssignReferenceCell service = new AssignReferenceCell(tokenAuthor, spreadsheetID, REFERENCE_ID, OUTBOUND_CELL_ID_ROW);
         service.execute();   
     }
     
