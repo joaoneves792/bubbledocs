@@ -28,9 +28,9 @@ public class RenewPassword extends BubbledocsService {
            	   bubble.updateLocalPassword(username, null);
            }catch(RemoteInvocationException e) {
         	   throw new UnavailableServiceException("The renew service is unavailable");
-           }catch(UserNotFoundException e){
+           } catch(UserNotFoundException e){
         	   throw new LoginBubbleDocsException("Login failed");
-           }
+           } 
     }
    
 }

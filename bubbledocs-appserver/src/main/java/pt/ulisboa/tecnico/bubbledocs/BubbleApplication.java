@@ -31,6 +31,9 @@ import java.util.List;
 @SuppressWarnings("unused")
 public class BubbleApplication{
 	
+	private static final String PF = "pfx";
+	private static final String RA = "rax";
+	
 	private static String pfToken;
 	private static String rootToken;
 	private static int spreadsheetID;
@@ -52,17 +55,17 @@ public class BubbleApplication{
         	tm.commit();
         	
         	tm.begin();        	
-        	User pf = bubble.getUserByUsername("pf"); //still needed for import
+        	User pf = bubble.getUserByUsername(PF); //still needed for import
         	String ss = null;
             printRegisteredUsers();
         	tm.commit();
 
         	tm.begin();        	
-        	printSpreadsheetsByUsername("pf");
+        	printSpreadsheetsByUsername(PF);
         	tm.commit();
         	
         	tm.begin();
-        	printSpreadsheetsByUsername("ra");        	
+        	printSpreadsheetsByUsername(RA);        	
         	tm.commit();
         	
         	tm.begin();
@@ -78,7 +81,7 @@ public class BubbleApplication{
         	
         	tm.begin();
         	System.out.println("====================== AFTER DELETING NOTAS ES ============================");
-        	printSpreadsheetsByUsername("pf");
+        	printSpreadsheetsByUsername(PF);
         	tm.commit();
         	
         	tm.begin();
@@ -88,7 +91,7 @@ public class BubbleApplication{
         	
         	tm.begin();
         	System.out.println("====================== AFTER IMPORTING NOTAS ES ===========================");
-        	printSpreadsheetsByUsername("pf");
+        	printSpreadsheetsByUsername(PF);
         	tm.commit();
         	
         	tm.begin();
@@ -210,12 +213,12 @@ public class BubbleApplication{
 				if(s.hasExpired()) s.update();
     			if(s.getUser().getUsername().equals("root")) {
     				rootToken = "root" + s.getTokenInt();
-    			} else if(s.getUser().getUsername().equals("pf")) {
-    				pfToken = "pf" + s.getTokenInt();
+    			} else if(s.getUser().getUsername().equals(PF)) {
+    				pfToken = "pfi" + s.getTokenInt();
     			}
     		}
     		for(Permission p : bubble.getPermissionSet()) {
-    			if(p.getUser().getUsername().equals("pf")) {
+    			if(p.getUser().getUsername().equals(PF)) {
     				spreadsheetID = p.getSpreadsheet().getId();
     			}
     		}
@@ -236,15 +239,15 @@ public class BubbleApplication{
     	CreateUser pfCreation = null;
     	CreateUser raCreation = null;
 		try {
-			pfCreation = new CreateUser(rootToken, "pf", "sub", "Paul Door");
-	    	raCreation = new CreateUser(rootToken, "ra", "cor", "Step Rabbit");
+			pfCreation = new CreateUser(rootToken, PF, "sub", "Paul Door");
+	    	raCreation = new CreateUser(rootToken, RA, "cor", "Step Rabbit");
 	    	pfCreation.execute();    
 			raCreation.execute();
 		} catch (BubbledocsException e) {
 			throw new CreateUserException("Failed to create users on domain population");
 		} 
     	
-		LoginUser loginPf = new LoginUser("pf", "sub");
+		LoginUser loginPf = new LoginUser(PF, "sub");
 		try {
 			loginPf.execute();
 		} catch (BubbledocsException e2) {
