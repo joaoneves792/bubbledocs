@@ -11,6 +11,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class RenewPasswordTest extends BubbledocsServiceTest {
@@ -66,5 +67,12 @@ public class RenewPasswordTest extends BubbledocsServiceTest {
         
         service.execute();
         assertTrue("Session was not updated", hasSessionUpdated(userToken));
+    }
+    
+  //Test case 3
+    @Test(expected = UserNotInSessionException.class)
+    public void renewPasswordUserNotInSession() throws BubbledocsException {
+    	removeUserFromSession(userToken);
+        new RenewPassword(userToken).execute();
     }
 }
