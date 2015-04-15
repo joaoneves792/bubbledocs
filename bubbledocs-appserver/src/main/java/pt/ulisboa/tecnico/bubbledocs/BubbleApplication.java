@@ -214,7 +214,7 @@ public class BubbleApplication{
     			if(s.getUser().getUsername().equals("root")) {
     				rootToken = "root" + s.getTokenInt();
     			} else if(s.getUser().getUsername().equals(PF)) {
-    				pfToken = "pfi" + s.getTokenInt();
+    				pfToken = PF + s.getTokenInt();
     			}
     		}
     		for(Permission p : bubble.getPermissionSet()) {
