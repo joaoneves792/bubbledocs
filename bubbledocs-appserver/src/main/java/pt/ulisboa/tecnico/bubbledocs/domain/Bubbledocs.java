@@ -118,8 +118,8 @@ import pt.ist.fenixframework.FenixFramework;
         user = getUserByUsername(username);
         try { 
             session = getSessionByUsername(username);
+            session.update();
         } catch(UserNotInSessionException e) {
-            //Some code duplication... (but its better than an empty catch block)
         	tokenInt = (new Random()).nextInt(10);
 			session = new Session(user, tokenInt, org.joda.time.LocalDate.now());
             addSession(session);
