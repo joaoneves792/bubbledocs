@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service;
+package pt.ulisboa.tecnico.bubbledocs.service.integration.component;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,11 +13,12 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
-import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
+import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
+import pt.ulisboa.tecnico.bubbledocs.service.integrator.LoginUserIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 
-public class LoginUserTest extends BubbledocsServiceTest {
+public class LoginUserIntegratorTest extends BubbledocsServiceTest {
 
     private static final String USERNAME = "mehrunes";
     private static final String PASSWORD = "dagon";
@@ -46,7 +47,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 1 
     @Test
     public void success() throws BubbledocsException {
-    	LoginUser service = new LoginUser(USERNAME, PASSWORD);
+    	LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
     
         new Expectations() {
             {
@@ -67,7 +68,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
    //Test Case 2 
    @Test
    public void successLocalLogin() throws BubbledocsException {
-    	LoginUser service = new LoginUser(USERNAME, PASSWORD);
+    	LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
     
         new Expectations() {
             {
@@ -88,7 +89,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 3
     @Test
     public void successLoginTwice() throws BubbledocsException {
-        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(USERNAME, PASSWORD);
@@ -111,7 +112,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 4
     @Test
     public void successLocalLoginTwice() throws BubbledocsException {
-        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(USERNAME, PASSWORD);
@@ -142,7 +143,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 5
     @Test(expected = LoginBubbleDocsException.class)
     public void loginUserWithWrongPassword() throws BubbledocsException {
-        LoginUser service = new LoginUser(USERNAME, INVALID_PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, INVALID_PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(USERNAME, INVALID_PASSWORD);
@@ -155,7 +156,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 6
     @Test(expected = UnavailableServiceException.class)
     public void localLoginUserWithWrongPassword() throws BubbledocsException {
-        LoginUser service = new LoginUser(USERNAME, INVALID_PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, INVALID_PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(USERNAME, INVALID_PASSWORD);
@@ -168,7 +169,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 7
     @Test(expected = LoginBubbleDocsException.class)
     public void loginUnknownUser() throws BubbledocsException {
-        LoginUser service = new LoginUser(INVALID_USERNAME, PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(INVALID_USERNAME, PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(INVALID_USERNAME, PASSWORD);
@@ -181,7 +182,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     //Test Case 8
     @Test(expected = UnavailableServiceException.class)
     public void localLoginUnknownUser() throws BubbledocsException {
-        LoginUser service = new LoginUser(INVALID_USERNAME, PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(INVALID_USERNAME, PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(INVALID_USERNAME, PASSWORD);
@@ -195,7 +196,7 @@ public class LoginUserTest extends BubbledocsServiceTest {
     @Test
     public void successUpdateLocalPassword() throws BubbledocsException {
     	setLocalPassword(USERNAME, OLD_PASSWORD);
-        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(USERNAME, PASSWORD);
@@ -211,11 +212,10 @@ public class LoginUserTest extends BubbledocsServiceTest {
     }
     
     //Test Case 10
-    //FIXME Should we be testing with an empty password or a null one?
     @Test
     public void successUpdateEmptyLocalPassword() throws BubbledocsException {
     	setLocalPassword(USERNAME, EMPTY_PASSWORD);
-        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
         new Expectations() {
             {
                 sdId.loginUser(USERNAME, PASSWORD);

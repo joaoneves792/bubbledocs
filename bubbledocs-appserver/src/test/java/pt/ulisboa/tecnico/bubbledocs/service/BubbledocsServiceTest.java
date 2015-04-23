@@ -56,7 +56,7 @@ public abstract class BubbledocsServiceTest {
     // auxiliary methods that access the domain layer and are needed in the test classes
     // for defining the initial state and checking that the service has the expected behavior
     /** create user if not exists */
-    User createUser(String username, String email, String name) {
+    protected User createUser(String username, String email, String name) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	User user = null;
 		user = new User(name, username, email);
@@ -65,7 +65,7 @@ public abstract class BubbledocsServiceTest {
     }
 
     
-    public Spreadsheet createSpreadSheet(User user, String name, int row, int column) {
+    protected Spreadsheet createSpreadSheet(User user, String name, int row, int column) {
         Bubbledocs bubble = Bubbledocs.getBubbledocs();
         return bubble.createSpreadsheet(user, name, row, column);
     }
@@ -73,7 +73,7 @@ public abstract class BubbledocsServiceTest {
     // returns a spreadsheet whose name is equal to name
     //THIS IS BAD since there can be more than one spreadsheet with the same name...
     //FIXME This is just a quick hack
-    public Spreadsheet getSpreadSheet(String name) {
+    protected Spreadsheet getSpreadSheet(String name) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	Set<Spreadsheet> spreadsheets = bubble.getSpreadsheetSet();
     	for(Spreadsheet s : spreadsheets)
@@ -82,13 +82,13 @@ public abstract class BubbledocsServiceTest {
     	return null;    	
     }
 
-    public Spreadsheet getSpreadSheetById(Integer id) throws SpreadsheetNotFoundException {
+    protected Spreadsheet getSpreadSheetById(Integer id) throws SpreadsheetNotFoundException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	return bubble.getSpreadsheetById(id);    	
     }
     
     /* FIXME suggestion for your hack... */    
-    public java.util.List<Spreadsheet> getSpreadsheetsByName(String name) {
+    protected java.util.List<Spreadsheet> getSpreadsheetsByName(String name) {
     	java.util.List<Spreadsheet> sheets = new java.util.ArrayList<Spreadsheet>();
     	for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
     		if(sheet.getName().equals(name)) {
@@ -98,7 +98,7 @@ public abstract class BubbledocsServiceTest {
     	return sheets;
     }
     
-    public Spreadsheet getSpreadsheetById(Integer id) {
+    protected Spreadsheet getSpreadsheetById(Integer id) {
     	for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {
     		if(sheet.getId().equals(id))
     			return sheet;
@@ -107,7 +107,7 @@ public abstract class BubbledocsServiceTest {
     }
     
     // returns the user registered in the application whose username is equal to username
-    User getUserFromUsername(String username) {
+    protected User getUserFromUsername(String username) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	try {
 			return bubble.getUserByUsername(username);
@@ -119,7 +119,7 @@ public abstract class BubbledocsServiceTest {
     /** Set the local password of a user
      * @throws UserNotFoundException 
      */
-    void setLocalPassword(String username, String password) throws UserNotFoundException{
+    protected void setLocalPassword(String username, String password) throws UserNotFoundException{
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	User user = bubble.getUserByUsername(username);
     	user.setPasswd(password);
@@ -128,7 +128,7 @@ public abstract class BubbledocsServiceTest {
     /** put a user into session  and returns the token associated to it   
      * @throws BubbledocsException 
      */
-    String addUserToSession(String username) throws BubbledocsException{
+    protected String addUserToSession(String username) throws BubbledocsException{
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	//Session session;
     	
@@ -145,7 +145,7 @@ public abstract class BubbledocsServiceTest {
     
     /**put a user in session (if not already)
      * required because JUnit does not guarantee order of the tests */
-    void addUserToSession(Integer tokInt, User user) {
+    protected void addUserToSession(Integer tokInt, User user) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	//Session session = null;
     	/*try {
@@ -157,14 +157,14 @@ public abstract class BubbledocsServiceTest {
     }
 
     // remove a user from session given its token
-    void removeUserFromSession(String token) throws UserNotInSessionException {
+    protected void removeUserFromSession(String token) throws UserNotInSessionException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	Session session = bubble.getSessionByToken(token);
     	bubble.clearSession(session);
     }
 
     // return the user registered in session whose token is equal to token
-    User getUserFromSession(String token) {
+    protected User getUserFromSession(String token) {
        	Bubbledocs bubble = Bubbledocs.getBubbledocs();
         try {
 			return bubble.getUserByUsername(bubble.getSessionByToken(token).getUser().getUsername());
@@ -175,7 +175,7 @@ public abstract class BubbledocsServiceTest {
 		}
     }
     
-    java.util.List<Permission> getPermissionsByUser(String username) {
+    protected java.util.List<Permission> getPermissionsByUser(String username) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	java.util.List<Permission> permissions = new java.util.ArrayList<Permission>();
     	for(Permission p : bubble.getPermissionsByUser(username)) {
@@ -184,7 +184,7 @@ public abstract class BubbledocsServiceTest {
     	return permissions;
     }
    
-    boolean hasSessionUpdated(String token) throws UserNotInSessionException, InvalidSessionTimeException {
+    protected boolean hasSessionUpdated(String token) throws UserNotInSessionException, InvalidSessionTimeException {
     	final int MAXIMUM_ACCEPTABLE_VALUE = 2; //in seconds, plenty of time to execute a service
     	org.joda.time.LocalDate time = getLastAccessTimeInSession(token);
     	int difference = Seconds.secondsBetween(time, new org.joda.time.LocalDate()).getSeconds();
