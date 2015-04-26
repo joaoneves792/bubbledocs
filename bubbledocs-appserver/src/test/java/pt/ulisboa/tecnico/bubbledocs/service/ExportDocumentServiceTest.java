@@ -24,12 +24,12 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
-import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
+import pt.ulisboa.tecnico.bubbledocs.service.integrator.ExportDocumentIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 
 public class ExportDocumentServiceTest extends BubbledocsServiceTest {
-
+ 
 	
     private static final String AUTHOR_USERNAME = "mehrunes";
     private static final String AUTHOR_NAME = "Mehrunes Dagon";
@@ -137,7 +137,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     
     @Test
     public void successCorrectExport() throws BubbledocsException, UnsupportedEncodingException {
-      	ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
+      	ExportDocumentIntegrator service = new ExportDocumentIntegrator(tokenRo, spreadsheetID);
       	
       	new Expectations() {
       		{
@@ -177,7 +177,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 1
     @Test
     public void successUserReadPermission() throws BubbledocsException, UnsupportedEncodingException {
-      	ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
+      	ExportDocumentIntegrator service = new ExportDocumentIntegrator(tokenRo, spreadsheetID);
       	
       	new Expectations() {
       		{
@@ -193,7 +193,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 2
     @Test
     public void successUserWritePermission() throws BubbledocsException, UnsupportedEncodingException {
-      	ExportDocument service = new ExportDocument(tokenWrite, spreadsheetID);
+      	ExportDocumentIntegrator service = new ExportDocumentIntegrator(tokenWrite, spreadsheetID);
       	
       	new Expectations() {
       		{
@@ -207,7 +207,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     
     @Test
     public void successAuthor() throws BubbledocsException, UnsupportedEncodingException {
-      	ExportDocument service = new ExportDocument(tokenAuthor, spreadsheetID);
+      	ExportDocumentIntegrator service = new ExportDocumentIntegrator(tokenAuthor, spreadsheetID);
       	
       	new Expectations() {
       		{
@@ -222,13 +222,13 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     //Test case 3
     @Test(expected = SpreadsheetNotFoundException.class)
     public void invalidDocumentExport() throws BubbledocsException {
-    	new ExportDocument(tokenAuthor, DOCID_INVALID).execute();
+    	new ExportDocumentIntegrator(tokenAuthor, DOCID_INVALID).execute();
     }
     
 	@Test
 	public void failToExportSessionTime() throws BubbledocsException {
 		try{
-    		new ExportDocument(tokenAuthor, DOCID_INVALID).execute();
+    		new ExportDocumentIntegrator(tokenAuthor, DOCID_INVALID).execute();
     	}catch(BubbledocsException e){
             assertTrue("Session was not updated", hasSessionUpdated(tokenAuthor));
             return;
@@ -243,14 +243,14 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     	//Temporarily revoke RO user permissions
     	bubble.revokeReadPermission(AUTHOR_USERNAME, USERNAME_RO, spreadsheetID);
        	    	
-	    ExportDocument service = new ExportDocument(tokenRo, spreadsheetID);
+	    ExportDocumentIntegrator service = new ExportDocumentIntegrator(tokenRo, spreadsheetID);
       	service.execute();
     }    
     
     @Test(expected = UserNotInSessionException.class)
     public void noSessionUserExport() throws BubbledocsException {
     	removeUserFromSession(tokenAuthor);
-    	new ExportDocument(tokenAuthor, spreadsheetID).execute();
+    	new ExportDocumentIntegrator(tokenAuthor, spreadsheetID).execute();
     }    
     
     @Test(expected = UnavailableServiceException.class)
@@ -262,7 +262,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       		}
       	};
 
-	    new ExportDocument(tokenRo, spreadsheetID).execute();
+	    new ExportDocumentIntegrator(tokenRo, spreadsheetID).execute();
     }
     
 }
