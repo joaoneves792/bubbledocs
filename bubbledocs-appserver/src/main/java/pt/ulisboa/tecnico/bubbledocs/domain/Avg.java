@@ -10,9 +10,9 @@ public class Avg extends Avg_Base {
 
 	@Override
 	protected int myValue() throws InvalidCellException{
-        Spreadsheet spreadsheet = this.getCell().getSpreadsheet();
-	    Cell cellOne = getReferenceOne().getCell();
-        Cell cellTwo = getReferenceTwo().getCell();
+        Spreadsheet spreadsheet = this.getReferenceOne().getReferencedCell().getSpreadsheet();
+	    Cell cellOne = getReferenceOne().getReferencedCell();
+        Cell cellTwo = getReferenceTwo().getReferencedCell();
         int columnsDelta = cellTwo.getColumn()-cellOne.getColumn();
 	    int rowsDelta = cellTwo.getRow()-cellOne.getRow();
         int baseColumn = cellOne.getColumn();
