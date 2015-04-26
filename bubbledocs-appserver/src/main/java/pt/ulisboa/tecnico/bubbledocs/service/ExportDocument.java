@@ -13,7 +13,7 @@ public class ExportDocument extends BubbledocsService {
     public final String getDocXML() {
 	    return docXML;
     }
-
+ 
     public ExportDocument(String userTok, int ssId) {
     	userToken=userTok;
     	docId=ssId;
