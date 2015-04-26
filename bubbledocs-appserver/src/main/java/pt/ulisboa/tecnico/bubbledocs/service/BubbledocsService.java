@@ -30,7 +30,7 @@ public abstract class BubbledocsService {
         }
     }
     
-    private final void updateSession() throws UserNotInSessionException{
+    protected void updateSession() throws UserNotInSessionException{
     	Bubbledocs.getBubbledocs().getSessionByUsername(userToken.split("\\d")[0]).update();
     }
 }
