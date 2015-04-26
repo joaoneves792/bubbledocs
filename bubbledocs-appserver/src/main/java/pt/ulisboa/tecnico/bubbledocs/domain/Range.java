@@ -26,7 +26,7 @@ public abstract class Range extends Range_Base {
     /**
      * To be defined by the concrete subclasses
      */
-    protected abstract int myValue();
+    protected abstract int myValue() throws InvalidCellException;
     
     
     /**
