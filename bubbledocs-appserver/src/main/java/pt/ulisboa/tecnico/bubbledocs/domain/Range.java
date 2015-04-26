@@ -41,7 +41,7 @@ public abstract class Range extends Range_Base {
     protected final void init(org.jdom2.Element rangeElement, Spreadsheet sheet) throws InvalidImportException, InvalidCellException {
     	org.jdom2.Element el = rangeElement.getChild("ReferenceOne").getChildren().get(0);
     	String contentName = el.getName();
-		if(contentName.equals("Reference")) {
+    	if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
 			ref.init(el, sheet);
 			setReferenceOne(ref);
