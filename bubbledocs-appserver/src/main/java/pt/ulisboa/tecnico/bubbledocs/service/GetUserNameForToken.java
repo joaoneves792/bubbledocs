@@ -1,6 +1,8 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 
 
 public class GetUserNameForToken extends BubbledocsService {
@@ -22,8 +24,11 @@ public class GetUserNameForToken extends BubbledocsService {
     }
 
     @Override
-    protected void dispatch() {
-        username=userToken.split("\\d")[0];   
+    protected void dispatch() throws UserNotFoundException{
+        Bubbledocs bubble = Bubbledocs.getBubbledocs();
+       
+        username=userToken.split("\\d")[0];
+        bubble.getUserByUsername(username);       
     }
     
     public final String getUsername() {
