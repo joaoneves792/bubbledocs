@@ -190,7 +190,6 @@ public class Spreadsheet extends Spreadsheet_Base {
     		Set<Cell> myRow = null;
     		try {
 				myRow = getCellsByRow(i);
-				
 	    		if(myRow != null) {
 					theString += "[ ";
 					for(Cell cell : myRow)
