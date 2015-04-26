@@ -7,6 +7,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 //an abstract class
 public abstract class Content extends Content_Base {
     
+	protected static final String INVALID = "#VALUE";
 	
 	/**
 	 * This constructor should never be called
@@ -66,4 +67,12 @@ public abstract class Content extends Content_Base {
      * @return true if and only if the contents have the same properties
      */
     public abstract boolean equals(Content other);
+    
+    @Override
+    public final String toString() {
+    	Integer val = calculate();
+    	if(val == null) {
+    		return INVALID;
+    	} return val.toString();
+    }
 }
