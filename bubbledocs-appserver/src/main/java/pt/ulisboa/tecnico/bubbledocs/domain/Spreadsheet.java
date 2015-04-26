@@ -10,8 +10,10 @@ import java.util.TreeSet;
 
 
 
+
 import org.jdom2.JDOMException;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
@@ -118,7 +120,7 @@ public class Spreadsheet extends Spreadsheet_Base {
         setDate(org.joda.time.LocalDate.now());
 	}
     
-    public Set<Cell> getCellsByrow(int row) throws InvalidCellException {
+    public Set<Cell> getCellsByRow(int row) throws InvalidCellException {
     	if(getRows() < row || row < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + row + ".");
     	Set<Cell> cellSet = new TreeSet<Cell>();
@@ -132,7 +134,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     public Cell getCell(int row, int column) throws InvalidCellException {
     	if(getColumns() < column || column < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + column + ".");
-    	Set<Cell> cellSet = getCellsByrow(row);
+    	Set<Cell> cellSet = getCellsByRow(row);
     	for(Cell cell : cellSet) {
     		if(column == cell.getColumn()) {
     			return cell;
@@ -175,10 +177,37 @@ public class Spreadsheet extends Spreadsheet_Base {
 	}
 	    
     
-    @Override
-    public String toString() {
+    public String describe() {
     	return "<< ID: " + getId() + " || NAME: " + getName() + " || AUTHOR: " + getAuthor() + "|| DATE :" + getDate() + " || rowS: " + getRows() + " || " + getColumns() + " >>";
     }
+    
+    @Override
+    public String toString() {
+    	int rows = getRows();
+    	String theString = "";
+    	
+    	for(int i = 1; i <= rows; i++) {
+    		Set<Cell> myRow = null;
+    		try {
+				myRow = getCellsByRow(i);
+				
+	    		if(myRow != null) {
+					theString += "[ ";
+					for(Cell cell : myRow)
+						theString += cell.calculate() + ' ';
+					theString += "]";
+				} else return null;
+	    		
+	    		if(i != rows) theString += '\n';
+	    		
+			} catch (BubbleCellException e) {
+				System.err.println("Incoherent Spreadsheet [id = " + getId() + "]");
+				return null;
+			} 
+    	}
+    	return theString;
+    }
+    
     
      /**
       * Method to recursively erase this spreadsheet (from persistence)
