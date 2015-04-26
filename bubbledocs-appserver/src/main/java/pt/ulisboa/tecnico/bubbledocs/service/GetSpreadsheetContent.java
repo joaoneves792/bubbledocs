@@ -8,7 +8,8 @@ public class GetSpreadsheetContent extends BubbledocsService {
 	private String result;
 	private final int spreadsheetID;
 	
-	public GetSpreadsheetContent(int spreadsheetID) {
+	public GetSpreadsheetContent(String userToken, int spreadsheetID) {
+		this.userToken = userToken;
 		this.spreadsheetID = spreadsheetID;
 		result = "";
 	}
@@ -21,5 +22,4 @@ public class GetSpreadsheetContent extends BubbledocsService {
 	public String getResult() {
 		return result;
 	}
-
 }
