@@ -5,6 +5,8 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 public class Cell extends Cell_Base implements Comparable<Cell> {
 
+	private final String EMPTY = "\"\"";
+	
     public Cell(int row, int column, boolean prot) {
         super();
         init(row, column, prot);
@@ -30,7 +32,7 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
     public String toString(){
         Content content = getContent();
         if(content == null)
-                return null;
+                return EMPTY;
         return content.toString();
     }
 

@@ -70,5 +70,4 @@ public class Reference extends Reference_Base {
     	else return getReferencedCell().getRow() == ((Reference)other).getReferencedCell().getRow() &&
     			    getReferencedCell().getColumn() == ((Reference)other).getReferencedCell().getColumn();
     }
-    
 }

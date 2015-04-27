@@ -52,4 +52,5 @@ public class Literal extends Literal_Base {
     		return false;
     	else return getValue() == ((Literal)other).getValue();    				
     }
+    
 }

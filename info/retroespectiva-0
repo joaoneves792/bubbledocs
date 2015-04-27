@@ -1,8 +1,17 @@
+## Semana 0
+
+### Planeamento:
 
 | Num | Aluno | Seg | Ter | Qua | Qui | Sex | Sab | Dom | Assigned Tasks | Completed Tasks |
 |:-----:|:-----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:--------------:|:---------------:|
-| 62501 | Nuno Pexirra | 0 | 0 | 3 | 3 | 2 | 4 | 4 | TBD | --- |
-| 65821 | Pedro Saldanha | 0 | 0 | 2 | 0 | 2 | 4 | 4 | TBD | --- |
-| 70171 | João Neves | 0 | 0 | 0 | 3 | 2 | 2 | 4 | TBD | --- |
-| 70257 | Sérgio Moura | 0 | 0 | 1 | 2 | 3 | 2 | 4 | TBD | --- |
-| 73037 | João Carrapiço | 0 | 0 | 2 | 0 | 0 | 6 | 4 | TBD | --- |
+| 62501 | Nuno Pexirra | 0 | 0 | 3 | 3 | 2 | 4 | 4 | #59 #60 #54 | --- |
+| 65821 | Pedro Saldanha | 0 | 0 | 0 | 0 | 2 | 4 | 4 | #53 #58 #61 #66 | #53 #58 #61 #66 |
+| 70171 | João Neves | 0 | 0 | 0 | 3 | 2 | 2 | 4 | #41 #42 #47 #49 #52 #64 #57 |  #41 #42 #47 #52 #64 #57  |
+| 70257 | Sérgio Moura | 0 | 0 | 1 | 2 | 3 | 2 | 4 | #46 #56 #51 #63 #67 #69 | #67 #69 |
+| 73037 | João Carrapiço | 0 | 0 | 2 | 0 | 0 | 6 | 4 | #32 #33 #34 #78 | #32 #33 #78 |
+  
+### Conclusão
+
+   Na semana 0, apenas o João Neves fez commits durante a semana. Os restantes membros apenas trabalharam no domingo - o que levou a um ligeiro atraso na planificação. 
+   Contudo, as tasks assigned para esta semana eram simplesmente relativas às stories de adaptação da camada de serviço para a camada de integração, e portanto a maior parte são tasks simples, pelo que o atraso não é significativo. 
+   Em relação aos serviços novos, o getUserNameforToken já está acabado, getSpreadsheetContent só falta testar, os AVG e PRD range já estão implementados no domínio.

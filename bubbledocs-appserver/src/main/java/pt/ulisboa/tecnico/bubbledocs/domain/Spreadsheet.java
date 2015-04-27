@@ -193,7 +193,7 @@ public class Spreadsheet extends Spreadsheet_Base {
 	    		if(myRow != null) {
 					theString += "[ ";
 					for(Cell cell : myRow)
-						theString += cell.calculate() + ' ';
+						theString += cell.toString() + ' ';
 					theString += "]";
 				} else return null;
 	    		
@@ -206,7 +206,6 @@ public class Spreadsheet extends Spreadsheet_Base {
     	}
     	return theString;
     }
-    
     
      /**
       * Method to recursively erase this spreadsheet (from persistence)

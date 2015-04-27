@@ -17,8 +17,12 @@ public abstract class Range extends Range_Base {
      * This method is only to be inherited by the Avg and Prd Subclasses
      * @param A corner of the Submatrix of this range
      * @param A corner of the Submatrix of this range
+     * @throws InvalidCellException 
      */
-    void init(Reference ref1, Reference ref2) {
+    void init(Reference ref1, Reference ref2) throws InvalidCellException {
+    	if(ref1.getCell().getSpreadsheet().getId() != ref2.getCell().getSpreadsheet().getId())
+    		throw new InvalidCellException("Range references point to different spreadsheets.");
+    	
     	setReferenceOne(ref1);
     	setReferenceOne(ref2);
     }
@@ -37,7 +41,7 @@ public abstract class Range extends Range_Base {
     protected final void init(org.jdom2.Element rangeElement, Spreadsheet sheet) throws InvalidImportException, InvalidCellException {
     	org.jdom2.Element el = rangeElement.getChild("ReferenceOne").getChildren().get(0);
     	String contentName = el.getName();
-		if(contentName.equals("Reference")) {
+    	if(contentName.equals("Reference")) {
 			Reference ref = new Reference();
 			ref.init(el, sheet);
 			setReferenceOne(ref);
