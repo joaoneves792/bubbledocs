@@ -380,7 +380,7 @@ import pt.ist.fenixframework.FenixFramework;
     }
     
        
-    private void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int row, int column) throws BubbledocsException {
+    public void assertSessionAndWritePermission(String userToken, Integer spreadsheetId, int row, int column) throws BubbledocsException {
     	Session session = getSessionByToken(userToken);
     	
     	//Make sure the spreadsheet exists
@@ -406,6 +406,8 @@ import pt.ist.fenixframework.FenixFramework;
         modifiedCell.setContent(new Reference(referencedCell));
         return modifiedCell.calculate();
     }
+    
+
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {
     	if(docId < 0) throw new SpreadsheetNotFoundException("Invalid Document ID");
