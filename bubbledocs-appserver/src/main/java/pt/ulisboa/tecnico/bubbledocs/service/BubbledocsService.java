@@ -23,7 +23,7 @@ public abstract class BubbledocsService {
     
     protected void checkUserInSession() throws UserNotInSessionException{
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	Session session = bubble.getSessionByUsername(userToken.split("\\d")[0]);
+    	Session session = bubble.getSessionByUsername(userToken.split("\\d$")[0]);
         if(session.hasExpired()){
             bubble.clearSession(session);
             throw new UserNotInSessionException(userToken + "'s Session expired!");
@@ -31,6 +31,6 @@ public abstract class BubbledocsService {
     }
     
     protected void updateSession() throws UserNotInSessionException{
-    	Bubbledocs.getBubbledocs().getSessionByUsername(userToken.split("\\d")[0]).update();
+    	Bubbledocs.getBubbledocs().getSessionByUsername(userToken.split("\\d$")[0]).update();
     }
 }

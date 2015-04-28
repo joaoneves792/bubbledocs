@@ -18,7 +18,7 @@ public class RenewPassword extends BubbledocsService {
     protected void dispatch() throws BubbledocsException {
     	   Bubbledocs bubble;
            IDRemoteServices sdId;
-           String username = userToken.split("\\d")[0];
+           String username = userToken.split("\\d$")[0];
        
            bubble = Bubbledocs.getBubbledocs();
            sdId = new IDRemoteServices();

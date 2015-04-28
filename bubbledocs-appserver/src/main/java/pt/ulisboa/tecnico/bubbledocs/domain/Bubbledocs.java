@@ -411,7 +411,7 @@ import pt.ist.fenixframework.FenixFramework;
 
     public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {
     	if(docId < 0) throw new SpreadsheetNotFoundException("Invalid Document ID");
-    	String username = userToken.split("\\d")[0];
+    	String username = userToken.split("\\d$")[0];
     	getPermission(username, docId);	     
     	return getSpreadsheetById(docId).export();
     }
