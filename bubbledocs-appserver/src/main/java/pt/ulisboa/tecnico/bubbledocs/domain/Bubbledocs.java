@@ -510,4 +510,9 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
 
+	public String describeSpreadshet(String username, int spreadsheetID) throws PermissionNotFoundException, SpreadsheetNotFoundException {
+		getPermission(username, spreadsheetID);
+		return getSpreadsheetById(spreadsheetID).describe();
+	}
+
 }

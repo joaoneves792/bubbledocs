@@ -177,12 +177,12 @@ public class Spreadsheet extends Spreadsheet_Base {
 	}
 	    
     
-    public String describe() {
+    public String toString() {
     	return "<< ID: " + getId() + " || NAME: " + getName() + " || AUTHOR: " + getAuthor() + "|| DATE :" + getDate() + " || rowS: " + getRows() + " || " + getColumns() + " >>";
     }
     
-    @Override
-    public String toString() {
+    public String describe() {
+    	
     	int rows = getRows();
     	String theString = "";
     	

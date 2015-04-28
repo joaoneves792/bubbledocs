@@ -66,11 +66,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
 	
 	@Mocked
 	StoreRemoteServices sdStore;
-	
-	/* TODO not used, but may be useful in future (e.g. import tests)
-	private org.jdom2.Document doc = new org.jdom2.Document();
-	*/
-    
+	    
     @Override
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();

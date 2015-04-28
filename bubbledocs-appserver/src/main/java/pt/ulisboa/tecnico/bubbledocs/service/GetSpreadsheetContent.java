@@ -16,7 +16,7 @@ public class GetSpreadsheetContent extends BubbledocsService {
 	
 	@Override
 	protected void dispatch() throws BubbledocsException {
-		result = Bubbledocs.getBubbledocs().getSpreadsheetById(spreadsheetID).toString();
+		result = Bubbledocs.getBubbledocs().describeSpreadshet(userToken.split("\\d$")[0], spreadsheetID);
 	}
 	
 	public String getResult() {
