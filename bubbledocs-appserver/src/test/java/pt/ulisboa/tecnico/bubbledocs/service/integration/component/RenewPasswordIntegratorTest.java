@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service;
+package pt.ulisboa.tecnico.bubbledocs.service.integration.component;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -13,8 +13,10 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
+import pt.ulisboa.tecnico.bubbledocs.service.integrator.RenewPasswordIntegrator;
+import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 
-public class RenewPasswordTest extends BubbledocsServiceTest {
+public class RenewPasswordIntegratorTest extends BubbledocsServiceTest {
 
     private static final String USER_NAME = "Molag Bal";
     private static final String USER_EMAIL = "molag@cold-harbour.oblivion";
@@ -32,14 +34,14 @@ public class RenewPasswordTest extends BubbledocsServiceTest {
     	try {
 			userToken = addUserToSession(USERNAME);
 		} catch (BubbledocsException e) {
-			assertTrue("Failed to populate domain for RenewPasswordTest", false);
+			assertTrue("Failed to populate domain for RenewPasswordIntegratorTest", false);
 		}
     }
 
     //Test case 1
     @Test
     public void success() throws BubbledocsException {
-        RenewPassword service = new RenewPassword(userToken);
+        RenewPasswordIntegrator service = new RenewPasswordIntegrator(userToken);
         
         new Expectations() {
         	{
@@ -56,7 +58,7 @@ public class RenewPasswordTest extends BubbledocsServiceTest {
     //Test case 2
     @Test(expected = UnavailableServiceException.class)
     public void renewPasswordRemoteServiceOffline() throws BubbledocsException {
-        RenewPassword service = new RenewPassword(userToken);
+        RenewPasswordIntegrator service = new RenewPasswordIntegrator(userToken);
         
         new Expectations() {
         	{
@@ -73,6 +75,6 @@ public class RenewPasswordTest extends BubbledocsServiceTest {
     @Test(expected = UserNotInSessionException.class)
     public void renewPasswordUserNotInSession() throws BubbledocsException {
     	removeUserFromSession(userToken);
-        new RenewPassword(userToken).execute();
+        new RenewPasswordIntegrator(userToken).execute();
     }
 }
