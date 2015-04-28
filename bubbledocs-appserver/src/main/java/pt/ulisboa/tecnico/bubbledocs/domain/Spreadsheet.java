@@ -8,7 +8,6 @@ import java.util.TreeSet;
 import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
@@ -141,7 +140,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return lazyCell;
     }
     
-    public Integer assignFunctionCell(Integer cellRow, Integer cellColumn, Function function ) throws BubbledocsException {
+    public Integer assignFunctionCell(Integer cellRow, Integer cellColumn, Function function ) throws InvalidCellException, BubbleCellException {
     	Cell modifiedCell = getCell(cellRow, cellColumn);
     	modifiedCell.setContent(function);    	
         return modifiedCell.calculate();

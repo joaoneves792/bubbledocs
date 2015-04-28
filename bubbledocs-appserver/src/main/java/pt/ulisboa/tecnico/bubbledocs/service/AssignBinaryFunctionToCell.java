@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.SimpleContent;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.Sub;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
 
 
@@ -43,22 +44,22 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     }
 
     @Override
-    protected void dispatch() throws BubbledocsException, NumberFormatException {
+    protected void dispatch() throws BubbledocsException {
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
    	   	Integer cellLine, cellColumn;
-   	   	Integer literalOne = null;
-   	   	Integer literalTwo = null;
-   	   	Integer referenceOneRow, referenceOneColumn, referenceTwoRow, referenceTwoColumn;
-   	   	String[] referenceTokens;
-   	   	SimpleContent argOne, argTwo;
    	   	Function function;
    	   	
    	   	
-   	   	//Parse the id for the cell to be assigned this function
+   	   	//Parse the id for the target cell
 	   	String[] cellTokens = cellID.split(PARSE_CELL);
-	   	cellLine = Integer.parseInt(cellTokens[0]);
-	   	cellColumn = Integer.parseInt(cellTokens[1]);
+	   	try{
+	   		cellLine = Integer.parseInt(cellTokens[0]);
+		   	cellColumn = Integer.parseInt(cellTokens[1]);
+	   	}catch(NumberFormatException e){
+	   		throw new InvalidCellException("Bad cell reference " + cellID);
+	   	}
     		   	
+	   	//Assert permissions and validness of the spreadsheet and target cell
 	   	bubble.assertSessionAndWritePermission(userToken,spreadsheetId, cellLine, cellColumn);
    	   	Spreadsheet spreadsheet = bubble.getSpreadsheetById(spreadsheetId);
 	   	
@@ -68,33 +69,15 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
 
 	   	//Parse the function expression
    	   	String tokens[] = functionExpression.split(PARSE_BINARY_FUNCTION);
-   	   	String functionType = tokens[0];
-   	   	String firstArg = tokens[1];
-   	   	String secondArg = tokens[2];
+   	   	String functionType = tokens[1]; //CAREFULL because of "=" in the parse string the first token is an empty string!
+   	   	String firstArg = tokens[2];
+   	   	String secondArg = tokens[3];
    	   	
-   	   	//Get the first argument
-   	   	try{
-   	   		literalOne = Integer.parseInt(firstArg);
-   	   		argOne = new Literal(literalOne);
-   	   	}catch(NumberFormatException e){
-   	   		//Parse a reference
-   	   		referenceTokens = firstArg.split(PARSE_CELL);
-   	   		referenceOneRow = Integer.parseInt(referenceTokens[0]);
-   	   		referenceOneColumn = Integer.parseInt(referenceTokens[1]);
-   	   		argOne = new Reference(spreadsheet.getCell(referenceOneRow, referenceOneColumn));
-   	   	}
 
+   	   	//Get the first argument
+   	   	SimpleContent argOne = parseArgument(spreadsheet, firstArg);
    	   	//Get the second argument
-   	   	try{
-   	   		literalTwo = Integer.parseInt(secondArg);
-   	   		argTwo = new Literal(literalTwo);
-   	   	}catch(NumberFormatException e){
-   	   		//Parse a reference
-   	   		referenceTokens = firstArg.split(PARSE_CELL);
-   	   		referenceTwoRow = Integer.parseInt(referenceTokens[0]);
-   	   		referenceTwoColumn = Integer.parseInt(referenceTokens[1]);
-   	   		argTwo = new Reference(spreadsheet.getCell(referenceTwoRow, referenceTwoColumn));
-   	   	}
+   	   	SimpleContent argTwo = parseArgument(spreadsheet, secondArg);
 
    	   	//Create the appropriate function
     	switch (functionType){
@@ -118,6 +101,25 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     	spreadsheet.assignFunctionCell(cellLine, cellColumn, function);
     	result = spreadsheet.getCell(cellLine, cellColumn).calculate();
     }
+
+	private SimpleContent parseArgument(Spreadsheet spreadsheet, String argExpr) throws InvalidCellException {
+		Integer literal;
+		Integer referenceRow;
+		Integer referenceColumn;
+		String[] referenceTokens;
+		SimpleContent arg;
+		try{
+   	   		literal = Integer.parseInt(argExpr);
+   	   		arg = new Literal(literal);
+   	   	}catch(NumberFormatException e){
+   	   		//Parse a reference
+   	   		referenceTokens = argExpr.split(PARSE_CELL);
+   	   		referenceRow = Integer.parseInt(referenceTokens[0]);
+   	   		referenceColumn = Integer.parseInt(referenceTokens[1]);
+   	   		arg = new Reference(spreadsheet.getCell(referenceRow, referenceColumn));
+   	   	}
+		return arg;
+	}
     
     public final Integer getResult(){
     	return result;
