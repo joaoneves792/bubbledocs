@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidTokenException;
 //import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidTokenException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.service.GetUserNameForToken;
@@ -66,7 +67,7 @@ public class GetUserNameForTokenTest extends BubbledocsServiceTest {
     }
     
     //Test case 3
-    @Test(expected = UserNotFoundException.class)
+    @Test(expected = InvalidTokenException.class)
     public void invalidToken() throws BubbledocsException {
         GetUserNameForToken service  = new GetUserNameForToken(INVALID_TOKEN);
         service.execute();
