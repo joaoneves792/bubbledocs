@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service.integrator;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
+import pt.ulisboa.tecnico.bubbledocs.service.CreateSession;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
@@ -18,15 +19,18 @@ public class LoginUserIntegrator extends BubbledocsIntegrator {
     @Override
     protected void dispatch() throws BubbledocsException {
         IDRemoteServices sdId = new IDRemoteServices();
-        LoginUser localService = new LoginUser(username, password);
+        LoginUser localLoginService = new LoginUser(username, password);
+        CreateSession createSessionService = new CreateSession(username, password);
         
         try{
         	sdId.loginUser(username, password);
-            localService.createSession();
         }catch(RemoteInvocationException e){
-			localService.execute();
+			localLoginService.execute();
         }
-        userToken = localService.getUserToken();
+
+        createSessionService.execute();
+        userToken = createSessionService.getUserToken();
+        
     }
 
     public final String getUserToken() {

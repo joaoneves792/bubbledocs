@@ -24,6 +24,11 @@ public class LoginUser extends BubbledocsService {
     }
     
     @Override
+	protected void updateSession() throws UserNotInSessionException{
+    	//EMPTY ON PURPOSE
+    }
+    
+    @Override
     protected void dispatch() throws UnavailableServiceException, LoginBubbleDocsException{
         Bubbledocs bubble = Bubbledocs.getBubbledocs();
         
@@ -32,22 +37,7 @@ public class LoginUser extends BubbledocsService {
         }catch(UserNotFoundException | InvalidLoginException lle){
         	throw new UnavailableServiceException("The service is unavailable.");
         }
-        createSession();
-    }
-
-    public void createSession() throws LoginBubbleDocsException{
-        Bubbledocs bubble = Bubbledocs.getBubbledocs();
-
-    	try{
-        	bubble.updateLocalPassword(username, password);
-    	   	userToken = bubble.createSession(username);
-        }catch(UserNotFoundException e){
-        	//This should only happen if the user was deleted on the domain but still managed to login remotely!
-        	throw new LoginBubbleDocsException("Login failed");
-        }
+        
     }
     
-    public final String getUserToken() {
-    	return userToken;
-    }
 }

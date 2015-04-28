@@ -16,6 +16,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.CreateSpreadSheet;
 import pt.ulisboa.tecnico.bubbledocs.service.CreateUser;
 import pt.ulisboa.tecnico.bubbledocs.service.ExportDocument;
 import pt.ulisboa.tecnico.bubbledocs.service.LoginUser;
+import pt.ulisboa.tecnico.bubbledocs.service.integrator.LoginUserIntegrator;
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.TransactionManager;
@@ -227,7 +228,7 @@ public class BubbleApplication{
     	
     	bubble.getSuperUser();
 
-    	LoginUser loginRoot = new LoginUser("root", "root");
+    	LoginUserIntegrator loginRoot = new LoginUserIntegrator("root", "root");
     	try {
 			loginRoot.execute();
 		} catch (BubbledocsException e1) {
@@ -247,7 +248,7 @@ public class BubbleApplication{
 			throw new CreateUserException("Failed to create users on domain population");
 		} 
     	
-		LoginUser loginPf = new LoginUser(PF, "sub");
+		LoginUserIntegrator loginPf = new LoginUserIntegrator(PF, "sub");
 		try {
 			loginPf.execute();
 		} catch (BubbledocsException e2) {
