@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service;
+package pt.ulisboa.tecnico.bubbledocs.service.integration.component;
 
 import static org.junit.Assert.assertTrue;
 
@@ -13,7 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
-
+import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.AssignBinaryFunctionToCellIntegrator;
 
 public class AssignBinaryFunctionToCellTest extends BubbledocsServiceTest {

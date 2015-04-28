@@ -24,6 +24,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 	        StoreRemoteServices sdStore = new StoreRemoteServices();
 	        ExportDocument service = new ExportDocument(userToken, docId);
 	        GetUserNameForToken getUsernameService = new GetUserNameForToken(userToken);
+	        getUsernameService.execute();
 	        
 	        String ssName = Bubbledocs.getBubbledocs().getSpreadsheetById(docId).getName();
 	        
