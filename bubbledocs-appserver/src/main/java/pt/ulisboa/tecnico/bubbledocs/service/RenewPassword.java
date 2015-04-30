@@ -13,14 +13,16 @@ public class RenewPassword extends BubbledocsService {
 	
     @Override
     protected void dispatch() throws BubbledocsException {
-    	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
-           String username = userToken.split("\\d")[0];
+    	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+   		GetUserNameForToken usernameService = new GetUserNameForToken(userToken);
+   		usernameService.execute();
+       	String username = usernameService.getUsername();
            
-           try{
-           	   bubble.updateLocalPassword(username, null);
-           } catch(UserNotFoundException e){
-        	   throw new UnavailableServiceException("The service is unavailable.");
-           }
+        try{
+            bubble.updateLocalPassword(username, null);
+        } catch(UserNotFoundException e){
+        	throw new UnavailableServiceException("The service is unavailable.");
+        }
     }
 
 }
