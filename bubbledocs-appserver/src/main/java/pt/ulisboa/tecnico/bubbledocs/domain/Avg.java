@@ -13,6 +13,11 @@ public class Avg extends Avg_Base {
         init(ref1, ref2);
     }
 
+    public Avg(Reference rangeStart, Reference rangeEnd) throws InvalidCellException{
+    	super();
+    	init(rangeStart, rangeEnd);
+    }
+    
 	@Override
 	protected int myValue() throws InvalidCellException{
         Spreadsheet spreadsheet = this.getReferenceOne().getReferencedCell().getSpreadsheet();
@@ -26,9 +31,13 @@ public class Avg extends Avg_Base {
         int count = (rowsDelta+1)*(columnsDelta+1);
        
         for(int i=0; i<= columnsDelta; i++)
-            for(int j=0; j<=rowsDelta; j++)
-                sum += spreadsheet.getCell(baseRow+j, baseColumn+i).getContent().calculate();
-        
+            for(int j=0; j<=rowsDelta; j++){
+            	Content content = spreadsheet.getCell(baseRow+j, baseColumn+i).getContent();
+            	if (null != content)
+            		sum += content.calculate();
+			}
+            	
+                
         return sum/count;
 	}
 

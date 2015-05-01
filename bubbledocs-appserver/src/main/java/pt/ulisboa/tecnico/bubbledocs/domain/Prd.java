@@ -8,10 +8,10 @@ public class Prd extends Prd_Base {
 		super();
 	}
 	
-    public Prd(Reference ref1, Reference ref2) throws InvalidCellException {
-        super();
-        init(ref1, ref2);
-    }
+    	public Prd(Reference rangeStart, Reference rangeEnd) throws InvalidCellException{
+    		super();
+    		init(rangeStart, rangeEnd);
+    	}
 
 	@Override
 	protected int myValue() throws InvalidCellException{
@@ -25,8 +25,13 @@ public class Prd extends Prd_Base {
         int product = 1;
        
         for(int i=0; i<=columnsDelta; i++)
-            for(int j=0; j<=rowsDelta; j++)
-                product *= spreadsheet.getCell(baseRow+j, baseColumn+i).getContent().calculate();
+            for(int j=0; j<=rowsDelta; j++){
+            	Content content = spreadsheet.getCell(baseRow+j, baseColumn+i).getContent();
+            	if (null != content)
+            		product *= content.calculate();
+            	else
+            		return 0; //If any cell is empty then the product should always be zero
+            }
         
         return product;
 	}
