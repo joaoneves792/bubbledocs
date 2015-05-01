@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service;
+package pt.ulisboa.tecnico.bubbledocs.service.integration.component;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -19,16 +19,19 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
-import pt.ulisboa.tecnico.bubbledocs.service.CreateUser;
+import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
+import pt.ulisboa.tecnico.bubbledocs.service.integrator.CreateUserIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
-public class CreateUserTest extends BubbledocsServiceTest {
+public class CreateUserTestIntegrator extends BubbledocsServiceTest {
 
 	private static final String ROOT_USERNAME = "root";
 	private static final String ROOT_NAME     = "Super User";
     private static final String ROOT_EMAIL    = "root@bubbledocs.tecnico.ulisboa.pt";
-    
+
 
     private static final String UNAUTHORIZED_USERNAME  = "hermaeus";
     private static final String EXISTING_USERNAME      = "mehrunes";
@@ -72,7 +75,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
 
     @Test
     public void success() throws BubbledocsException {
-        CreateUser service = new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME);
+        CreateUserIntegrator service = new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME);
         
         new Expectations() {
         	{
@@ -95,13 +98,13 @@ public class CreateUserTest extends BubbledocsServiceTest {
     @Test(expected = InvalidUsernameException.class)
     public void usernameTooShort() throws BubbledocsException {
 
-    	new CreateUser(rootToken, USERNAME_TOO_SHORT, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();    	
+    	new CreateUserIntegrator(rootToken, USERNAME_TOO_SHORT, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();    	
     }
     
     @Test(expected = InvalidUsernameException.class)
     public void usernameTooLong() throws BubbledocsException {
 
-    	new CreateUser(rootToken, USERNAME_TOO_LONG, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+    	new CreateUserIntegrator(rootToken, USERNAME_TOO_LONG, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
 
     @Test(expected = InvalidEmailException.class)
@@ -114,18 +117,18 @@ public class CreateUserTest extends BubbledocsServiceTest {
     		}
     	};
     	
-    	new CreateUser(rootToken, NON_EXISTING_USERNAME, INVALID_EMAIL, NON_EXISTING_NAME).execute();
+    	new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, INVALID_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = DuplicateUsernameException.class)
     public void usernameExists() throws BubbledocsException {
     	new Expectations() {
     		{
-    			sdId.createUser(EXISTING_USERNAME, NON_EXISTING_EMAIL);
+    			sdId.createUser(NON_EXISTING_USERNAME, NON_EXISTING_EMAIL);
     			result = new DuplicateUsernameException("");
     		}
     	};
-    	new CreateUser(rootToken, EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+    	new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = DuplicateEmailException.class)
@@ -136,20 +139,13 @@ public class CreateUserTest extends BubbledocsServiceTest {
     			result = new DuplicateEmailException("");
     		}
     	};
-    	new CreateUser(rootToken, NON_EXISTING_USERNAME, EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+    	new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
-    @Test(expected = DuplicateUsernameException.class)
+    @Test(expected = UserAlreadyExistsException.class)
     public void createRoot() throws BubbledocsException {
     	
-    	new Expectations() {
-    		{
-    			sdId.createUser(ROOT_USERNAME, NON_EXISTING_EMAIL);
-    			result = new DuplicateUsernameException("");
-    		}
-    	};
-    	
-    	new CreateUser(rootToken, ROOT_USERNAME, NON_EXISTING_EMAIL, ROOT_NAME).execute();
+    	new CreateUserIntegrator(rootToken, ROOT_USERNAME, NON_EXISTING_EMAIL, ROOT_NAME).execute();
     }
     
     @Test(expected = DuplicateEmailException.class)
@@ -162,7 +158,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     		}
     	};
     	
-    	new CreateUser(rootToken, NON_EXISTING_USERNAME, ROOT_EMAIL, ROOT_NAME).execute();
+    	new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, ROOT_EMAIL, ROOT_NAME).execute();
     }
     
     @Test(expected = UnavailableServiceException.class)
@@ -175,21 +171,39 @@ public class CreateUserTest extends BubbledocsServiceTest {
     		}
     	};
     	
-    	new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+    	new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+    	
+    	
+    }
+    
+    @Test
+    public void deleteLocalUser() throws BubbledocsException {
+
+    	new Expectations() {
+    		{
+    			sdId.createUser(NON_EXISTING_USERNAME, NON_EXISTING_EMAIL);
+    			result = new RemoteInvocationException("");
+    		}
+    	};
+    	
+    	try{
+    		new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+    	}catch(UnavailableServiceException e){
+    		
+    		try{
+    			Bubbledocs.getBubbledocs().getUserByUsername(NON_EXISTING_USERNAME);
+    		}catch(UserNotFoundException f){
+    			return;
+    		}
+    		assertTrue("Created user was not deleted", false);
+    	}
     }
     
     @Test
     public void rootFailSessionUpdate() throws BubbledocsException {
     	
-    	new Expectations() {
-    		{
-    			sdId.createUser(EXISTING_USERNAME, EXISTING_EMAIL);
-    			result = new RemoteInvocationException("SD-ID Offline");
-    		}
-    	};
-    	
     	try {
-			new CreateUser(rootToken, EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME).execute();
+			new CreateUserIntegrator(rootToken, EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME).execute();
 		} catch (BubbledocsException e) {
 			boolean isSessionUpdated = hasSessionUpdated(rootToken);
 			assertTrue("Root Session was not updated", isSessionUpdated);
@@ -201,29 +215,29 @@ public class CreateUserTest extends BubbledocsServiceTest {
     @Test(expected = InvalidUsernameException.class)
     public void emptyUsername() throws BubbledocsException {
     	   	
-        new CreateUser(rootToken, EMPTY_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+        new CreateUserIntegrator(rootToken, EMPTY_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = InvalidEmailException.class)
     public void emptyEmail() throws BubbledocsException {
     	
-        new CreateUser(rootToken, NON_EXISTING_USERNAME, EMPTY_EMAIL, NON_EXISTING_NAME).execute();
+        new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, EMPTY_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     @Test(expected = EmptyNameException.class)
     public void emptyName() throws BubbledocsException {
-        new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, EMPTY_NAME).execute();
+        new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, EMPTY_NAME).execute();
     }
 
     @Test(expected = UnauthorizedUserException.class)
     public void unauthorizedUserCreation() throws BubbledocsException {
-        new CreateUser(unauthorizedUserToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+        new CreateUserIntegrator(unauthorizedUserToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     @Test
     public void unauthorizedFailSessionUpdate() throws BubbledocsException {
     	try {
-            new CreateUser(unauthorizedUserToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+            new CreateUserIntegrator(unauthorizedUserToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
 		} catch (BubbledocsException e) {
 			boolean isSessionUpdated = hasSessionUpdated(unauthorizedUserToken);
 			assertTrue("Unauthorized Session was not updated", isSessionUpdated);
@@ -235,7 +249,7 @@ public class CreateUserTest extends BubbledocsServiceTest {
     @Test(expected = UserNotInSessionException.class)
     public void rootNotInSession() throws BubbledocsException {
     	removeUserFromSession(rootToken);
-        new CreateUser(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
+        new CreateUserIntegrator(rootToken, NON_EXISTING_USERNAME, NON_EXISTING_EMAIL, NON_EXISTING_NAME).execute();
     }
     
     

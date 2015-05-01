@@ -9,13 +9,11 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyPasswordException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidEmailException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserAlreadyExistsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
-import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations
 
@@ -24,7 +22,7 @@ public class CreateUser extends BubbledocsService {
 	private String email;
 	private String name;
 
-    public CreateUser(String rootTok, String username, String email, String name) throws EmptyPasswordException, EmptyUsernameException, EmptyNameException, InvalidUsernameException, InvalidEmailException {
+    public CreateUser(String rootTok, String username, String email, String name) throws EmptyNameException, InvalidUsernameException, InvalidEmailException {
 
     	if(username == null || username.isEmpty())
     		throw new InvalidUsernameException("Attempted to create user with no username");
@@ -47,13 +45,6 @@ public class CreateUser extends BubbledocsService {
     	if(!userToken.matches("root\\d"))
     		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
 
-    	IDRemoteServices sdId = new IDRemoteServices();
-    	
-    	try {
-    		sdId.createUser(newUsername, email);
-    	} catch (RemoteInvocationException e) {
-    		throw new UnavailableServiceException("SD-ID is offline.");
-    	}
     	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).addUser(name, newUsername, email);
     }
 
