@@ -23,7 +23,7 @@ public class CreateUser extends BubbledocsService {
 	private String name;
 
     public CreateUser(String rootTok, String username, String email, String name) throws EmptyNameException, InvalidUsernameException, InvalidEmailException {
-
+ 
     	if(username == null || username.isEmpty())
     		throw new InvalidUsernameException("Attempted to create user with no username");
     	else if(email == null || email.isEmpty()) {
