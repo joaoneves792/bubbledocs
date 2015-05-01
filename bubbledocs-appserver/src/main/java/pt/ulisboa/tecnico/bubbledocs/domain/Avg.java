@@ -4,8 +4,13 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 public class Avg extends Avg_Base {
     
-    public Avg() {
+	public Avg() {
+		super();
+	}
+	
+    public Avg(Reference ref1, Reference ref2) throws InvalidCellException {
         super();
+        init(ref1, ref2);
     }
 
 	@Override

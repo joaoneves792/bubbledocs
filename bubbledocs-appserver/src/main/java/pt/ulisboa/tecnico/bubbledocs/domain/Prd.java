@@ -4,10 +4,14 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 public class Prd extends Prd_Base {
     
-    public Prd() {
+	public Prd() {
+		super();
+	}
+	
+    public Prd(Reference ref1, Reference ref2) throws InvalidCellException {
         super();
+        init(ref1, ref2);
     }
-
 
 	@Override
 	protected int myValue() throws InvalidCellException{
