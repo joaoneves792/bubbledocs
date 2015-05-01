@@ -8,11 +8,6 @@ public class Avg extends Avg_Base {
 		super();
 	}
 	
-    public Avg(Reference ref1, Reference ref2) throws InvalidCellException {
-        super();
-        init(ref1, ref2);
-    }
-
     public Avg(Reference rangeStart, Reference rangeEnd) throws InvalidCellException{
     	super();
     	init(rangeStart, rangeEnd);
