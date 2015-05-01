@@ -19,6 +19,7 @@ public abstract class Range extends Range_Base {
      * @param A corner of the Submatrix of this range
      * @throws InvalidCellException 
      */
+    
     void init(Reference ref1, Reference ref2) throws InvalidCellException {
     	if(ref1.getReferencedCell().getSpreadsheet().getId() != ref2.getReferencedCell().getSpreadsheet().getId())
     		throw new InvalidCellException("Range references point to different spreadsheets.");

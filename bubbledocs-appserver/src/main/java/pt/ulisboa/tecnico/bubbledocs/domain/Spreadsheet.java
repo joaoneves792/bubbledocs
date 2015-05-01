@@ -125,6 +125,10 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return Collections.unmodifiableSet(cellSet);
     }
     
+    public TreeSet<Cell> getSortedCellsByRow(int row) throws InvalidCellException {
+    	return new TreeSet<Cell>(getCellsByRow(row));
+    }
+    
     public Cell getCell(int row, int column) throws InvalidCellException {
     	if(getColumns() < column || column < 1)
     		throw new InvalidCellException("Requested Cell is outside of Spreadsheet : " + column + ".");
@@ -178,33 +182,23 @@ public class Spreadsheet extends Spreadsheet_Base {
 	    
     
     public String toString() {
-    	return "<< ID: " + getId() + " || NAME: " + getName() + " || AUTHOR: " + getAuthor() + "|| DATE :" + getDate() + " || rowS: " + getRows() + " || " + getColumns() + " >>";
+    	return "<< ID: " + getId() + " || NAME: " + getName() + " || AUTHOR: " + getAuthor() + "|| DATE :" + getDate() + " || rows: " + getRows() + " || " + getColumns() + " >>";
     }
     
-    public String describe() {
-    	
+    public String describe() throws InvalidCellException {
     	int rows = getRows();
     	String theString = "";
     	
     	for(int i = 1; i <= rows; i++) {
-    		Set<Cell> myRow = null;
-    		try {
-				myRow = getCellsByRow(i);
-	    		if(myRow != null) {
-					theString += "[ ";
-					for(Cell cell : myRow)
-						theString += cell.toString() + ' ';
-					theString += "]";
-				} else return null;
-	    		
-	    		if(i != rows) theString += '\n';
-	    		
-			} catch (BubbleCellException e) {
-				System.err.println("Incoherent Spreadsheet [id = " + getId() + "]");
-				return null;
-			} 
+    		Set<Cell> myRow = getSortedCellsByRow(i);
+    		if(myRow.size() > 0) {
+    			theString += "[";
+    			for(Cell cell : myRow)
+    				theString += " " + cell.toString();
+				theString += " ]\n";	    		
+    		}
     	}
-    	return theString;
+   		return theString;
     }
     
      /**

@@ -191,7 +191,9 @@ import pt.ist.fenixframework.FenixFramework;
     	throw new SpreadsheetNotFoundException("No spreadsheet found for ID: " + spreadsheetId);
     }
     
-    public Permission getPermission(String username, int spreadsheetId) throws PermissionNotFoundException {
+    public Permission getPermission(String username, int spreadsheetId) throws PermissionNotFoundException, SpreadsheetNotFoundException, UserNotFoundException {
+    	getSpreadsheetById(spreadsheetId);
+    	getUserByUsername(username);
     	for(Permission permission : getPermissionSet()) {
     		if(permission.getUser().getUsername().equals(username) && 
     				permission.getSpreadsheet().getId() == spreadsheetId) {
@@ -313,12 +315,12 @@ import pt.ist.fenixframework.FenixFramework;
     }
     
     public void protectSpreadsheetCell(String requestUsername, int spreadsheetId, int row, int column)
-    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
+    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException, UserNotFoundException {
     	new ProtectRoutine().execute(requestUsername, spreadsheetId, row, column);
     }
     
     public void unProtectSpreadsheetCell(String requestUsername, int spreadsheetId, int row, int column)
-    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException {
+    		throws SpreadsheetNotFoundException, PermissionNotFoundException, UnauthorizedUserException, InvalidCellException, UserNotFoundException {
     	new UnprotectRoutine().execute(requestUsername, spreadsheetId, row, column);
     }
        
@@ -409,7 +411,7 @@ import pt.ist.fenixframework.FenixFramework;
     
 
 
-    public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException {
+    public String exportDocument(String userToken, int docId) throws UserNotInSessionException, PermissionNotFoundException, InvalidExportException, SpreadsheetNotFoundException, UserNotFoundException {
     	if(docId < 0) throw new SpreadsheetNotFoundException("Invalid Document ID");
     	String username = userToken.split("\\d$")[0];
     	getPermission(username, docId);	     
@@ -485,7 +487,7 @@ import pt.ist.fenixframework.FenixFramework;
     
     private abstract class ProtectionRoutine {
     	protected final void execute(String requestUsername, int spreadsheetId, int row, int column)
-    			throws SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException, UnauthorizedUserException {
+    			throws SpreadsheetNotFoundException, InvalidCellException, PermissionNotFoundException, UnauthorizedUserException, UserNotFoundException {
     		Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
         	if(getPermission(requestUsername, spreadsheetId).getWritePermission()) {
         		dispatch(spreadsheet, row, column);
@@ -510,7 +512,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
 
-	public String describeSpreadshet(String username, int spreadsheetID) throws PermissionNotFoundException, SpreadsheetNotFoundException {
+	public String describeSpreadshet(String username, int spreadsheetID) throws PermissionNotFoundException, SpreadsheetNotFoundException, InvalidCellException, UserNotFoundException {
 		getPermission(username, spreadsheetID);
 		return getSpreadsheetById(spreadsheetID).describe();
 	}

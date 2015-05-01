@@ -53,11 +53,10 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 	
 	@Override
 	public int compareTo(Cell other) {
-		int linDiff = other.getRow() - getRow();
-		int colDiff = other.getColumn() - getColumn();
+		int linDiff = getRow() - other.getRow();
+		int colDiff = getColumn() - other.getColumn();
 		return linDiff == 0 ? colDiff : linDiff;
 	}
-
 
 	/**
 	 * Method to erase this Cell (from persistence)
