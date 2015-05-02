@@ -18,9 +18,9 @@ import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 
 public class RenewPasswordIntegratorTest extends BubbledocsServiceTest {
 
-    private static final String USER_NAME = "Molag Bal";
-    private static final String USER_EMAIL = "molag@cold-harbour.oblivion";
-    private static final String USERNAME = "molag";
+    private static final String USER_NAME = "Cloud Strife";
+    private static final String USER_EMAIL = "cloud@shinra.inc";
+    private static final String USERNAME = "exsoldier";
     
     private String userToken;
     
@@ -50,11 +50,11 @@ public class RenewPasswordIntegratorTest extends BubbledocsServiceTest {
         };
         
         service.execute();
-
+        
         assertNull(Bubbledocs.getBubbledocs().getUserByUsername(USERNAME).getPasswd());
         assertTrue("Session was not updated", hasSessionUpdated(userToken));
     }
-    
+
     //Test case 2
     @Test(expected = UnavailableServiceException.class)
     public void renewPasswordRemoteServiceOffline() throws BubbledocsException {
@@ -68,10 +68,9 @@ public class RenewPasswordIntegratorTest extends BubbledocsServiceTest {
         };
         
         service.execute();
-        assertTrue("Session was not updated", hasSessionUpdated(userToken));
     }
     
-  //Test case 3
+    //Test case 3
     @Test(expected = UserNotInSessionException.class)
     public void renewPasswordUserNotInSession() throws BubbledocsException {
     	removeUserFromSession(userToken);

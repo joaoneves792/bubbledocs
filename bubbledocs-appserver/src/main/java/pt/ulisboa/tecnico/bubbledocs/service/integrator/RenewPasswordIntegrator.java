@@ -5,6 +5,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.GetUserNameForToken;
 import pt.ulisboa.tecnico.bubbledocs.service.RenewPassword;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 
 public class RenewPasswordIntegrator extends BubbledocsIntegrator {
 
@@ -23,8 +24,10 @@ public class RenewPasswordIntegrator extends BubbledocsIntegrator {
         try{
         	sdId.renewPassword(username);
         } catch(RemoteInvocationException e) {
-            service.execute();
+        	throw new UnavailableServiceException("SD-Store offline.");
         }
+
+        service.execute();
     }
 
 }
