@@ -18,11 +18,7 @@ public class RenewPassword extends BubbledocsService {
    		usernameService.execute();
        	String username = usernameService.getUsername();
            
-        try{
-            bubble.updateLocalPassword(username, null);
-        } catch(UserNotFoundException e){
-        	throw new UnavailableServiceException("The service is unavailable.");
-        }
+        bubble.updateLocalPassword(username, null);
     }
 
 }
