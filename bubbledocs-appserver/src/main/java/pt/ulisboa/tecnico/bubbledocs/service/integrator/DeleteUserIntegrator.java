@@ -12,7 +12,7 @@ public class DeleteUserIntegrator extends BubbledocsIntegrator {
 	private GetUserInfo localUser;
 	
 	
-	DeleteUserIntegrator(String userToken, String deadUsername) {
+	public DeleteUserIntegrator(String userToken, String deadUsername) {
 		this.userToken=userToken;
 		localUser = new GetUserInfo(deadUsername);
 	}
