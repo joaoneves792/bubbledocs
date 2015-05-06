@@ -25,17 +25,11 @@ public class DeleteUser extends BubbledocsService {
 
     @Override
     protected void dispatch() throws BubbledocsException {
-    	if(!userToken.matches("root\\d"))
+    	GetUserNameForToken usernameDTO = new GetUserNameForToken(userToken);
+    	usernameDTO.execute();
+    	if(!usernameDTO.getUsername().equals("root"))
     		throw new UnauthorizedUserException("The user in session ["+ userToken + "] is not authorized to create new users.");
-
-    	//IDRemoteServices sdId = new IDRemoteServices();
-    	
-    	/*try{
-    		sdId.removeUser(deadUsername);
-    	} catch(RemoteInvocationException  e){
-    		throw new UnavailableServiceException("SD-ID offline");
-    	}*/
-    	
+   	
     	((Root)Bubbledocs.getBubbledocs().getUserByUsername("root")).removeUser(deadUsername);
     }
 

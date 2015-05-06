@@ -25,12 +25,19 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
 
-	private static final String EXISTING_USERNAME = "joao69";
-	private static final String NAME ="joao";
-	private static final String EMAIL = "joao69@live.com";
-	private static final String NON_EXISTING_USERNAME = "sbr2014";
-	private static final String EMPTY_USERNAME = "";
 	private static final String ROOT_USERNAME = "root";
+	private static final String UNAUTHORIZED_USERNAME  = "hermaeus";
+    private static final String EXISTING_USERNAME      = "mehrunes";
+    private static final String NON_EXISTING_USERNAME  = "molag";
+    private static final String UNAUTHORIZED_EMAIL = "hermaeus@apocrypha.oblivion";
+    private static final String EXISTING_EMAIL     = "mehrunes@deadlands.oblivion";
+    private static final String UNAUTHORIZED_NAME = "Hermaeus Mora";
+    private static final String EXISTING_NAME     = "Mehrunes Dagon";
+    private static final String EMPTY_USERNAME = "";
+	
+	private static final String SPREADSHEET_NAME = "Argonian Account Book";
+	private static final Integer SPREADSHEET_ROWS = 42;
+	private static final Integer SPREADSHEET_COLUMNS = 42;
 	
 	private String rootToken;
 	private String userToken;
@@ -41,34 +48,30 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
 	
 	@Override
 	protected void initializeDomain() {
-		createUser(EXISTING_USERNAME, EMAIL, NAME);
+		User userToDelete = createUser(EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME);
+		createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
 		Bubbledocs.getBubbledocs().getSuperUser(); 
 		try{
 			 rootToken = addUserToSession(ROOT_USERNAME);
 			 userToken = addUserToSession(EXISTING_USERNAME);
-			 unauthorizedToken = addUserToSession(NON_EXISTING_USERNAME);
+			 unauthorizedToken = addUserToSession(UNAUTHORIZED_USERNAME);
+			 
+			 createSpreadSheet(userToDelete, SPREADSHEET_NAME, SPREADSHEET_ROWS, SPREADSHEET_COLUMNS);
 		 }catch (BubbledocsException e) {
 				assertTrue("Failed to populate domain for DeleteUserTest", false);
 			}
 	}
-	//nao é bubble docs exception?
-	@Test(expected = LoginBubbleDocsException.class)
+
+	@Test(expected = UserNotFoundException.class)
     public void userToDeleteDoesNotExist() throws BubbledocsException {
     	DeleteUserIntegrator integrator = new DeleteUserIntegrator(rootToken, NON_EXISTING_USERNAME);
     	
-    	new Expectations() {
-            {
-                sdId.removeUser(NON_EXISTING_USERNAME);
-                result = new LoginBubbleDocsException("Invalid Username");
-            }
-        };
-    	
-    	integrator.execute();
+     	integrator.execute();
     }
 	
 	
 	
-	//Test case 2 
+	//Test case 2
     @Test
     public void success() throws BubbledocsException {
     	
@@ -90,31 +93,17 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
         }
         
         assertTrue("User was not Deleted", isUserDeleted);
-        assertTrue("Root session was not updated", hasSessionUpdated(rootToken));     
+        assertTrue("Root session was not updated", hasSessionUpdated(rootToken));  
+        assertNull("Spreadsheet was not Deleted", getSpreadSheet(SPREADSHEET_NAME));
+        assertTrue("Permissions were not Deleted", getPermissionsByUser(EXISTING_USERNAME).isEmpty());
+        assertNull("Session was not Deleted", getUserFromSession(userToken));
+        
     }
     
     @Test
     public void successUserNotInSession() throws BubbledocsException {
     	removeUserFromSession(userToken);
-    	DeleteUserIntegrator integrator = new DeleteUserIntegrator(rootToken, EXISTING_USERNAME);
-    	
-    	new Expectations() {
-            {
-                sdId.removeUser(EXISTING_USERNAME);
-            }
-        };
-    	
-        integrator.execute();
-        
-        boolean isUserDeleted = false;
-        try {
-        	Bubbledocs.getBubbledocs().getUserByUsername(EXISTING_USERNAME);
-        } catch (UserNotFoundException e) {
-        	isUserDeleted = true;
-        }
-        
-        assertTrue("User was not Deleted", isUserDeleted);
-        assertTrue("Root session was not updated", hasSessionUpdated(rootToken));     
+    	success();     
     }
     
     
@@ -122,13 +111,6 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
     public void emptyUsername() throws BubbledocsException {
     	
     	DeleteUserIntegrator integrator = new DeleteUserIntegrator(rootToken, EMPTY_USERNAME);
-    	
-    	new Expectations() {
-            {
-                sdId.removeUser(EMPTY_USERNAME);
-                result = new LoginBubbleDocsException("Empty Username");
-            }
-        };
     	
     	integrator.execute();
     }
@@ -159,7 +141,7 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
     }
 
     
-    @Test(expected = UnavailableServiceException.class)
+    @Test//(expected = UnavailableServiceException.class)
     public void removeUserWithUnavailableSDID() throws BubbledocsException {
     	DeleteUserIntegrator integrator = new DeleteUserIntegrator(rootToken, EXISTING_USERNAME);
     	
@@ -169,15 +151,18 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
                 result = new RemoteInvocationException("SD-ID offline");
             }
         };
-        
-        integrator.execute();
-        
-        User user = Bubbledocs.getBubbledocs().getUserByUsername(EXISTING_USERNAME);
+        try{
+        	integrator.execute();
+        }catch(UnavailableServiceException e){
+        	User user = Bubbledocs.getBubbledocs().getUserByUsername(EXISTING_USERNAME);
 
-        assertEquals(EXISTING_USERNAME, user.getUsername());
-        assertNull(user.getPasswd());
-        assertEquals(NAME, user.getName());
-        assertEquals(EMAIL, user.getEmail());
+        	assertEquals(EXISTING_USERNAME, user.getUsername());
+        	assertNull(user.getPasswd());
+        	assertEquals(EXISTING_NAME, user.getName());
+        	assertEquals(EXISTING_EMAIL, user.getEmail());
+        	return;
+        }
+        assertTrue("removeUserWithUnavailableSDID failed", false);
 
     }
 }

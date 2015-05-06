@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.EmptyUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 
@@ -27,7 +28,9 @@ public class GetUserInfo extends BubbledocsService {
     }
 
     @Override
-    protected void dispatch() throws UserNotFoundException{
+    protected void dispatch() throws UserNotFoundException, EmptyUsernameException{
+    	if(username == null || username.isEmpty())
+    		throw new EmptyUsernameException("Attempted to delete user with no username");
         Bubbledocs bubble = Bubbledocs.getBubbledocs();
         User user = bubble.getUserByUsername(username);
         name = user.getName();
