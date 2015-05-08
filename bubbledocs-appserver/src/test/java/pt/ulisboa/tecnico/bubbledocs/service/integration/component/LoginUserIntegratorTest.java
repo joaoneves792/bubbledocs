@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidLoginException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
@@ -230,6 +231,21 @@ public class LoginUserIntegratorTest extends BubbledocsServiceTest {
         User user = getUserFromSession(token);
         assertEquals(PASSWORD, user.getPasswd());
         assertTrue("Session was not updated", hasSessionUpdated(token));
+    }
+    
+    @Test(expected = InvalidLoginException.class)
+    public void remoteOfflineAndEmptyLocalPassword() throws BubbledocsException {
+    	setLocalPassword(USERNAME, EMPTY_PASSWORD);
+        LoginUserIntegrator service = new LoginUserIntegrator(USERNAME, PASSWORD);
+        
+        new Expectations() {
+        	{
+        		sdId.loginUser(USERNAME, PASSWORD);
+        		result = new RemoteInvocationException("SD-ID offline");
+        	}
+        };
+        
+        service.execute();                
     }
     
 }

@@ -2,8 +2,6 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 
 public class RenewPassword extends BubbledocsService {
 	
