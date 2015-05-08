@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integration.component;
 
+import java.io.UnsupportedEncodingException;
+
 import org.junit.Test;
 
 import mockit.Expectations;
@@ -39,10 +41,10 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
     private static final Integer SPREADSHEET_COLUMNS = 15;
     
     private static final Integer REFERENCE_ROW      = 1;
-    private static final Integer REFERENCE_COLUMN   = 1;
+    private static final Integer REFERENCE_COLUMN   = 2;
     
-    private static final Integer LITERAL_ROW        = 1;
-    private static final Integer LITERAL_COLUMN     = 1;
+    private static final Integer LITERAL_ROW        = 3;
+    private static final Integer LITERAL_COLUMN     = 4;
     private static final Integer LITERAL_VALUE      = 3;
 
     private static final Integer DOCID_INVALID      = -5;
@@ -96,15 +98,15 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 		}	
 
 	@Test
-	public void success() throws BubbledocsException {
+	public void success() throws BubbledocsException, UnsupportedEncodingException {
 		
 		new Expectations() {
 			{
 				sdStore.loadDocument(USERNAME_RO, spreadsheetID.toString());
-				result = docXML.getBytes();
+				result = docXML.getBytes("UTF-8");
 			}
 		};
-		
+				
 		ImportDocumentIntegrator idi = new ImportDocumentIntegrator(tokenRo, spreadsheetID.toString());
 		idi.execute();
 		

@@ -27,8 +27,10 @@ public class ImportDocumentService extends BubbledocsService {
 		String username = guft.getUsername();
 		try {
 			spreadsheet = bubble.createSpreadsheet(bubble.getUserByUsername(username), XMLString);
-		} catch (IOException | JDOMException e) {
-			throw new InvalidImportException("Failed to import spreadsheet.");
+		} catch (IOException e) {
+			throw new InvalidImportException("IO : Failed to import spreadsheet.");
+		} catch (JDOMException e) {
+			throw new InvalidImportException("JDOM : Failed to import spreadsheet.");
 		}
 	}
 

@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integrator;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
@@ -28,7 +29,9 @@ public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 		String username = guft.getUsername();
 		
 		try {
-			spreadsheetXML = SDStore.loadDocument(username, docName).toString();
+			byte[] ary = SDStore.loadDocument(username, docName);
+			if(ary == null) throw new InvalidImportException("");
+			else spreadsheetXML = new String(ary);
 		} catch(RemoteInvocationException e) {
 			throw new UnavailableServiceException("SDStore Offline");
 		}

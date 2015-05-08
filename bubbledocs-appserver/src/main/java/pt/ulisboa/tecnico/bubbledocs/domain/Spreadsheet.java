@@ -28,11 +28,13 @@ public class Spreadsheet extends Spreadsheet_Base {
 		setRows(Integer.parseInt(spreadsheet.getAttribute("rows").getValue()));
 		setColumns(Integer.parseInt(spreadsheet.getAttribute("columns").getValue()));
 		
+		/*
 		String XMLAuthor = spreadsheet.getAttribute("author").getValue();
 		if(!XMLAuthor.equals(Username))
 			throw new InvalidImportException("Attempted to import spreadsheet from another user. AUTHOR: " + XMLAuthor + " RESQUESTED : " + Username);
+		*/
 		
-		setAuthor(XMLAuthor);
+		setAuthor(Username);
 		setName(spreadsheet.getAttribute("name").getValue());
 		setDate(org.joda.time.LocalDate.parse(spreadsheet.getAttribute("date").getValue()));
 		
