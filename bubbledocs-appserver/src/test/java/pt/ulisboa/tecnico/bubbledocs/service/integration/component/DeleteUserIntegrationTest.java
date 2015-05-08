@@ -48,10 +48,11 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
 	
 	@Override
 	protected void initializeDomain() {
+		try{
 		User userToDelete = createUser(EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME);
 		createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
 		Bubbledocs.getBubbledocs().getSuperUser(); 
-		try{
+		
 			 rootToken = addUserToSession(ROOT_USERNAME);
 			 userToken = addUserToSession(EXISTING_USERNAME);
 			 unauthorizedToken = addUserToSession(UNAUTHORIZED_USERNAME);
@@ -68,8 +69,6 @@ public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
     	
      	integrator.execute();
     }
-	
-	
 	
 	//Test case 2
     @Test
