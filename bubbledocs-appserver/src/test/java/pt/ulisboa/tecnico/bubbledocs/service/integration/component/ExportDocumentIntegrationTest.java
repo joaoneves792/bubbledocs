@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.bubbledocs.service;
+package pt.ulisboa.tecnico.bubbledocs.service.integration.component;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -19,16 +19,18 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CannotStoreDocumentException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
+import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.ExportDocumentIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 
-public class ExportDocumentServiceTest extends BubbledocsServiceTest {
+public class ExportDocumentIntegrationTest extends BubbledocsServiceTest {
  
 	
     private static final String AUTHOR_USERNAME = "mehrunes";
@@ -43,7 +45,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     private static final String NAME_WRITE = "Hermaeus Mora";
     private static final String EMAIL_WRITE = "mora";
     
-    private static final String SPREADHEET_NAME = "Argonian Account Book";
+    private static final String SPREADSHEET_NAME = "Argonian Account Book";
     private static final Integer SPREADHEET_ROWS = 10;
     private static final Integer SPREADHEET_COLUMNS = 15;
     private static final Integer REFERENCE_ROW = 1;
@@ -70,13 +72,13 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     @Override
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-    	try{
+    	try {
   	    author = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
         createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
         createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
         
         
-    	   ss = createSpreadSheet(author, SPREADHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+    	   ss = createSpreadSheet(author, SPREADSHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
      	   spreadsheetID = ss.getId();
 
      	   //Assign a literal to cell
@@ -138,7 +140,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -178,7 +180,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -194,7 +196,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_WRITE, SPREADHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_WRITE, SPREADSHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -208,7 +210,7 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(AUTHOR_USERNAME, SPREADHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(AUTHOR_USERNAME, SPREADSHEET_NAME, (byte[]) any);
       		}
       	};
       	
@@ -254,12 +256,24 @@ public class ExportDocumentServiceTest extends BubbledocsServiceTest {
     public void failRemote() throws UnsupportedEncodingException, BubbledocsException {
     	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
       			result = new RemoteInvocationException("");
       		}
       	};
 
 	    new ExportDocumentIntegrator(tokenRo, spreadsheetID).execute();
+    }
+    
+    @Test(expected = CannotStoreDocumentException.class) 
+    public void failStoreDoc() throws BubbledocsException {
+    	new Expectations() {
+    		{
+    			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
+    			result = new CannotStoreDocumentException("");
+    		}
+    	};
+    	
+    	new ExportDocumentIntegrator(tokenRo, spreadsheetID).execute();
     }
     
 }
