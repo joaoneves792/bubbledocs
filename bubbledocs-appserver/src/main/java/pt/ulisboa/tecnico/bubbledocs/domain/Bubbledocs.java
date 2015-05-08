@@ -295,7 +295,7 @@ import pt.ist.fenixframework.FenixFramework;
     	Spreadsheet spreadsheet = new Spreadsheet(requestUser.getUsername(), XMLString);
     	spreadsheet.setId(generateId());
     	addSpreadsheet(spreadsheet);
-        addPermission(new Permission(spreadsheet, getUserByUsername(spreadsheet.getAuthor()), true));
+    	addPermission(new Permission(spreadsheet, getUserByUsername(spreadsheet.getAuthor()), true));
     	return spreadsheet;
     }
 
