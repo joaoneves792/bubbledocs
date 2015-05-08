@@ -20,7 +20,7 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     private static final String NAME = "Mehrunes Dagon";
     private static final String EMAIL = "mehrunes@deadlands.oblivion";
 	
-    private static final String ANOTHER_USERNAME = "mb";
+    private static final String ANOTHER_USERNAME = "molagb";
     private static final String ANOTHER_NAME = "Molag Bal";
     private static final String ANOTHER_EMAIL = "molag@cold-harbor.oblivion";
     

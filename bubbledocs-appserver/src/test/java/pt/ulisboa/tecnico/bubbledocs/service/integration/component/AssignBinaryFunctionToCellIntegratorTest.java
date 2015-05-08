@@ -16,7 +16,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.AssignBinaryFunctionToCellIntegrator;
 
-public class AssignBinaryFunctionToCellTest extends BubbledocsServiceTest {
+public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceTest {
 
     private static final String AUTHOR_USERNAME = "mehrunes";
     private static final String AUTHOR_NAME = "Mehrunes Dagon";

@@ -30,7 +30,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.integrator.ExportDocumentIntegrator
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 
-public class ExportDocumentIntegrationTest extends BubbledocsServiceTest {
+public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
  
 	
     private static final String AUTHOR_USERNAME = "mehrunes";

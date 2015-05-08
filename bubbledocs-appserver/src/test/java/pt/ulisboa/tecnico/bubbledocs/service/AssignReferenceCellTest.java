@@ -23,7 +23,7 @@ public class AssignReferenceCellTest extends BubbledocsServiceTest {
     private static final String AUTHOR_NAME = "Mehrunes Dagon";
     private static final String AUTHOR_EMAIL = "mehrunes@deadlands.oblivion";
     
-    private static final String USERNAME_RO = "mb";
+    private static final String USERNAME_RO = "molagb";
     private static final String NAME_RO = "Molag Bal";
     private static final String EMAIL_RO = "molag@cold-harbor.oblivion";
     

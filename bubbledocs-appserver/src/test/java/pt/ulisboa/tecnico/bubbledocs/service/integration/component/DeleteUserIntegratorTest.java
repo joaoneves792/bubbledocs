@@ -22,7 +22,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.DeleteUserIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
-public class DeleteUserIntegrationTest extends BubbledocsServiceTest {
+public class DeleteUserIntegratorTest extends BubbledocsServiceTest {
 
 	private static final String ROOT_USERNAME = "root";
 	private static final String UNAUTHORIZED_USERNAME  = "hermaeus";
