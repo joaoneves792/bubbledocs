@@ -14,12 +14,11 @@ public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 	private final String docName;
 	private String spreadsheetXML;
 
-	public ImportDocumentIntegrator(String token, String doc) {
+	public ImportDocumentIntegrator(String token, int ssId) {
 		userToken = token;
-		docName   = doc;
+		docName   = Integer.toString(ssId);
 	}
-	
-	
+		
 	@Override
 	protected void dispatch() throws BubbledocsException {
 		StoreRemoteServices SDStore = new StoreRemoteServices();

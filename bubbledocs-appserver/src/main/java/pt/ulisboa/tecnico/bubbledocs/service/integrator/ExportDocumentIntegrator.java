@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integrator;
 
-import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
@@ -26,7 +25,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 	        GetUserNameForToken getUsernameService = new GetUserNameForToken(userToken);
 	        getUsernameService.execute();
 	        
-	        String ssName = Bubbledocs.getBubbledocs().getSpreadsheetById(docId).getName();
+	        String ssName = Integer.toString(docId);
 	        
 	        try {
 	        	service.execute();

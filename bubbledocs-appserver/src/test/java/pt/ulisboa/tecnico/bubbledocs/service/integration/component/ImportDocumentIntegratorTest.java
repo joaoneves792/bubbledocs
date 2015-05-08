@@ -107,7 +107,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 			}
 		};
 				
-		ImportDocumentIntegrator idi = new ImportDocumentIntegrator(tokenRo, spreadsheetID.toString());
+		ImportDocumentIntegrator idi = new ImportDocumentIntegrator(tokenRo, spreadsheetID);
 		idi.execute();
 		
 		Spreadsheet theNewSpreadsheet = getSpreadSheet(SPREADSHEET_NAME);
@@ -137,7 +137,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 			}
 		};
 		
-		new ImportDocumentIntegrator(tokenRo, spreadsheetID.toString()).execute();
+		new ImportDocumentIntegrator(tokenRo, spreadsheetID).execute();
 	}
 
 	@Test
@@ -150,7 +150,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 		};
 		
 		try {
-			new ImportDocumentIntegrator(tokenRo, spreadsheetID.toString()).execute();	
+			new ImportDocumentIntegrator(tokenRo, spreadsheetID).execute();	
 		} catch(UnavailableServiceException e) {
 			org.junit.Assert.assertTrue("Session was not updated", hasSessionUpdated(tokenRo));
 			return;
@@ -167,7 +167,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 				result = new CannotLoadDocumentException("");
 			}
 		};
-		new ImportDocumentIntegrator(tokenRo, spreadsheetID.toString()).execute();	
+		new ImportDocumentIntegrator(tokenRo, spreadsheetID).execute();	
 	}
 	
 }

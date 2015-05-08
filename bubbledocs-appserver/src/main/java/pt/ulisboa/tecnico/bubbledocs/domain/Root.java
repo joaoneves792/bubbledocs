@@ -19,6 +19,7 @@ public class Root extends Root_Base {
     Root() throws InvalidUsernameException {
         super();
         init("Super User", "root", "root@bubbledocs.tecnico.ulisboa.pt");
+        setPasswd("root");
         //Bubbledocs.getBubbledocs().addUser(this);
         //setBubbledocs(Bubbledocs.getBubbledocs());
     }    
