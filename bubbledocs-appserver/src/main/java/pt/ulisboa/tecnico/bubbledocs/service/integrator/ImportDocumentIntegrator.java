@@ -11,7 +11,6 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 	
 	private final String docName;
-	
 	private String spreadsheetXML;
 
 	public ImportDocumentIntegrator(String token, String doc) {

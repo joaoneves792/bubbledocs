@@ -29,9 +29,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.ExportDocumentIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
-
 public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
- 
 	
     private static final String AUTHOR_USERNAME = "mehrunes";
     private static final String AUTHOR_NAME = "Mehrunes Dagon";
@@ -46,8 +44,8 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
     private static final String EMAIL_WRITE = "mora";
     
     private static final String SPREADSHEET_NAME = "Argonian Account Book";
-    private static final Integer SPREADHEET_ROWS = 10;
-    private static final Integer SPREADHEET_COLUMNS = 15;
+    private static final Integer SPREADSHEET_ROWS = 10;
+    private static final Integer SPREADSHEET_COLUMNS = 15;
     private static final Integer REFERENCE_ROW = 1;
     private static final Integer REFERENCE_COLUMN = 1;
     private static final Integer LITERAL_ROW = 1;
@@ -73,12 +71,12 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
     public void initializeDomain() {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	try {
-  	    author = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
-        createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
-        createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
+    		author = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
+    		createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
+    		createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
         
         
-    	   ss = createSpreadSheet(author, SPREADSHEET_NAME, SPREADHEET_ROWS, SPREADHEET_COLUMNS);
+    	   ss = createSpreadSheet(author, SPREADSHEET_NAME, SPREADSHEET_ROWS, SPREADSHEET_COLUMNS);
      	   spreadsheetID = ss.getId();
 
      	   //Assign a literal to cell
@@ -96,39 +94,6 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
        	   tokenRo = addUserToSession(USERNAME_RO);
        	   tokenWrite = addUserToSession(USERNAME_WRITE);
        	   
-       	   /* TODO not used, but it may be useful in the future (e.g. import tests)
-       	   org.jdom2.Element spreadsheetElement = new org.jdom2.Element("Spreadsheet");
-	       spreadsheetElement.setAttribute("rows", ss.getRows().toString());
-	       spreadsheetElement.setAttribute("columns", ss.getColumns().toString());
-	       spreadsheetElement.setAttribute("author", ss.getAuthor());
-	       spreadsheetElement.setAttribute("name", ss.getName());
-	       spreadsheetElement.setAttribute("date", ss.getDate().toString());
-	       doc.setRootElement(spreadsheetElement);
-	       org.jdom2.Element cells = new org.jdom2.Element("Cells");
-	       spreadsheetElement.addContent(cells);
-	       
-	       org.jdom2.Element litCell = new org.jdom2.Element("Cell");
-	       org.jdom2.Element lit     = new org.jdom2.Element("Literal");
-	       org.jdom2.Element refCell = new org.jdom2.Element("Cell");
-	       org.jdom2.Element ref     = new org.jdom2.Element("Reference");
-	       
-	       cells.addContent(litCell);
-	       cells.addContent(refCell);
-	       litCell.addContent(lit);
-	       refCell.addContent(ref);
-	       
-	       litCell.setAttribute("protected", ss.getCell(LITERAL_ROW, LITERAL_COLUMN).getProtectd().toString());
-	       litCell.setAttribute("row", LITERAL_ROW.toString());
-	       litCell.setAttribute("column", LITERAL_COLUMN.toString());
-	       refCell.setAttribute("protected", ss.getCell(REFERENCE_ROW, REFERENCE_COLUMN).getProtectd().toString());
-	       refCell.setAttribute("row", REFERENCE_ROW.toString());
-	       refCell.setAttribute("column", REFERENCE_COLUMN.toString());
-	       
-	       lit.setAttribute("value", LITERAL_VALUE.toString());	
-	       ref.setAttribute("row", LITERAL_ROW.toString());
-	       ref.setAttribute("column", LITERAL_COLUMN.toString());
-	       */
-	       
         } catch (BubbledocsException e) {
      	   assertTrue(false);
         }		

@@ -211,6 +211,24 @@ public class Spreadsheet extends Spreadsheet_Base {
           //Bubbledocs.getBubbledocs().removeSpreadsheet(this);
           super.deleteDomainObject();
       }
+      
+      
+      public boolean equal(Object o) throws InvalidCellException {
+    	  if(!(o instanceof Spreadsheet))
+    		  return false;
+    	  else {
+    		  Spreadsheet s = (Spreadsheet) o;
+    		  if(s.getRows() != getRows() || s.getColumns() != getColumns())
+    			  return false;
+    		  
+    		  for(int r = 1; r <= s.getRows(); r++)
+    			  for(int c = 1; c <= s.getColumns(); c++)
+    				  if(!s.getCell(r,c).equals(getCell(r,c)))
+    					  return false;
+    			  
+    		  return true;
+    	  }
+      }
 }
 
 
