@@ -380,6 +380,7 @@ import pt.ist.fenixframework.FenixFramework;
     		removeSpreadsheet(spreadsheet);
     		spreadsheet.clean();
     	}    	
+    	user.clean();
     }
     
        
@@ -516,6 +517,47 @@ import pt.ist.fenixframework.FenixFramework;
 	public String describeSpreadshet(String username, int spreadsheetID) throws PermissionNotFoundException, SpreadsheetNotFoundException, InvalidCellException, UserNotFoundException {
 		getPermission(username, spreadsheetID);
 		return getSpreadsheetById(spreadsheetID).describe();
+	}
+	
+	/* Method to erase the whole bubbledocs from persistence
+	 */
+	public void clean()throws BubbledocsException{
+		try{
+			Root root = getSuperUser();
+		
+			//Destroy all users (except for root)
+			for(User u : getUserSet())
+				if(!u.getUsername().equals("root"))
+					destroyUser(root, u.getUsername());
+			
+			//Destroy all root permissions spreadsheets and its session
+	    	for(Session s:getSessionSet())
+	    		if(s.getUser().getUsername().equals("root")) {
+	    			removeSession(s);
+	    			s.clean();
+	    		}
+	    	for(Permission p : getPermissionSet())
+	    		if(p.getUser().getUsername().equals("root")){
+	        		removePermission(p);
+	        		p.clean();
+	    		}
+	    	for(Spreadsheet spreadsheet : getSpreadsheetsByAuthor("root")) {
+	    		removeSpreadsheet(spreadsheet);
+	    		spreadsheet.clean();
+	    	}    	
+
+	    	//Destroy the root user
+			removeUser(root);
+			root.clean();
+			
+		}catch(BubbledocsException e){
+			throw new BubbledocsException("Unable to erase bubbledocs from persistence");
+		}
+			
+		//Delete this Bubbledocs instance 
+		this.getRoot().setBubbledocs(null);
+		this.setRoot(null);
+		super.deleteDomainObject();
 	}
 
 }

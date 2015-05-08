@@ -89,4 +89,8 @@ public class User extends User_Base {
 		Bubbledocs.getBubbledocs().createSpreadsheet(this, ss);		
 	}
 
+	public void clean(){
+		setBubbledocs(null);
+		super.deleteDomainObject();
+	}
 }

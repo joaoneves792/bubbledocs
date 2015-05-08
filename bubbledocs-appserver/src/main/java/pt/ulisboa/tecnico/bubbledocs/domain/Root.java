@@ -35,4 +35,9 @@ public class Root extends Root_Base {
     	return Collections.unmodifiableSet(Bubbledocs.getBubbledocs().getUserSet());
     }
     
+	public void clean(){
+		setBubbledocs(null);
+		super.deleteDomainObject();
+	}
+    
 }
