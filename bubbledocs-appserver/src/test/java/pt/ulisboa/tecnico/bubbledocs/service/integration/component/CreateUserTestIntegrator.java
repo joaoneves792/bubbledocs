@@ -61,11 +61,13 @@ public class CreateUserTestIntegrator extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
+
+    	try {
     	Bubbledocs.getBubbledocs().getSuperUser();
     	createUser(EXISTING_USERNAME, EXISTING_EMAIL, EXISTING_NAME);
     	createUser(UNAUTHORIZED_USERNAME, UNAUTHORIZED_EMAIL, UNAUTHORIZED_NAME);
     	
-    	try {
+    	
 			rootToken = addUserToSession(ROOT_USERNAME);
 	    	unauthorizedUserToken = addUserToSession(UNAUTHORIZED_USERNAME);
 		} catch (BubbledocsException e) {
