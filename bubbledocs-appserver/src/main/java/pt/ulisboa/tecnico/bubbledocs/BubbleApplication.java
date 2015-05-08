@@ -226,7 +226,11 @@ public class BubbleApplication{
     		return;
     	}
     	
-    	bubble.getSuperUser();
+    	try {
+			bubble.getSuperUser();
+		} catch (InvalidUsernameException e3) {
+			System.err.println("root initialization failed.");
+		}
 
     	LoginUserIntegrator loginRoot = new LoginUserIntegrator("root", "root");
     	try {

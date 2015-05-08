@@ -77,10 +77,11 @@ public class AssignBinaryFunctionToCellTest extends BubbledocsServiceTest {
     @Override
     public void initializeDomain() {
  	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
+ 	  try{
  	   User user = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
        createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
        createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
-       try{
+      
     	   tokenAuthor = addUserToSession(AUTHOR_USERNAME);
      	   tokenRo = addUserToSession(USERNAME_RO);
      	   tokenWrite = addUserToSession(USERNAME_WRITE);

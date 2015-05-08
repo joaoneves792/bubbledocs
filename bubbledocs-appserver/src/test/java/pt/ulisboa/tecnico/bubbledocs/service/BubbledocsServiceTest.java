@@ -20,6 +20,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidSessionTimeException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
@@ -55,8 +56,9 @@ public abstract class BubbledocsServiceTest {
 
     // auxiliary methods that access the domain layer and are needed in the test classes
     // for defining the initial state and checking that the service has the expected behavior
-    /** create user if not exists */
-    protected User createUser(String username, String email, String name) {
+    /** create user if not exists 
+     * @throws InvalidUsernameException */
+    protected User createUser(String username, String email, String name) throws InvalidUsernameException {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	User user = null;
 		user = new User(name, username, email);

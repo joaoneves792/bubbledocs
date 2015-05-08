@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidExportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidLoginException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RootRemoveException;
@@ -61,7 +62,7 @@ import pt.ist.fenixframework.FenixFramework;
     	throw new UserNotFoundException("User with username " + username + " was not found.");
     }
     
-	public Root getSuperUser() {
+	public Root getSuperUser() throws InvalidUsernameException {
 		Root root;
 		try {
 			root = (Root) getUserByUsername("root");

@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.LoginBubbleDocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
@@ -35,10 +36,11 @@ public class LoginUserIntegratorTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-        createUser(USERNAME, EMAIL, NAME);
         try {
+        createUser(USERNAME, EMAIL, NAME);
+ 
 			setLocalPassword(USERNAME, PASSWORD);
-		} catch (UserNotFoundException e) {
+		} catch (UserNotFoundException | InvalidUsernameException e) {
 			assertTrue("Fail to initialize Domain for LoginUserTest", false);
 		}
         

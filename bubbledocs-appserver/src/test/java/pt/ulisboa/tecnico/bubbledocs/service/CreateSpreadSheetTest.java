@@ -40,9 +40,10 @@ public class CreateSpreadSheetTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
+    	try{
     	createUser(USERNAME, EMAIL, NAME);
     	createUser(ANOTHER_USERNAME, ANOTHER_EMAIL, ANOTHER_NAME);
-    	try{
+    	
     		token = addUserToSession(USERNAME);
     		anotherToken = addUserToSession(ANOTHER_USERNAME);
     	}catch (BubbledocsException e) {

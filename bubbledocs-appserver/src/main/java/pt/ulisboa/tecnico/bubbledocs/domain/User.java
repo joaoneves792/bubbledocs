@@ -8,6 +8,7 @@ import org.jdom2.JDOMException;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
@@ -19,17 +20,22 @@ public class User extends User_Base {
         super();
     }
 	
-    public User(String name, String username, String email) {
+    public User(String name, String username, String email) throws InvalidUsernameException {
     	super();
     	init(name, username, email);
     }
     
-    protected void init(String name, String username, String email) {
+    protected void init(String name, String username, String email) throws InvalidUsernameException {
+    	if(username.length() < 3 || username.length() > 8)
+    		throw new InvalidUsernameException("User usernames must have 3 to 8 characters.");
+    	
     	setName(name);
     	setEmail(email);
     	setUsername(username);  
     	setPasswd(null);
     }
+  
+    
     
     public void addReadPermission(String granted, int spreadsheetId) throws UserNotFoundException, UnauthorizedUserException, SpreadsheetNotFoundException, PermissionNotFoundException {
     	Bubbledocs.getBubbledocs().addReadPermission(getUsername(), granted, spreadsheetId);

@@ -22,9 +22,10 @@ public class GetUserNameForTokenTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
+    	try {
     	createUser(USERNAME, USER_EMAIL, USER_NAME);
     	
-    	try {
+    	
 			userToken = addUserToSession(USERNAME);
 		} catch (BubbledocsException e) {
 			assertTrue("Failed to populate domain for GetUserNameForTokenTest", false);

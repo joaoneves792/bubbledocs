@@ -30,8 +30,6 @@ public class CreateUser extends BubbledocsService {
     		throw new InvalidEmailException("Attempted to create a user with no email.");
     	} else if(name == null || name.isEmpty()) {
     		throw new EmptyNameException("Attempted to create a user with no name.");
-    	} else if(username.length() < 3 || username.length() > 8) {
-    		throw new InvalidUsernameException("User usernames must have 3 to 8 characters.");
     	}
     	
     	userToken = rootTok;

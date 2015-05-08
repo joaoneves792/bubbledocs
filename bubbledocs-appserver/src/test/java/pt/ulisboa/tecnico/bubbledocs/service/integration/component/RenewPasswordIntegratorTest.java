@@ -29,9 +29,10 @@ public class RenewPasswordIntegratorTest extends BubbledocsServiceTest {
     
     @Override
     public void initializeDomain() {
-    	createUser(USERNAME, USER_EMAIL, USER_NAME);
-    	
+      	
     	try {
+    	createUser(USERNAME, USER_EMAIL, USER_NAME);
+  
 			userToken = addUserToSession(USERNAME);
 		} catch (BubbledocsException e) {
 			assertTrue("Failed to populate domain for RenewPasswordIntegratorTest", false);
