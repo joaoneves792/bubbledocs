@@ -36,18 +36,20 @@ public abstract class SystemTest {
 	private static final String ROOT_LITERAL_CELL_ID = "2;4";
 	private static final String ROOT_LITERAL = "42";
 	
-	private static final String EXPORTER_USERNAME = null;
-	private static final String EXPORTER_EMAIL = null;
-	private static final String EXPORTER_NAME = null;
-	private static final String EXPORTER_PASSWORD = null;
+	private static final String EXPORTER_USERNAME = "mehrunes";
+	private static final String EXPORTER_EMAIL = "mehrunes@deadlands.oblivion";
+	private static final String EXPORTER_NAME = "Mehrunes Dagon";
+	private static final String EXPORTER_PASSWORD = "dagon";
 	
-	private static final String PW_RENEWER_USERNAME = null;
-	private static final String PW_RENEWER_EMAIL = null;
-	private static final String PW_RENEWER_NAME = null;
-	private static final String EXPORTER_SPREADSHEET_NAME = null;
-	private static final int EXPORTER_SPREADSHEET_ROWS = 0;
-	private static final int EXPORTER_SPREADSHEET_COLUMNS = 0;
-	private static final String PW_RENEWER_PASSWORD = null;
+	private static final String EXPORTER_SPREADSHEET_NAME = "Mythic Dawn Commentaries";
+	private static final int EXPORTER_SPREADSHEET_ROWS = 4;
+	private static final int EXPORTER_SPREADSHEET_COLUMNS = 3;
+	
+	private static final String PW_RENEWER_USERNAME = "hermaeus";
+	private static final String PW_RENEWER_EMAIL = "hermaeus@apocrypha.oblivion";
+	private static final String PW_RENEWER_NAME = "Hermaeus Mora";
+	private static final String PW_RENEWER_PASSWORD = "mora";
+	
 	
 	@Mocked
 	private static IDRemoteServices SDID;
