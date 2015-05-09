@@ -38,6 +38,9 @@ import pt.ist.fenixframework.FenixFramework;
     //private static Bubbledocs theBubbledocs = new Bubbledocs();	
             
     public static Bubbledocs getBubbledocs() {
+    	if(null == FenixFramework.getDomainRoot())
+    		System.out.println("DOMAIN ROOT IS NULL!!!!!");
+    	
         Bubbledocs bubble = FenixFramework.getDomainRoot().getBubbledocs();
         if( null == bubble ) {
           bubble = new Bubbledocs();
@@ -400,7 +403,7 @@ import pt.ist.fenixframework.FenixFramework;
     	}
     }
     
-    public Integer assignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferenceRow, Integer cellReferenceColumn) throws BubbledocsException {
+    public void assignReferenceCell(String userToken, Integer spreadsheetId, Integer cellIdrow, Integer cellIdColumn, Integer cellReferenceRow, Integer cellReferenceColumn) throws BubbledocsException {
     	assertSessionAndWritePermission(userToken,spreadsheetId, cellIdrow, cellIdColumn);
     	
     	Spreadsheet spreadsheet = getSpreadsheetById(spreadsheetId);
@@ -408,7 +411,7 @@ import pt.ist.fenixframework.FenixFramework;
     	Cell referencedCell = spreadsheet.getCell(cellReferenceRow, cellReferenceColumn);
     	
         modifiedCell.setContent(new Reference(referencedCell));
-        return modifiedCell.calculate();
+        //return modifiedCell.calculate();
     }
     
 

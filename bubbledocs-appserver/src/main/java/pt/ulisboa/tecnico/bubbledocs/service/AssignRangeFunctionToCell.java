@@ -8,9 +8,11 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Function;
 import pt.ulisboa.tecnico.bubbledocs.domain.Prd;
 import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 
 
 public class AssignRangeFunctionToCell extends BubbledocsService {
@@ -18,7 +20,8 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
     private Integer spreadsheetId;
     private String cellID;
     private String functionExpression;
-    private Integer result;
+	private Integer cellLine = null;
+	private Integer cellColumn = null;
     
     final static String ZERO = "0"; 
     final static String NEGATIVE = "-(?!0)\\d+";
@@ -33,6 +36,7 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
     final static String RANGE_OPERATOR = "(AVG|PRD)";
     final static String RANGE_FUNCTION = "=" + RANGE_OPERATOR + "\\(" + RANGE + "\\)";
     final static String PARSE_RANGE_FUNCTION = "[=()]";
+
     
     public AssignRangeFunctionToCell(String tokenUser, int ssId, String cellId, String funcExpr) {
     	userToken = tokenUser;
@@ -44,7 +48,6 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
     @Override
     protected void dispatch() throws BubbledocsException {
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	Integer cellLine, cellColumn;
    	   	Function function;
    	   	
    	   	
@@ -91,7 +94,6 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
     	
     	//Assign it and get the value of this cell
     	spreadsheet.assignFunctionCell(cellLine, cellColumn, function);
-    	result = spreadsheet.getCell(cellLine, cellColumn).calculate();
     }
 
 	private Reference parseReference(Spreadsheet spreadsheet, String refExpression) throws InvalidCellException {
@@ -102,6 +104,14 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
 	}
     
     public final Integer getResult(){
-    	return result;
+    	if(cellLine == null || cellColumn == null)
+    		return null;
+    	
+   	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+   	   	try {
+			return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+		} catch (BubbleCellException | SpreadsheetNotFoundException e) {
+			return null;
+		}  
     }
 }

@@ -93,7 +93,8 @@ relation BubbledocsHasSpreadsheets {
 relation SpreadsheetHasCells {
 	Spreadsheet playsRole spreadsheet;
 	Cell playsRole cell {
-		multiplicity 1..*;
+		multiplicity 0..*;
+
 	}
 }
 

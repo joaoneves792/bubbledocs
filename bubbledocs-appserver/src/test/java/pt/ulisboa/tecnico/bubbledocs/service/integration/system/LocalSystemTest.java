@@ -55,30 +55,39 @@ public class LocalSystemTest extends SystemTest {
     @Test
     public final void run() throws BubbledocsException {
     	
-    	new Expectations() {
+    	/*new Expectations() {
     		{
     			SDID.loginUser(ROOT_USERNAME, ROOT_PASSWORD);
+    			result = null;
     			
     			SDID.createUser(EXPORTER_USERNAME, EXPORTER_EMAIL);
+    			result = null;
     			
     			SDID.createUser(PW_RENEWER_USERNAME, PW_RENEWER_EMAIL);
-
+    			result = null;
+    			
     			SDID.loginUser(EXPORTER_USERNAME, EXPORTER_PASSWORD);
+    			result = null;
     			
     			SDStore.storeDocument(EXPORTER_USERNAME, (String) any, (byte[]) any);
+    			result = null;
     			
     			SDStore.loadDocument(EXPORTER_USERNAME, (String) any);
+    			result = null;
     			
     			SDID.loginUser(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);
+    			result = null;
     			
     			SDID.renewPassword(PW_RENEWER_USERNAME);
+    			result = null;
     			
     			SDID.loginUser(EXPORTER_USERNAME, EXPORTER_PASSWORD);
     			result = new RemoteInvocationException("");
     			
     			SDID.removeUser(EXPORTER_USERNAME);
+    			result = null;
     		}
-    	};
+    	};*/
     	
     	LoginUserIntegrator rootLogin = new LoginUserIntegrator(ROOT_USERNAME, ROOT_PASSWORD);
     	rootLogin.execute();
@@ -119,8 +128,8 @@ public class LocalSystemTest extends SystemTest {
     	new AssignBinaryFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "3;2", "=SUB(1;2,2;1)").execute();
     	new AssignBinaryFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "3;3", "=DIV(1;3,1;1)").execute();
     
-    	new AssignRangeFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "4;1", "=AVG(1;1,3;3)").execute();
-    	new AssignRangeFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "4;2", "=PRD(1;3,4;3)").execute();
+    	new AssignRangeFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "4;1", "=AVG(1;1:3;3)").execute();
+    	new AssignRangeFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "4;2", "=PRD(1;3:4;3)").execute();
     	new AssignLiteralCellIntegrator(exporterToken, exporterSpreadsheetID, "4;3", "0").execute();
     	
     	GetSpreadsheetContentIntegrator exportedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, exporterSpreadsheetID);

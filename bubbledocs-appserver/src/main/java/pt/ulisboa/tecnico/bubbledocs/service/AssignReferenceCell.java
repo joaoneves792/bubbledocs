@@ -1,7 +1,9 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 
 // add needed import declarations
 
@@ -10,7 +12,8 @@ public class AssignReferenceCell extends BubbledocsService {
     private Integer spreadsheetId;
     private String myCellId;
     private String referencedCell;
-    private Integer result;
+	private Integer cellLine;
+	private Integer cellColumn;
     
     /*
      * Assigns a reference to a cell
@@ -29,7 +32,7 @@ public class AssignReferenceCell extends BubbledocsService {
     @Override
     protected void dispatch() throws BubbledocsException, NumberFormatException {
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	Integer cellLine, cellColumn, refCellLine, refCellColumn;
+   	   	Integer refCellLine, refCellColumn;
    	   	
    	   	
    	   	//Parse the cells id's
@@ -42,11 +45,18 @@ public class AssignReferenceCell extends BubbledocsService {
     	refCellLine = Integer.parseInt(tokensCellReference[0]);
     	refCellColumn = Integer.parseInt(tokensCellReference[1]);
    	   	
-    	//Assign it and get the value of this cell
-    	result = bubble.assignReferenceCell(userToken, spreadsheetId, cellLine, cellColumn, refCellLine, refCellColumn);
+    	bubble.assignReferenceCell(userToken, spreadsheetId, cellLine, cellColumn, refCellLine, refCellColumn);
     }
     
     public final Integer getResult(){
-    	return result;
+    	if(cellLine == null || cellColumn == null)
+    		return null;
+    	
+   	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+   	   	try {
+			return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+		} catch (BubbleCellException | SpreadsheetNotFoundException e) {
+			return null;
+		}   	
     }
 }

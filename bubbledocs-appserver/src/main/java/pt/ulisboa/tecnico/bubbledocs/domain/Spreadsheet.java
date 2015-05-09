@@ -146,10 +146,9 @@ public class Spreadsheet extends Spreadsheet_Base {
     	return lazyCell;
     }
     
-    public Integer assignFunctionCell(Integer cellRow, Integer cellColumn, Function function ) throws InvalidCellException, BubbleCellException {
+    public void assignFunctionCell(Integer cellRow, Integer cellColumn, Function function ) throws InvalidCellException, BubbleCellException {
     	Cell modifiedCell = getCell(cellRow, cellColumn);
     	modifiedCell.setContent(function);    	
-        return modifiedCell.calculate();
     }
 
     private org.jdom2.Document myExport() throws InvalidExportException {

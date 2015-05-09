@@ -12,9 +12,11 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
 import pt.ulisboa.tecnico.bubbledocs.domain.SimpleContent;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.Sub;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 
 
 public class AssignBinaryFunctionToCell extends BubbledocsService {
@@ -22,7 +24,10 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     private Integer spreadsheetId;
     private String cellID;
     private String functionExpression;
-    private Integer result;
+    
+    private Integer cellColumn = null;
+	private Integer cellLine = null;
+    
     
     final static String ZERO = "0"; 
     final static String NEGATIVE = "-(?!0)\\d+";
@@ -35,6 +40,7 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     final static String ARGUMENT = "(" + LITERAL + "|" + CELL + ")"; 
     final static String BINARY_FUNCTION = "=" + BINARY_OPERATOR + "\\("  + ARGUMENT + "," + ARGUMENT + "\\)"; 
     final static String PARSE_BINARY_FUNCTION = "[=(,)]";
+	
     
     public AssignBinaryFunctionToCell(String tokenUser, int ssId, String cellId, String funcExpr) {
     	userToken = tokenUser;
@@ -46,7 +52,6 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     @Override
     protected void dispatch() throws BubbledocsException {
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	Integer cellLine, cellColumn;
    	   	Function function;
    	   	
    	   	
@@ -99,7 +104,6 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     	
     	//Assign it and get the value of this cell
     	spreadsheet.assignFunctionCell(cellLine, cellColumn, function);
-    	result = spreadsheet.getCell(cellLine, cellColumn).calculate();
     }
 
 	private SimpleContent parseArgument(Spreadsheet spreadsheet, String argExpr) throws InvalidCellException {
@@ -122,6 +126,15 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
 	}
     
     public final Integer getResult(){
-    	return result;
+    	if(cellLine == null || cellColumn == null)
+    		return null;
+    	
+   	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
+   	   	try {
+			return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+		} catch (BubbleCellException | SpreadsheetNotFoundException e) {
+			return null;
+		}   	
+    	
     }
 }
