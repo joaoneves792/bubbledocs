@@ -44,7 +44,7 @@ public class GetSpreadsheetContentTest extends BubbledocsServiceTest {
     		"[ 2 3 12 ]\n" + 
     		"[ 1 6 6 ]\n"  + 
     		"[ 5 2 6 ]\n"  +
-    	    "[ 4 0 0 ]";
+    	    "[ 4 0 0 ]\n";
 
     private static final Integer DOCID_INVALID = -5;
     private static final Integer NON_EXISTING_ID = 100;

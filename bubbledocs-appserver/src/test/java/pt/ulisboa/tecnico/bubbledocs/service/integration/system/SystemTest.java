@@ -9,7 +9,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 public abstract class SystemTest {
 	
     @Before
-    protected final void setUp() throws BubbledocsException {
+    public final void setUp() throws BubbledocsException {
     	try {
 			Bubbledocs.getBubbledocs().getSuperUser();
 		} catch (InvalidUsernameException e) {
@@ -18,7 +18,7 @@ public abstract class SystemTest {
     }
 
     @After
-    protected final void tearDown() throws BubbledocsException {
+    public final void tearDown() throws BubbledocsException {
     	Bubbledocs.getBubbledocs().clean();
     }
 

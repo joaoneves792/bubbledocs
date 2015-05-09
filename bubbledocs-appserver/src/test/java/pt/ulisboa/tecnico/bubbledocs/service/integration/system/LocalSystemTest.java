@@ -23,6 +23,7 @@ import pt.ulisboa.tecnico.bubbledocs.service.remote.IDRemoteServices;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class LocalSystemTest extends SystemTest {
+	
 	private static final String ROOT_USERNAME = "root";
 	private static final String ROOT_PASSWORD = "root";
 	private static final String ROOT_SPREADSHEET_NAME = "Argonian Account Book";
