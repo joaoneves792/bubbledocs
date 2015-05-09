@@ -105,7 +105,7 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_RO, Integer.toString(spreadsheetID), (byte[]) any);
       		}
       	};
       	
@@ -145,7 +145,7 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_RO, Integer.toString(spreadsheetID), (byte[]) any);
       		}
       	};
       	
@@ -161,7 +161,7 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_WRITE, SPREADSHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_WRITE, Integer.toString(spreadsheetID), (byte[]) any);
       		}
       	};
       	
@@ -175,7 +175,7 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
       	
       	new Expectations() {
       		{
-      			sdStore.storeDocument(AUTHOR_USERNAME, SPREADSHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(AUTHOR_USERNAME, Integer.toString(spreadsheetID), (byte[]) any);
       		}
       	};
       	
@@ -221,7 +221,7 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
     public void failRemote() throws UnsupportedEncodingException, BubbledocsException {
     	new Expectations() {
       		{
-      			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
+      			sdStore.storeDocument(USERNAME_RO, Integer.toString(spreadsheetID), (byte[]) any);
       			result = new RemoteInvocationException("");
       		}
       	};
@@ -233,7 +233,7 @@ public class ExportDocumentIntegratorTest extends BubbledocsServiceTest {
     public void failStoreDoc() throws BubbledocsException {
     	new Expectations() {
     		{
-    			sdStore.storeDocument(USERNAME_RO, SPREADSHEET_NAME, (byte[]) any);
+    			sdStore.storeDocument(USERNAME_RO, Integer.toString(spreadsheetID), (byte[]) any);
     			result = new CannotStoreDocumentException("");
     		}
     	};

@@ -53,7 +53,7 @@ public class LocalSystemTest extends SystemTest {
 	private static StoreRemoteServices SDStore;
     
     @Test
-    public static final void run() throws BubbledocsException {
+    public final void run() throws BubbledocsException {
     	
     	new Expectations() {
     		{
