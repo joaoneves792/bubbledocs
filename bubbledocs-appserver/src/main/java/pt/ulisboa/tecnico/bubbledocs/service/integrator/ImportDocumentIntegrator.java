@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.bubbledocs.service.integrator;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.service.GetUserNameForToken;
 import pt.ulisboa.tecnico.bubbledocs.service.ImportDocumentService;

@@ -17,6 +17,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.ImportDocumentIntegrator;
 import pt.ulisboa.tecnico.bubbledocs.service.remote.StoreRemoteServices;
@@ -47,13 +48,10 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
     private static final Integer LITERAL_COLUMN     = 4;
     private static final Integer LITERAL_VALUE      = 3;
 
-    private static final Integer DOCID_INVALID      = -5;
 	
     //This is needed throughout the tests
     private Integer spreadsheetID;
-    private String tokenAuthor;
     private String tokenRo;
-	private String tokenWrite;
 	
 	private User author;
 	private Spreadsheet ss; 
@@ -86,9 +84,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 	     	//Give WRITE user write permissions
 	     	bubble.addWritePermission(AUTHOR_USERNAME, USERNAME_WRITE, spreadsheetID);     	   
 
-	     	tokenAuthor = addUserToSession(AUTHOR_USERNAME);
 	     	tokenRo = addUserToSession(USERNAME_RO);
-	     	tokenWrite = addUserToSession(USERNAME_WRITE);
 
 	     	docXML = ss.export();
 	     				
@@ -170,4 +166,10 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 		new ImportDocumentIntegrator(tokenRo, spreadsheetID).execute();	
 	}
 	
+	
+	@Test(expected = UserNotInSessionException.class)
+	public void failNotInSession() throws UnsupportedEncodingException, BubbledocsException {
+		removeUserFromSession(tokenRo);
+		success();
+	}
 }
