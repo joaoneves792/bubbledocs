@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integration.system;
 
-import mockit.Expectations;
 import mockit.Mocked;
+import mockit.StrictExpectations;
 
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class LocalSystemTest extends SystemTest {
     @Test
     public final void run() throws BubbledocsException {
     	
-    	/*new Expectations() {
+    	new StrictExpectations() {
     		{
     			SDID.loginUser(ROOT_USERNAME, ROOT_PASSWORD);
     			result = null;
@@ -74,6 +74,11 @@ public class LocalSystemTest extends SystemTest {
     			
     			SDStore.loadDocument(EXPORTER_USERNAME, (String) any);
     			result = null;
+    			SDStore.storeDocument(EXPORTER_USERNAME, "1", (byte[]) any);
+    			
+    			SDStore.loadDocument(EXPORTER_USERNAME, "1");
+    			
+
     			
     			SDID.loginUser(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);
     			result = null;
@@ -87,7 +92,7 @@ public class LocalSystemTest extends SystemTest {
     			SDID.removeUser(EXPORTER_USERNAME);
     			result = null;
     		}
-    	};*/
+    	};
     	
     	LoginUserIntegrator rootLogin = new LoginUserIntegrator(ROOT_USERNAME, ROOT_PASSWORD);
     	rootLogin.execute();

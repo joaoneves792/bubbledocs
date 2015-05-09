@@ -1,7 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integrator;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CannotLoadDocumentException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
 import pt.ulisboa.tecnico.bubbledocs.service.GetUserNameForToken;
@@ -12,12 +12,12 @@ public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 	
 	private final String docName;
 	private String spreadsheetXML;
-
+	
 	public ImportDocumentIntegrator(String token, int ssId) {
 		userToken = token;
 		docName   = Integer.toString(ssId);
 	}
-		
+	
 	@Override
 	protected void dispatch() throws BubbledocsException {
 		StoreRemoteServices SDStore = new StoreRemoteServices();
@@ -28,7 +28,7 @@ public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 		
 		try {
 			byte[] ary = SDStore.loadDocument(username, docName);
-			if(ary == null) throw new InvalidImportException("");
+			if(ary == null) throw new CannotLoadDocumentException("");
 			else spreadsheetXML = new String(ary);
 		} catch(RemoteInvocationException e) {
 			throw new UnavailableServiceException("SDStore Offline");
