@@ -52,6 +52,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     private static final int VALID_CELL_ROW = 1;
     private static final int VALID_CELL_COL = 1;
 
+    private static final String EMPTY_STRING = "";
     
     private static final String INVALID_FUNCTION = "=AVG(7,5;5)";
     private static final String VALID_ADD_FUNCTION = "=ADD(7,5;5)";
@@ -234,6 +235,13 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_DIV_FUNCTION);
     	service.execute();
     	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_DIV_RESULT);
+    }
+    
+    //Test case 18
+    @Test(expected = InvalidFunctionException.class)
+    public void assignEmptyString() throws BubbledocsException{
+    	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, EMPTY_STRING);
+    	service.execute();
     }
            
 }

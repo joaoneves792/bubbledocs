@@ -57,6 +57,7 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     private static final String OUTBOUND_RANGE_START_FUNCTION = "=AVG(100;100:150;150)";
     private static final String OUTBOUND_RANGE_END_FUNCTION = "=AVG(5;5:100;100)";
 
+    private static final String EMPTY_STRING = "";
         
     private static final String INVALID_FUNCTION = "=ADD(1;1:2;2)";
     private static final String VALID_AVG_FUNCTION = "=AVG(7;7:8;8)";
@@ -325,4 +326,10 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_PRD_SINGLE_CELL_RESULT);
     }
        
+    //Test case 24
+    @Test(expected = InvalidFunctionException.class)
+    public void assignEmptyString() throws BubbledocsException{
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, EMPTY_STRING);
+    	service.execute();
+    }
 }
