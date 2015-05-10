@@ -87,12 +87,10 @@ public class GetSpreadsheetContentTest extends BubbledocsServiceTest {
      	   ss.getCell(3, 2).setContent(new Sub(new Reference(ss.getCell(1, 2)), new Reference(ss.getCell(2, 1))));
      	   ss.getCell(3, 3).setContent(new Div(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(1, 1))));
      
-     	   
      	   //Row 4
      	   ss.getCell(4, 1).setContent(new Avg(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(3, 3))));
     	   ss.getCell(4, 2).setContent(new Prd(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(4, 3))));
     	   ss.getCell(4, 3).setContent(new Literal(0));
-    	      
      	   
      	   //Give RO user read permissions
      	   bubble.addReadPermission(AUTHOR_USERNAME, USERNAME_RO, spreadsheetID);

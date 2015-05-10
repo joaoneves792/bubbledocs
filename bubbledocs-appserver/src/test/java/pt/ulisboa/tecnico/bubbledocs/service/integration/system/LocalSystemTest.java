@@ -39,7 +39,7 @@ public class LocalSystemTest extends SystemTest {
 	private static final String EXPORTER_PASSWORD = "dagon";
 	
 	private static final String EXPORTER_SPREADSHEET_NAME = "Mythic Dawn Commentaries";
-	private static final int EXPORTER_SPREADSHEET_ROWS = 4;
+	private static final int EXPORTER_SPREADSHEET_ROWS = 5;
 	private static final int EXPORTER_SPREADSHEET_COLUMNS = 3;
 	
 	private static final String PW_RENEWER_USERNAME = "hermaeus";
@@ -51,8 +51,8 @@ public class LocalSystemTest extends SystemTest {
     		"[ 2 3 12 ]\n" + 
     		"[ 1 6 6 ]\n"  + 
     		"[ 5 2 6 ]\n"  +
-    	    "[ 4 0 0 ]\n";
-	
+    	    "[ 4 0 0 ]\n"  +
+    		"[ \"\" \"\" \"\" ]\n";
 	
 	@Mocked
 	private IDRemoteServices SDID;
