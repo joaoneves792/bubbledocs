@@ -6,6 +6,10 @@
 |:-----:|:-----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:--------------:|:---------------:|
 | 62501 | Nuno Pexirra | 0 | 0 | 0 | 3 | 2 | 4 | 4 | --- | --- |
 | 65821 | Pedro Saldanha | 0 | 0 | 0 | 0 | 2 | 2 | 4 | --- | --- |
-| 70171 | João Neves | 0 | 0 | 0 | 3 | 2 | 2 | 4 | --- |  --- |
-| 70257 | Sérgio Moura | 0 | 2 | 1 | 2 | 3 | 2 | 4 | #56 #51 #63 | --- |
-| 73037 | João Carrapiço | 2 | 2 | 2 | 2 | 2 | 4 | 4 | #38 #40 #39 | --- |
+| 70171 | João Neves | 0 | 0 | 0 | 3 | 2 | 2 | #82 #83 |  #82 #83 |
+| 70257 | Sérgio Moura | 0 | 2 | 1 | 2 | 3 | 2 | 4 | #56 #51 #63 | #56 #51 #63 |
+| 73037 | João Carrapiço | 2 | 2 | 2 | 2 | 2 | 4 | 4 | #38 #40 #39 #80 #81 #79 #84 |  #38 #40 #39 #80 #81 #79 #84 |
+
+### Conclusão
+Nesta semana, o Pedro não apareceu nas reuniões de grupo nem fez trabalho, o Nuno participou na discussão do cenário a criar para o TestSystem. Foram criadas novas tasks para a implementação da story #31 (Test System) nomeadamente os métodos setUp e tearDown e o teste principal. 
+No final da semana, todas as tasks e stories do Third Sprint estavam implementadas. 
