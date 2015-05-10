@@ -69,53 +69,6 @@ public class LocalSystemTest extends SystemTest {
 	@Mocked
 	private StoreRemoteServices SDStore;
     
-	/*
-	private Spreadsheet ss;
-	
-	{
-		try {
-			tm.begin();
-			
-			ss = 
-		
-	  	   //Row 1
-	  	   ss.getCell(1, 1).setContent(new Literal(2));
-	  	   ss.getCell(1, 2).setContent(new Add(new Reference(ss.getCell(1, 1)), new Literal(1)));
-	  	   ss.getCell(1, 3).setContent(new Mul(new Reference(ss.getCell(2, 3)), new Reference(ss.getCell(1, 1))));
-	  	   
-	  	   //Row 2
-	  	   ss.getCell(2, 1).setContent(new Literal(1));
-	  	   ss.getCell(2, 2).setContent(new Mul(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(1, 2))));
-	  	   ss.getCell(2, 3).setContent(new Reference(ss.getCell(2, 2)));
-	  	   
-	  	   //Row 3
-	  	   ss.getCell(3, 1).setContent(new Add(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(1, 2))));
-	  	   ss.getCell(3, 2).setContent(new Sub(new Reference(ss.getCell(1, 2)), new Reference(ss.getCell(2, 1))));
-	  	   ss.getCell(3, 3).setContent(new Div(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(1, 1))));
-	  
-	  	   
-	  	   //Row 4
-	  	   ss.getCell(4, 1).setContent(new Avg(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(3, 3))));
-	 	   ss.getCell(4, 2).setContent(new Prd(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(4, 3))));
-	 	   ss.getCell(4, 3).setContent(new Literal(0));
-	 	   
-			tm.commit();
-	 	   
-		} catch(BubbledocsException | SecurityException | IllegalStateException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SystemException | NotSupportedException e) {
-			System.err.println("Spreadsheet incoherent");
-			try {
-				tm.rollback();
-			} catch (IllegalStateException | SecurityException
-					| SystemException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-		} 
-		
-
-	}
-	*/
-	
     @Test
     public final void run() throws BubbledocsException {
     	new StrictExpectations() {
