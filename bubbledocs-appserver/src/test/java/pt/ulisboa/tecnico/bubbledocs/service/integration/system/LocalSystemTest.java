@@ -1,10 +1,26 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integration.system;
 
+import javax.transaction.HeuristicMixedException;
+import javax.transaction.HeuristicRollbackException;
+import javax.transaction.NotSupportedException;
+import javax.transaction.RollbackException;
+import javax.transaction.SystemException;
+
+import mockit.Expectations;
 import mockit.Mocked;
 import mockit.StrictExpectations;
 
 import org.junit.Test;
 
+import pt.ulisboa.tecnico.bubbledocs.domain.Add;
+import pt.ulisboa.tecnico.bubbledocs.domain.Avg;
+import pt.ulisboa.tecnico.bubbledocs.domain.Div;
+import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
+import pt.ulisboa.tecnico.bubbledocs.domain.Mul;
+import pt.ulisboa.tecnico.bubbledocs.domain.Prd;
+import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
+import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.ulisboa.tecnico.bubbledocs.domain.Sub;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.AssignBinaryFunctionToCellIntegrator;
@@ -47,48 +63,99 @@ public class LocalSystemTest extends SystemTest {
 	private static final String PW_RENEWER_PASSWORD = "mora";
 	
 	@Mocked
-	private static IDRemoteServices SDID;
+	private IDRemoteServices SDID;
 	
 	@Mocked
-	private static StoreRemoteServices SDStore;
+	private StoreRemoteServices SDStore;
     
+	
+	private Spreadsheet ss;
+	
+	{
+		try {
+			tm.begin();
+			
+			ss = new Spreadsheet(EXPORTER_SPREADSHEET_NAME, EXPORTER_NAME, 100, EXPORTER_SPREADSHEET_ROWS, EXPORTER_SPREADSHEET_COLUMNS);
+		
+	  	   //Row 1
+	  	   ss.getCell(1, 1).setContent(new Literal(2));
+	  	   ss.getCell(1, 2).setContent(new Add(new Reference(ss.getCell(1, 1)), new Literal(1)));
+	  	   ss.getCell(1, 3).setContent(new Mul(new Reference(ss.getCell(2, 3)), new Reference(ss.getCell(1, 1))));
+	  	   
+	  	   //Row 2
+	  	   ss.getCell(2, 1).setContent(new Literal(1));
+	  	   ss.getCell(2, 2).setContent(new Mul(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(1, 2))));
+	  	   ss.getCell(2, 3).setContent(new Reference(ss.getCell(2, 2)));
+	  	   
+	  	   //Row 3
+	  	   ss.getCell(3, 1).setContent(new Add(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(1, 2))));
+	  	   ss.getCell(3, 2).setContent(new Sub(new Reference(ss.getCell(1, 2)), new Reference(ss.getCell(2, 1))));
+	  	   ss.getCell(3, 3).setContent(new Div(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(1, 1))));
+	  
+	  	   
+	  	   //Row 4
+	  	   ss.getCell(4, 1).setContent(new Avg(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(3, 3))));
+	 	   ss.getCell(4, 2).setContent(new Prd(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(4, 3))));
+	 	   ss.getCell(4, 3).setContent(new Literal(0));
+	 	   
+			tm.commit();
+	 	   
+		} catch(BubbledocsException | SecurityException | IllegalStateException | RollbackException | HeuristicMixedException | HeuristicRollbackException | SystemException | NotSupportedException e) {
+			System.err.println("Spreadsheet incoherent");
+			try {
+				tm.rollback();
+			} catch (IllegalStateException | SecurityException
+					| SystemException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		} 
+		
+
+	}
+	
+	
     @Test
     public final void run() throws BubbledocsException {
-    	
     	new StrictExpectations() {
     		{
+    			new IDRemoteServices();
     			SDID.loginUser(ROOT_USERNAME, ROOT_PASSWORD);
     			result = null;
     			
+    			new IDRemoteServices();
     			SDID.createUser(EXPORTER_USERNAME, EXPORTER_EMAIL);
     			result = null;
     			
+    			new IDRemoteServices();
     			SDID.createUser(PW_RENEWER_USERNAME, PW_RENEWER_EMAIL);
     			result = null;
     			
+    			new IDRemoteServices();
     			SDID.loginUser(EXPORTER_USERNAME, EXPORTER_PASSWORD);
     			result = null;
     			
-    			SDStore.storeDocument(EXPORTER_USERNAME, (String) any, (byte[]) any);
-    			result = null;
-    			
-    			SDStore.loadDocument(EXPORTER_USERNAME, (String) any);
-    			result = null;
+    			new StoreRemoteServices();
     			SDStore.storeDocument(EXPORTER_USERNAME, "1", (byte[]) any);
+    			result = null;
     			
+    			new StoreRemoteServices();
     			SDStore.loadDocument(EXPORTER_USERNAME, "1");
+    			result = ss.export().getBytes();
     			
-
-    			
+    			new IDRemoteServices();
     			SDID.loginUser(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);
     			result = null;
     			
+    			new IDRemoteServices();
     			SDID.renewPassword(PW_RENEWER_USERNAME);
     			result = null;
     			
+    			new IDRemoteServices();
     			SDID.loginUser(EXPORTER_USERNAME, EXPORTER_PASSWORD);
     			result = new RemoteInvocationException("");
     			
+    			new IDRemoteServices();
     			SDID.removeUser(EXPORTER_USERNAME);
     			result = null;
     		}
@@ -148,7 +215,8 @@ public class LocalSystemTest extends SystemTest {
     	
     	ImportDocumentIntegrator importer = new ImportDocumentIntegrator(exporterToken, exporterSpreadsheetID); 
     	importer.execute();
-    			
+    	
+
     	GetSpreadsheetContentIntegrator importedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, exporterSpreadsheetID+1);
     	importedSpreadsheet.execute();
     	String importedSpreadsheetRepresentation = importedSpreadsheet.getResult();

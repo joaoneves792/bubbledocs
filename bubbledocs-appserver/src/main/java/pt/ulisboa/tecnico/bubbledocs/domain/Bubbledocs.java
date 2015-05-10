@@ -37,10 +37,7 @@ import pt.ist.fenixframework.FenixFramework;
         
     //private static Bubbledocs theBubbledocs = new Bubbledocs();	
             
-    public static Bubbledocs getBubbledocs() {
-    	if(null == FenixFramework.getDomainRoot())
-    		System.out.println("DOMAIN ROOT IS NULL!!!!!");
-    	
+    public static Bubbledocs getBubbledocs() {    	
         Bubbledocs bubble = FenixFramework.getDomainRoot().getBubbledocs();
         if( null == bubble ) {
           bubble = new Bubbledocs();

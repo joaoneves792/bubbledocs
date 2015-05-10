@@ -56,7 +56,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 	private User author;
 	private Spreadsheet ss; 
 	private String docXML;
-	
+
 	@Mocked
 	StoreRemoteServices sdStore;
 	
@@ -123,7 +123,7 @@ public class ImportDocumentIntegratorTest extends BubbledocsServiceTest {
 	}
 
 	
-	@Test(expected = InvalidImportException.class)
+	@Test(expected = CannotLoadDocumentException.class)
 	public void failEmptySS() throws BubbledocsException {
 		
 		new Expectations() {

@@ -42,8 +42,8 @@ public class Literal extends Literal_Base {
     /**
       * Method to erase this Literal (from persistence)
       */
-    public void clean(){
-        super.deleteDomainObject();
+    public void myClean(){
+        //super.deleteDomainObject();
     }
 
     @Override

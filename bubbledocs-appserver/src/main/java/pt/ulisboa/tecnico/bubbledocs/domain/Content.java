@@ -59,7 +59,12 @@ public abstract class Content extends Content_Base {
     /**
      * Method to erase this Content (from persistence)
      */
-    public abstract void clean();
+    public final void clean() {
+    	myClean();
+    	super.deleteDomainObject();
+    }
+    
+    protected abstract void myClean();
     
     /**
      * compare two contents

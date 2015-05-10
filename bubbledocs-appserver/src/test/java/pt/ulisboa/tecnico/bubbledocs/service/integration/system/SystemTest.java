@@ -10,12 +10,15 @@ import org.junit.After;
 import org.junit.Before;
 
 import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.FenixFramework;
+import pt.ist.fenixframework.TransactionManager;
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 
 public abstract class SystemTest {
-	
+
+    protected TransactionManager tm = FenixFramework.getTransactionManager();
 
 	
     @Before 

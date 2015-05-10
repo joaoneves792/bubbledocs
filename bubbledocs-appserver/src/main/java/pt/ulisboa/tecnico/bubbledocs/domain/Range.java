@@ -77,13 +77,13 @@ public abstract class Range extends Range_Base {
     /**
      * Method to clean a range (from persistence)
      */
-    public void clean(){
-    	/*SimpleContent ref1 = getReferenceOne(),
-			          ref2 = getReferenceTwo();*/
+    public void myClean(){
+    	SimpleContent ref1 = getReferenceOne(),
+			          ref2 = getReferenceTwo();
 	
-    	setReferenceOne(null); //ref1.clean();
-    	setReferenceTwo(null); //ref2.clean();   	
+    	setReferenceOne(null); ref1.clean();
+    	setReferenceTwo(null); ref2.clean();   	
 	
-		super.deleteDomainObject();
+		//super.deleteDomainObject();
     }
 }

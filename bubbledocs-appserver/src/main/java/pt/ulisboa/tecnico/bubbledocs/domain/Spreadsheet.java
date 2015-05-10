@@ -154,7 +154,7 @@ public class Spreadsheet extends Spreadsheet_Base {
     private org.jdom2.Document myExport() throws InvalidExportException {
 		org.jdom2.Document document = new org.jdom2.Document();
 		org.jdom2.Element  spreadsheet = new org.jdom2.Element("Spreadsheet");
-		//spreadsheet.setAttribute("id", get_id().toString());
+
 		spreadsheet.setAttribute("rows", getRows().toString());
 		spreadsheet.setAttribute("columns", getColumns().toString());
 		spreadsheet.setAttribute("author", getAuthor());

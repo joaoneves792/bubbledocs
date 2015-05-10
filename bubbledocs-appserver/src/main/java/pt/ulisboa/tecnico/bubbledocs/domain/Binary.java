@@ -83,13 +83,13 @@ public abstract class Binary extends Binary_Base {
     /**
       * Method to erase this Binary Function (from persistence)
       */
-    public final void clean(){
-    	/*SimpleContent arg1 = getArgumentOne(),
-    			      arg2 = getArgumentTwo();*/
+    public final void myClean(){
+    	SimpleContent arg1 = getArgumentOne(),
+    			      arg2 = getArgumentTwo();
     	
-    	setArgumentOne(null); //arg1.clean();
-    	setArgumentTwo(null); //arg2.clean();   	
+    	setArgumentOne(null); arg1.clean();
+    	setArgumentTwo(null); arg2.clean();   	
     	
-        super.deleteDomainObject();   
+        //super.deleteDomainObject();   
     }
 }
