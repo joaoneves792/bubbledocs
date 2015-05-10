@@ -73,8 +73,6 @@ public abstract class BubbledocsServiceTest {
     }
     
     // returns a spreadsheet whose name is equal to name
-    //THIS IS BAD since there can be more than one spreadsheet with the same name...
-    //FIXME This is just a quick hack
     protected Spreadsheet getSpreadSheet(String name) {
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	Set<Spreadsheet> spreadsheets = bubble.getSpreadsheetSet();
@@ -89,7 +87,6 @@ public abstract class BubbledocsServiceTest {
     	return bubble.getSpreadsheetById(id);    	
     }
     
-    /* FIXME suggestion for your hack... */    
     protected java.util.List<Spreadsheet> getSpreadsheetsByName(String name) {
     	java.util.List<Spreadsheet> sheets = new java.util.ArrayList<Spreadsheet>();
     	for(Spreadsheet sheet : Bubbledocs.getBubbledocs().getSpreadsheetSet()) {

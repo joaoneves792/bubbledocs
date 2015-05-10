@@ -9,13 +9,12 @@ public class StoreRemoteServices {
 	
 	public void storeDocument(String username, String docName, byte[] document)
 		throws CannotStoreDocumentException, RemoteInvocationException {
-		// TODO : the connection and invocation of the remote service
+		// ignore (ES only)
 	}
 	
 	public byte[] loadDocument(String username, String docName)
 		throws CannotLoadDocumentException, RemoteInvocationException {
-		
-		// TODO : the connection and invocation of the remote service
+		// ignore (ES only)
 		return null;
 	}
 	

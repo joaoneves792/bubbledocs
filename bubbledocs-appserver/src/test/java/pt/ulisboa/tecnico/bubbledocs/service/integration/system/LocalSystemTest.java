@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integration.system;
 
+import static org.junit.Assert.assertTrue;
 import mockit.Mocked;
 import mockit.StrictExpectations;
 
@@ -46,6 +47,13 @@ public class LocalSystemTest extends SystemTest {
 	private static final String PW_RENEWER_NAME = "Hermaeus Mora";
 	private static final String PW_RENEWER_PASSWORD = "mora";
 	
+    private static final String EXPORTER_SPREADSHEET_REPRESENTATION =
+    		"[ 2 3 12 ]\n" + 
+    		"[ 1 6 6 ]\n"  + 
+    		"[ 5 2 6 ]\n"  +
+    	    "[ 4 0 0 ]\n";
+	
+	
 	@Mocked
 	private IDRemoteServices SDID;
 	
@@ -88,6 +96,8 @@ public class LocalSystemTest extends SystemTest {
     			new CreateSpreadsheetIntegrator(rootToken, ROOT_SPREADSHEET_NAME, ROOT_SPREADSHEET_ROWS, ROOT_SPREADSHEET_COLUMNS);
     	rootSpreadsheetCreator.execute();
     	
+    	assertTrue("Spreadsheet IDs not generated correctly", rootSpreadsheetCreator.getSheetId() == 0);
+    	
     	int rootSpreadsheetID = rootSpreadsheetCreator.getSheetId();
     	
     	new AssignLiteralCellIntegrator(rootToken, rootSpreadsheetID, ROOT_LITERAL_CELL_ID, ROOT_LITERAL).execute();
@@ -124,7 +134,9 @@ public class LocalSystemTest extends SystemTest {
     	
     	GetSpreadsheetContentIntegrator exportedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, exporterSpreadsheetID);
     	exportedSpreadsheet.execute();
-    	String spreadsheetRepresentation = exportedSpreadsheet.getResult();
+    	String exportedSpreadsheetRepresentation = exportedSpreadsheet.getResult();
+    	
+    	assertTrue("Unexpected Spreadsheet Representation", exportedSpreadsheetRepresentation.equals(EXPORTER_SPREADSHEET_REPRESENTATION));
     	
     	ExportDocumentIntegrator exporter = new ExportDocumentIntegrator(exporterToken, exporterSpreadsheetID);
     	exporter.execute();
@@ -158,10 +170,14 @@ public class LocalSystemTest extends SystemTest {
     	ImportDocumentIntegrator importer = new ImportDocumentIntegrator(exporterToken, exporterSpreadsheetID); 
     	importer.execute();    	
 
-    	GetSpreadsheetContentIntegrator importedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, exporterSpreadsheetID+1);
+    	int importedSpreadsheetId = importer.getSpreadsheetId();
+    	
+    	GetSpreadsheetContentIntegrator importedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, importedSpreadsheetId);
     	importedSpreadsheet.execute();
     	String importedSpreadsheetRepresentation = importedSpreadsheet.getResult();
     	
+    	assertTrue("Imported and Exported Spreadsheets do not match", importedSpreadsheetRepresentation.equals(exportedSpreadsheetRepresentation));
+    	    	
     	LoginUserIntegrator passwordRenewerLogin = new LoginUserIntegrator(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);  
     	passwordRenewerLogin.execute();
     	
@@ -176,8 +192,14 @@ public class LocalSystemTest extends SystemTest {
     			new CreateSpreadsheetIntegrator(exporterToken, EXPORTER_SPREADSHEET_NAME, EXPORTER_SPREADSHEET_ROWS, EXPORTER_SPREADSHEET_COLUMNS);
     	anotherExporterSpreadsheetCreator.execute();
     	
+    	int anotherExporterSpreadsheetID = anotherExporterSpreadsheetCreator.getSheetId();
+    			
+		assertTrue("Spreadsheet ID generation incoherent", 
+    			rootSpreadsheetID < exporterSpreadsheetID && 
+    			exporterSpreadsheetID < importedSpreadsheetId &&
+    			importedSpreadsheetId < anotherExporterSpreadsheetID);
+    	
     	new DeleteUserIntegrator(rootToken, EXPORTER_USERNAME).execute();
     	
-    	//FIXME ASSERT ALL THE THINGS
     }
 }

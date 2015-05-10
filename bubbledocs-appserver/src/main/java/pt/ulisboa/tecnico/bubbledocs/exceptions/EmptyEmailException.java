@@ -9,7 +9,6 @@ public class EmptyEmailException extends BubbledocsException {
 
 	public EmptyEmailException(String m) {
 		super(m);
-		// TODO Auto-generated constructor stub
 	}
 
 }

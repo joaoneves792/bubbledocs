@@ -12,6 +12,7 @@ public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 	
 	private final String docName;
 	private String spreadsheetXML;
+	private ImportDocumentService localImport;
 	
 	public ImportDocumentIntegrator(String token, int ssId) {
 		userToken = token;
@@ -34,7 +35,11 @@ public class ImportDocumentIntegrator extends BubbledocsIntegrator {
 			throw new UnavailableServiceException("SDStore Offline");
 		}
 		
-		ImportDocumentService localImport = new ImportDocumentService(userToken, spreadsheetXML);
+		localImport = new ImportDocumentService(userToken, spreadsheetXML);
 		localImport.execute();
+	}
+	
+	public Integer getSpreadsheetId() {
+		return localImport == null ? null : localImport.getSheetId();
 	}
 }

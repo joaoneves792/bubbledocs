@@ -13,22 +13,22 @@ public class IDRemoteServices {
 	public void createUser(String username, String email) 
 		throws InvalidUsernameException, DuplicateUsernameException,
 		DuplicateEmailException, InvalidEmailException, RemoteInvocationException {
-		// TODO : the connection and invocation of the remote service
+		// ignore (ES only)
 	}
 	
 	public void loginUser(String username, String password)
 		throws LoginBubbleDocsException, RemoteInvocationException {
-		// TODO : the connection and invocation of the remote service
+		// ignore (ES only)
 	}
 
 	public void removeUser(String username) 
 		throws LoginBubbleDocsException, RemoteInvocationException {
-		// TODO : the connection and invocation of the remote service
+		// ignore (ES only)
 	}
 	
 	public void renewPassword(String username) 
 		throws LoginBubbleDocsException, RemoteInvocationException {
-		// TODO : the connection and invocation of the remote service
+		// ignore (ES only)
 	}
 
 }

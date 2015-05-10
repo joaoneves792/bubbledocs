@@ -13,7 +13,6 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.User;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.CannotLoadDocumentException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.PermissionNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnavailableServiceException;
