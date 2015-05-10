@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Add;
 import pt.ulisboa.tecnico.bubbledocs.domain.Avg;
+import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.domain.Div;
 import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
 import pt.ulisboa.tecnico.bubbledocs.domain.Mul;
@@ -68,14 +69,14 @@ public class LocalSystemTest extends SystemTest {
 	@Mocked
 	private StoreRemoteServices SDStore;
     
-	
+	/*
 	private Spreadsheet ss;
 	
 	{
 		try {
 			tm.begin();
 			
-			ss = new Spreadsheet(EXPORTER_SPREADSHEET_NAME, EXPORTER_NAME, 100, EXPORTER_SPREADSHEET_ROWS, EXPORTER_SPREADSHEET_COLUMNS);
+			ss = 
 		
 	  	   //Row 1
 	  	   ss.getCell(1, 1).setContent(new Literal(2));
@@ -113,7 +114,7 @@ public class LocalSystemTest extends SystemTest {
 		
 
 	}
-	
+	*/
 	
     @Test
     public final void run() throws BubbledocsException {
@@ -138,28 +139,10 @@ public class LocalSystemTest extends SystemTest {
     			new StoreRemoteServices();
     			SDStore.storeDocument(EXPORTER_USERNAME, "1", (byte[]) any);
     			result = null;
-    			
-    			new StoreRemoteServices();
-    			SDStore.loadDocument(EXPORTER_USERNAME, "1");
-    			result = ss.export().getBytes();
-    			
-    			new IDRemoteServices();
-    			SDID.loginUser(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);
-    			result = null;
-    			
-    			new IDRemoteServices();
-    			SDID.renewPassword(PW_RENEWER_USERNAME);
-    			result = null;
-    			
-    			new IDRemoteServices();
-    			SDID.loginUser(EXPORTER_USERNAME, EXPORTER_PASSWORD);
-    			result = new RemoteInvocationException("");
-    			
-    			new IDRemoteServices();
-    			SDID.removeUser(EXPORTER_USERNAME);
-    			result = null;
     		}
     	};
+    	
+    	
     	
     	LoginUserIntegrator rootLogin = new LoginUserIntegrator(ROOT_USERNAME, ROOT_PASSWORD);
     	rootLogin.execute();
@@ -213,16 +196,39 @@ public class LocalSystemTest extends SystemTest {
     	
     	String exportedXML = exporter.getDocXML();
     	
-    	ImportDocumentIntegrator importer = new ImportDocumentIntegrator(exporterToken, exporterSpreadsheetID); 
-    	importer.execute();
+    	new StrictExpectations() {
+    		{
+    			new StoreRemoteServices();
+    			SDStore.loadDocument(EXPORTER_USERNAME, "1");
+    			result = exportedXML.getBytes();
+    			
+    			new IDRemoteServices();
+    			SDID.loginUser(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);
+    			result = null;
+    			
+    			new IDRemoteServices();
+    			SDID.renewPassword(PW_RENEWER_USERNAME);
+    			result = null;
+    			
+    			new IDRemoteServices();
+    			SDID.loginUser(EXPORTER_USERNAME, EXPORTER_PASSWORD);
+    			result = new RemoteInvocationException("");
+    			
+    			new IDRemoteServices();
+    			SDID.removeUser(EXPORTER_USERNAME);
+    			result = null;
+    		}
+    	};    	
     	
+    	ImportDocumentIntegrator importer = new ImportDocumentIntegrator(exporterToken, exporterSpreadsheetID); 
+    	importer.execute();    	
 
     	GetSpreadsheetContentIntegrator importedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, exporterSpreadsheetID+1);
     	importedSpreadsheet.execute();
     	String importedSpreadsheetRepresentation = importedSpreadsheet.getResult();
     	
     	LoginUserIntegrator passwordRenewerLogin = new LoginUserIntegrator(PW_RENEWER_USERNAME, PW_RENEWER_PASSWORD);  
-    	exporterLogin.execute();
+    	passwordRenewerLogin.execute();
     	
     	String passwordRenewerToken = passwordRenewerLogin.getUserToken();
     	

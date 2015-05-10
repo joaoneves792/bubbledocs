@@ -19,7 +19,6 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidUsernameException;
 public abstract class SystemTest {
 
     protected TransactionManager tm = FenixFramework.getTransactionManager();
-
 	
     @Before 
     @Atomic
