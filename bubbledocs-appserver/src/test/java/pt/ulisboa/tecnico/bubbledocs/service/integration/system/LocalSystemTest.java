@@ -1,27 +1,10 @@
 package pt.ulisboa.tecnico.bubbledocs.service.integration.system;
 
-import javax.transaction.HeuristicMixedException;
-import javax.transaction.HeuristicRollbackException;
-import javax.transaction.NotSupportedException;
-import javax.transaction.RollbackException;
-import javax.transaction.SystemException;
-
-import mockit.Expectations;
 import mockit.Mocked;
 import mockit.StrictExpectations;
 
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.bubbledocs.domain.Add;
-import pt.ulisboa.tecnico.bubbledocs.domain.Avg;
-import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.domain.Div;
-import pt.ulisboa.tecnico.bubbledocs.domain.Literal;
-import pt.ulisboa.tecnico.bubbledocs.domain.Mul;
-import pt.ulisboa.tecnico.bubbledocs.domain.Prd;
-import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
-import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
-import pt.ulisboa.tecnico.bubbledocs.domain.Sub;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.RemoteInvocationException;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.AssignBinaryFunctionToCellIntegrator;
@@ -94,7 +77,6 @@ public class LocalSystemTest extends SystemTest {
     			result = null;
     		}
     	};
-    	
     	
     	
     	LoginUserIntegrator rootLogin = new LoginUserIntegrator(ROOT_USERNAME, ROOT_PASSWORD);
