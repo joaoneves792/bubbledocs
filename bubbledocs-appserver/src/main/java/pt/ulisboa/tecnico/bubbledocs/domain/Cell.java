@@ -5,7 +5,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 public class Cell extends Cell_Base implements Comparable<Cell> {
 
-	private final String EMPTY = "\"\"";
+	private static final String EMPTY = "\"\"";
 	
     public Cell(int row, int column, boolean prot) {
         super();

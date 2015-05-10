@@ -128,7 +128,11 @@ public class Spreadsheet extends Spreadsheet_Base {
     }
     
     public TreeSet<Cell> getSortedCellsByRow(int row) throws InvalidCellException {
-    	return new TreeSet<Cell>(getCellsByRow(row));
+    	TreeSet<Cell> cellSet = new TreeSet<Cell>();
+    	for(int j = 1; j <= getColumns(); j++) 
+    		cellSet.add(getCell(row,j));
+    	
+    	return cellSet;
     }
     
     public Cell getCell(int row, int column) throws InvalidCellException {

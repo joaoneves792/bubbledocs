@@ -37,14 +37,15 @@ public class GetSpreadsheetContentTest extends BubbledocsServiceTest {
     private static final String EMAIL_WRITE = "mora";
     
     private static final String SPREADHEET_NAME = "Argonian Account Book";
-    private static final Integer SPREADHEET_ROWS = 4;
+    private static final Integer SPREADHEET_ROWS = 5;
     private static final Integer SPREADHEET_COLUMNS = 3;
     
     private static final String EXTERNAL_SPREADSHEET_REPRESENTATION =
     		"[ 2 3 12 ]\n" + 
     		"[ 1 6 6 ]\n"  + 
     		"[ 5 2 6 ]\n"  +
-    	    "[ 4 0 0 ]\n";
+    	    "[ 4 0 0 ]\n"  +
+    		"[ \"\" \"\" \"\" ]\n";
 
     private static final Integer DOCID_INVALID = -5;
     private static final Integer NON_EXISTING_ID = 100;
@@ -122,7 +123,7 @@ public class GetSpreadsheetContentTest extends BubbledocsServiceTest {
 	public void successReadOnly() throws BubbledocsException {
 		GetSpreadsheetContent service = new GetSpreadsheetContent(tokenRo, spreadsheetID);
 		service.execute();
-		
+				
 		assertEquals(EXTERNAL_SPREADSHEET_REPRESENTATION, service.getResult());
         assertTrue("Session was not updated", hasSessionUpdated(tokenRo));
 	}

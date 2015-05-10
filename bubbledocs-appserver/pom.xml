@@ -95,13 +95,13 @@
    	    <groupId>org.jmockit</groupId> 
             <artifactId>jmockit</artifactId>
             <version>${version.jmockit}</version>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>${version.junit}</version>
-            <scope>test</scope>
+			<!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -114,9 +114,9 @@
             <version>${version.org.jdom.jdom}</version>
         </dependency>
         <dependency>
-	    <groupId>joda-time</groupId>
-	    <artifactId>joda-time</artifactId>
-	    <version>${version.org.joda.time}</version>
+	  		<groupId>joda-time</groupId>
+	    	<artifactId>joda-time</artifactId>
+	    	<version>${version.org.joda.time}</version>
         </dependency>
 	        
     </dependencies>
