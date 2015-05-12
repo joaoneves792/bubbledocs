@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.AssignRangeFunctionToCellIntegrator;
 
@@ -32,7 +33,7 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     
     private static final String SPREADHEET_NAME = "My Spreadsheet";
     private static final int SPREADHEET_ROWS = 10;
-    private static final int SPREADHEET_COLUMNS = 15;
+    private static final int SPREADHEET_COLUMNS = 16;
     private static final int INEXISTANT_SPREADSHEET_ID = 100;
     private static final int INVALID_SPREADSHEET_ID = -1;
     
@@ -70,17 +71,21 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     private static final int CORRECT_AVG_WITH_ZEROS_RESULT = 1;
     private static final String VALID_AVG_SINGLE_CELL_FUNCTION  = "=AVG(5;5:5;5)";
     private static final int CORRECT_AVG_SINGLE_CELL_RESULT = 3;
+    private static final String VALID_AVG_EMPTY_RANGE_FUNCTION  = "=AVG(7;15:8;16)";
+    private static final int CORRECT_AVG_EMPTY_RANGE_RESULT = 0;
     
     private static final String VALID_PRD_FUNCTION = "=PRD(7;7:8;8)";
     private static final int CORRECT_PRD_RESULT = 24;
     private static final String VALID_PRD_LITERALS_AND_REFERENCES_FUNCTION = "=PRD(7;9:8;10)";
     private static final int CORRECT_PRD_LITERALS_AND_REFERENCES_RESULT = 24;
     private static final String VALID_PRD_LITERALS_AND_EMPTY_FUNCTION = "=PRD(7;11:8;12)";
-    private static final int CORRECT_PRD_LITERALS_AND_EMPTY_RESULT = 0;
+    private static final int CORRECT_PRD_LITERALS_AND_EMPTY_RESULT = 3;
     private static final String VALID_PRD_WITH_ZEROS_FUNCTION = "=PRD(7;13:8;14)";
     private static final int CORRECT_PRD_WITH_ZEROS_RESULT = 0;
     private static final String VALID_PRD_SINGLE_CELL_FUNCTION  = "=PRD(5;5:5;5)";
     private static final int CORRECT_PRD_SINGLE_CELL_RESULT = 3;
+    private static final String VALID_PRD_EMPTY_RANGE_FUNCTION  = "=PRD(7;15:8;16)";
+    private static final int CORRECT_PRD_EMPTY_RANGE_RESULT = 1;
     
     
     
@@ -132,7 +137,8 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     	   bubble.AssignLiteralCell(tokenAuthor, spreadsheetID, 7, 14, 0);
     	   bubble.AssignLiteralCell(tokenAuthor, spreadsheetID, 8, 13, 3);
     	   bubble.AssignLiteralCell(tokenAuthor, spreadsheetID, 8, 14, 0);
-    	   
+    	       	   
+    	   //Empty matrix at (7;15:8;16)
      	   
     	   //Protect Cell 6;6
     	   bubble.protectSpreadsheetCell(AUTHOR_USERNAME, spreadsheetID, PROTECTED_ROW, PROTECTED_COLUMN);
@@ -331,5 +337,29 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     public void assignEmptyString() throws BubbledocsException{
     	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, EMPTY_STRING);
     	service.execute();
+    }
+    
+    //Test case 25
+    @Test(expected = UserNotInSessionException.class)
+    public void userNotInSession() throws BubbledocsException{
+    	removeUserFromSession(tokenAuthor);
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_AVG_FUNCTION);
+    	service.execute();
+    }    
+    
+    //Test case 26
+    @Test
+    public void successAvgEmptyRange() throws BubbledocsException{
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_AVG_EMPTY_RANGE_FUNCTION);
+    	service.execute();
+    	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_AVG_EMPTY_RANGE_RESULT);
+    }
+    
+    //Test case 27
+    @Test
+    public void successPrdEmptyRange() throws BubbledocsException{
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_PRD_EMPTY_RANGE_FUNCTION);
+    	service.execute();
+    	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_PRD_EMPTY_RANGE_RESULT);
     }
 }

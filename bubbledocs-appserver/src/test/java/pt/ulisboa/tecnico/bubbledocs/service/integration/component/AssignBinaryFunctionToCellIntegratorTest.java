@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.ProtectedCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.UnauthorizedUserException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 import pt.ulisboa.tecnico.bubbledocs.service.BubbledocsServiceTest;
 import pt.ulisboa.tecnico.bubbledocs.service.integrator.AssignBinaryFunctionToCellIntegrator;
 
@@ -241,6 +242,14 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     @Test(expected = InvalidFunctionException.class)
     public void assignEmptyString() throws BubbledocsException{
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, EMPTY_STRING);
+    	service.execute();
+    }
+    
+    //Test case 19
+    @Test(expected = UserNotInSessionException.class)
+    public void userNotInSession() throws BubbledocsException{
+    	removeUserFromSession(tokenAuthor);
+    	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_ADD_FUNCTION);
     	service.execute();
     }
            

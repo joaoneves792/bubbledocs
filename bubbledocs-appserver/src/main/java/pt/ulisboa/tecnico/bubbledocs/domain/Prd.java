@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 
 public class Prd extends Prd_Base {
     
@@ -28,9 +29,11 @@ public class Prd extends Prd_Base {
             for(int j=0; j<=rowsDelta; j++){
             	Content content = spreadsheet.getCell(baseRow+j, baseColumn+i).getContent();
             	if (null != content)
-            		product *= content.calculate();
-            	else
-            		return 0; //If any cell is empty then the product should always be zero
+            		try{
+            			product *= content.calculate();
+            		}catch(InvalidCellException | InvalidReferenceException | CellDivisionByZeroException e){
+            			continue;
+            		}
             }
         
         return product;
