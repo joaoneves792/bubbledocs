@@ -29,10 +29,13 @@ public class LocalSystemTest extends SystemTest {
 	private static final String ROOT_USERNAME = "root";
 	private static final String ROOT_PASSWORD = "root";
 	private static final String ROOT_SPREADSHEET_NAME = "Argonian Account Book";
-	private static final Integer ROOT_SPREADSHEET_ROWS = 24;
-	private static final Integer ROOT_SPREADSHEET_COLUMNS = 42;
-	private static final String ROOT_LITERAL_CELL_ID = "2;4";
+	private static final Integer ROOT_SPREADSHEET_ROWS = 1;
+	private static final Integer ROOT_SPREADSHEET_COLUMNS = 2;
+	private static final String ROOT_LITERAL_CELL_ID = "1;1";
 	private static final String ROOT_LITERAL = "42";
+	private static final String ANOTHER_ROOT_LITERAL = "1";
+	
+	private static final String ROOT_SPREADSHEET_REPRESENTATION = "[ 1 \"\" ]\n";
 	
 	private static final String EXPORTER_USERNAME = "mehrunes";
 	private static final String EXPORTER_EMAIL = "mehrunes@deadlands.oblivion";
@@ -42,6 +45,7 @@ public class LocalSystemTest extends SystemTest {
 	private static final String EXPORTER_SPREADSHEET_NAME = "Mythic Dawn Commentaries";
 	private static final int EXPORTER_SPREADSHEET_ROWS = 5;
 	private static final int EXPORTER_SPREADSHEET_COLUMNS = 3;
+	private static final String EXPORTER_SPREADSHEET_ID = "1";
 	
 	private static final String PW_RENEWER_USERNAME = "hermaeus";
 	private static final String PW_RENEWER_EMAIL = "hermaeus@apocrypha.oblivion";
@@ -54,6 +58,7 @@ public class LocalSystemTest extends SystemTest {
     		"[ 5 2 6 ]\n"  +
     	    "[ 4 0 0 ]\n"  +
     		"[ 5 #VALUE \"\" ]\n";
+    
 	
 	@Mocked
 	private IDRemoteServices SDID;
@@ -63,6 +68,7 @@ public class LocalSystemTest extends SystemTest {
     
     @Test
     public final void run() throws BubbledocsException {
+    	
     	new StrictExpectations() {
     		{
     			new IDRemoteServices();
@@ -82,7 +88,7 @@ public class LocalSystemTest extends SystemTest {
     			result = null;
     			
     			new StoreRemoteServices();
-    			SDStore.storeDocument(EXPORTER_USERNAME, "1", (byte[]) any);
+    			SDStore.storeDocument(EXPORTER_USERNAME, EXPORTER_SPREADSHEET_ID, (byte[]) any);
     			result = null;
     		}
     	};
@@ -102,6 +108,12 @@ public class LocalSystemTest extends SystemTest {
     	int rootSpreadsheetID = rootSpreadsheetCreator.getSheetId();
     	
     	new AssignLiteralCellIntegrator(rootToken, rootSpreadsheetID, ROOT_LITERAL_CELL_ID, ROOT_LITERAL).execute();
+    	new AssignLiteralCellIntegrator(rootToken, rootSpreadsheetID, ROOT_LITERAL_CELL_ID, ANOTHER_ROOT_LITERAL).execute();
+    	
+    	GetSpreadsheetContentIntegrator rootSpreadsheet = new GetSpreadsheetContentIntegrator(rootToken, rootSpreadsheetID);
+    	rootSpreadsheet.execute();    	
+    	
+    	assertTrue("Could not overwrite root Spreadsheet Cell", rootSpreadsheet.getResult().equals(ROOT_SPREADSHEET_REPRESENTATION));
     	
     	new CreateUserIntegrator(rootToken, EXPORTER_USERNAME, EXPORTER_EMAIL, EXPORTER_NAME).execute();
     	new CreateUserIntegrator(rootToken, PW_RENEWER_USERNAME, PW_RENEWER_EMAIL, PW_RENEWER_NAME).execute();
@@ -150,7 +162,7 @@ public class LocalSystemTest extends SystemTest {
     	new StrictExpectations() {
     		{
     			new StoreRemoteServices();
-    			SDStore.loadDocument(EXPORTER_USERNAME, "1");
+    			SDStore.loadDocument(EXPORTER_USERNAME, EXPORTER_SPREADSHEET_ID);
     			result = exportedXML.getBytes();
     			
     			new IDRemoteServices();
@@ -204,6 +216,5 @@ public class LocalSystemTest extends SystemTest {
     			importedSpreadsheetId < anotherExporterSpreadsheetID);
     	
     	new DeleteUserIntegrator(rootToken, EXPORTER_USERNAME).execute();
-    	
     }
 }
