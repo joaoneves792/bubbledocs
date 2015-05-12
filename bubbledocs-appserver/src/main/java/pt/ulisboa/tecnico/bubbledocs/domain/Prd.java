@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 
@@ -15,7 +16,7 @@ public class Prd extends Prd_Base {
     	}
 
 	@Override
-	protected int myValue() throws InvalidCellException{
+	protected Integer calculate() throws InvalidCellException, InvalidReferenceException, CellDivisionByZeroException {
         Spreadsheet spreadsheet = this.getReferenceOne().getReferencedCell().getSpreadsheet();
 	    Cell cellOne = getReferenceOne().getReferencedCell();
         Cell cellTwo = getReferenceTwo().getReferencedCell();

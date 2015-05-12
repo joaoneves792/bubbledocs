@@ -1,9 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 
 // add needed import declarations
 
@@ -48,15 +46,11 @@ public class AssignReferenceCell extends BubbledocsService {
     	bubble.assignReferenceCell(userToken, spreadsheetId, cellLine, cellColumn, refCellLine, refCellColumn);
     }
     
-    public final Integer getResult(){
+    public final Integer getResult() throws BubbledocsException {
     	if(cellLine == null || cellColumn == null)
-    		return null;
+    		execute();
     	
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	try {
-			return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
-		} catch (BubbleCellException | SpreadsheetNotFoundException e) {
-			return null;
-		}   	
+   	   	return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
     }
 }

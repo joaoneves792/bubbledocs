@@ -1,3 +1,4 @@
+
 package pt.ulisboa.tecnico.bubbledocs.service.integration.system;
 
 import static org.junit.Assert.assertTrue;
@@ -52,7 +53,7 @@ public class LocalSystemTest extends SystemTest {
     		"[ 1 6 6 ]\n"  + 
     		"[ 5 2 6 ]\n"  +
     	    "[ 4 0 0 ]\n"  +
-    		"[ \"\" \"\" \"\" ]\n";
+    		"[ 5 #VALUE \"\" ]\n";
 	
 	@Mocked
 	private IDRemoteServices SDID;
@@ -131,6 +132,9 @@ public class LocalSystemTest extends SystemTest {
     	new AssignRangeFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "4;1", "=AVG(1;1:3;3)").execute();
     	new AssignRangeFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "4;2", "=PRD(1;3:4;3)").execute();
     	new AssignLiteralCellIntegrator(exporterToken, exporterSpreadsheetID, "4;3", "0").execute();
+    	
+    	new AssignLiteralCellIntegrator(exporterToken, exporterSpreadsheetID, "5;1", "5").execute();
+    	new AssignBinaryFunctionToCellIntegrator(exporterToken, exporterSpreadsheetID, "5;2", "=DIV(5;1,0)").execute();
     	
     	GetSpreadsheetContentIntegrator exportedSpreadsheet = new GetSpreadsheetContentIntegrator(exporterToken, exporterSpreadsheetID);
     	exportedSpreadsheet.execute();

@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 
 public class Cell extends Cell_Base implements Comparable<Cell> {
@@ -22,13 +23,14 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
         setProtectd(prot);
     }
 
-    public Integer calculate() throws BubbleCellException {
+    public Integer calculate() throws BubbleCellException, CellDivisionByZeroException {
         Content content = getContent();
         if(content == null)
                 return null;
         return content.calculate();
     }
 
+    @Override
     public String toString(){
         Content content = getContent();
         if(content == null)

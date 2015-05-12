@@ -1,5 +1,9 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
+
 public class Add extends Add_Base {
     
     public Add() {
@@ -12,7 +16,7 @@ public class Add extends Add_Base {
     }
     
     @Override
-	protected final int myValue() {
+	protected final Integer calculate() throws InvalidCellException, InvalidReferenceException, CellDivisionByZeroException {
 		return getArgumentOne().calculate() + getArgumentTwo().calculate();		
 	}
     

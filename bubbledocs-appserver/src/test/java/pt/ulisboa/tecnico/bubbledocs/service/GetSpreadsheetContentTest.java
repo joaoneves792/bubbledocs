@@ -45,7 +45,7 @@ public class GetSpreadsheetContentTest extends BubbledocsServiceTest {
     		"[ 1 6 6 ]\n"  + 
     		"[ 5 2 6 ]\n"  +
     	    "[ 4 0 0 ]\n"  +
-    		"[ \"\" \"\" \"\" ]\n";
+    		"[ 5 #VALUE \"\" ]\n";
 
     private static final Integer DOCID_INVALID = -5;
     private static final Integer NON_EXISTING_ID = 100;
@@ -91,6 +91,10 @@ public class GetSpreadsheetContentTest extends BubbledocsServiceTest {
      	   ss.getCell(4, 1).setContent(new Avg(new Reference(ss.getCell(1, 1)), new Reference(ss.getCell(3, 3))));
     	   ss.getCell(4, 2).setContent(new Prd(new Reference(ss.getCell(1, 3)), new Reference(ss.getCell(4, 3))));
     	   ss.getCell(4, 3).setContent(new Literal(0));
+    	   
+    	   //Row 5
+    	   ss.getCell(5, 1).setContent(new Literal(5));
+    	   ss.getCell(5, 2).setContent(new Div(new Reference(ss.getCell(5, 1)), new Literal(0)));
      	   
      	   //Give RO user read permissions
      	   bubble.addReadPermission(AUTHOR_USERNAME, USERNAME_RO, spreadsheetID);

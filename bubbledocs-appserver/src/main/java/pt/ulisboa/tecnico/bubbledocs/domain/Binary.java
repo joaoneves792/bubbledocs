@@ -23,11 +23,6 @@ public abstract class Binary extends Binary_Base {
     }    
     
     /**
-     * To be defined by the concrete subclasses
-     */
-    protected abstract int myValue();
-    
-    /**
      * @return JDOM element for this class
      * @throws InvalidCellException 
      */

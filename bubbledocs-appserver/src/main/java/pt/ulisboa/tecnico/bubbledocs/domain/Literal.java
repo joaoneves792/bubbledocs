@@ -16,7 +16,7 @@ public class Literal extends Literal_Base {
     }
     
     @Override
-    protected final int myValue() {
+    protected final Integer calculate() {
     	return getValue();
     }
     

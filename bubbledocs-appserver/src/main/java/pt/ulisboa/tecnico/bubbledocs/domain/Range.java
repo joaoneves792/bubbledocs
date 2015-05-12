@@ -29,12 +29,6 @@ public abstract class Range extends Range_Base {
     }
     
     /**
-     * To be defined by the concrete subclasses
-     */
-    protected abstract int myValue() throws InvalidCellException;
-    
-    
-    /**
      * pseudo-constructor for initializing a content from an XML element
      * @param XML JDOM element for this content
      * @throws InvalidCellException 

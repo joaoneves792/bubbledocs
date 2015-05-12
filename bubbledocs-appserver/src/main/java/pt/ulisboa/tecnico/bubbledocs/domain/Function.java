@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.bubbledocs.domain;
 
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 
 //an abstract class
 public abstract class Function extends Function_Base {
@@ -13,11 +12,6 @@ public abstract class Function extends Function_Base {
     Function() {
         super();
     }
-    
-    /**
-     * To be defined by the concrete subclasses
-     */
-    protected abstract int myValue() throws InvalidCellException, InvalidReferenceException;    
     
     /**
      * Defines XML element for this class

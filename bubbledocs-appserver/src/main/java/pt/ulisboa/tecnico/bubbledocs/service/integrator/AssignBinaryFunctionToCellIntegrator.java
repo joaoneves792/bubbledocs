@@ -25,7 +25,7 @@ public class AssignBinaryFunctionToCellIntegrator extends BubbledocsIntegrator {
 		service.execute();
 	}
 	    
-	public Integer getResult() {
+	public Integer getResult() throws BubbledocsException {
 	    return service.getResult();
 	}	   
 }

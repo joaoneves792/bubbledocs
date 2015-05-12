@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
@@ -17,7 +18,7 @@ public class Reference extends Reference_Base {
 	}
 
     @Override
-    protected final int myValue()  throws InvalidCellException, InvalidReferenceException {
+    protected final Integer calculate()  throws InvalidCellException, InvalidReferenceException, CellDivisionByZeroException {
     	Cell referencedCell = getReferencedCell();
     	if(null == referencedCell)
             throw new InvalidCellException("A Reference points to a Cell that does not exist.");

@@ -29,7 +29,7 @@ public class AssignReferenceCellIntegrator extends BubbledocsIntegrator {
 		localService.execute();
 	}
 	
-	public final Integer getResult() {
+	public final Integer getResult() throws BubbledocsException {
 		return localService.getResult();
 	}
 

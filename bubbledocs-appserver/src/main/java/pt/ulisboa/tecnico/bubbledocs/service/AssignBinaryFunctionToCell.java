@@ -12,11 +12,9 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
 import pt.ulisboa.tecnico.bubbledocs.domain.SimpleContent;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.Sub;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 
 
 public class AssignBinaryFunctionToCell extends BubbledocsService {
@@ -125,16 +123,11 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
 		return arg;
 	}
     
-    public final Integer getResult(){
+    public final Integer getResult() throws BubbledocsException{
     	if(cellLine == null || cellColumn == null)
-    		return null;
+    		execute();
     	
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	try {
-			return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
-		} catch (BubbleCellException | SpreadsheetNotFoundException e) {
-			return null;
-		}   	
-    	
+   	   	return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
     }
 }

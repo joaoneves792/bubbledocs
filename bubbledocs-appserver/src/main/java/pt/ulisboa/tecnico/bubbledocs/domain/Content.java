@@ -1,5 +1,6 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidImportException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
@@ -7,7 +8,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 //an abstract class
 public abstract class Content extends Content_Base {
     
-	private final String INVALID = "#VALUE";
+	private static final String INVALID = "#VALUE";
 	
 	/**
 	 * This constructor should never be called
@@ -15,31 +16,14 @@ public abstract class Content extends Content_Base {
     Content() { 
         super();
     }
-
   
     /**
-     * Template Method for getting a value of a Content
      * @return the Value of the content, null if a Invalid Reference was found
-     */
-    protected final Integer calculate() {
-    	Integer value;
-    	try {
-    		value = myValue();
-    	} catch (InvalidCellException e) {
-    		return null;
-    	} catch (InvalidReferenceException e) {
-			return null;
-		}
-    	return value;
-    }
-    
-    /**
-     * To be defined by the concrete subclasses
-     * @throws InvalidCellException 
+     * @throws CellDivisionByZeroException 
      * @throws InvalidReferenceException 
+     * @throws InvalidCellException 
      */
-    protected abstract int myValue() throws InvalidCellException, InvalidReferenceException;
-    
+    protected abstract Integer calculate() throws CellDivisionByZeroException, InvalidCellException, InvalidReferenceException ;
     
     /**
      * Defines XML element for this class
@@ -54,7 +38,6 @@ public abstract class Content extends Content_Base {
      * @throws InvalidCellException 
      */
     protected abstract void init(org.jdom2.Element el, Spreadsheet sheet) throws InvalidImportException, InvalidCellException;
-
 
     /**
      * Method to erase this Content (from persistence)
@@ -75,9 +58,10 @@ public abstract class Content extends Content_Base {
     
     @Override
     public final String toString() {
-    	Integer val = calculate();
-    	if(val == null) {
-    		return INVALID;
-    	} return val.toString();
+    	try {
+			return calculate().toString();
+		} catch (InvalidCellException | InvalidReferenceException | CellDivisionByZeroException e) {
+			return INVALID;
+		}
     }
 }

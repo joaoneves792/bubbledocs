@@ -8,11 +8,9 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Function;
 import pt.ulisboa.tecnico.bubbledocs.domain.Prd;
 import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.SpreadsheetNotFoundException;
 
 
 public class AssignRangeFunctionToCell extends BubbledocsService {
@@ -103,15 +101,11 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
    		return new Reference(spreadsheet.getCell(referenceRow, referenceColumn));
 	}
     
-    public final Integer getResult(){
+    public final Integer getResult() throws BubbledocsException{
     	if(cellLine == null || cellColumn == null)
-    		return null;
+    		execute();
     	
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	try {
-			return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
-		} catch (BubbleCellException | SpreadsheetNotFoundException e) {
-			return null;
-		}  
+   	   	return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
     }
 }
