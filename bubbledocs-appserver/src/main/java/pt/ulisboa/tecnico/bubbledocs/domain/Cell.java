@@ -71,14 +71,25 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
         	
         for(Reference ref : getReferencesSet()) {
         	ref.setReferencedCell(null);
+        	removeReferences(ref);
         }
         	
         Content content = getContent();
         if(null != content) {
-        	setContent(null);
+        	super.setContent(null);
         	content.clean();
         }
         super.deleteDomainObject();
+	}
+	
+	@Override
+	public final void setContent(Content cont) {
+		Content myContent = getContent();
+		if(myContent != null) {
+			super.setContent(null);
+			myContent.clean();
+		}
+		super.setContent(cont);
 	}
 	
 	public boolean equals(Cell other) {
