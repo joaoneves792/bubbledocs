@@ -35,7 +35,7 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     private static final String EMAIL_WRITE = "hermaeus@apocrypha.oblivion";
     
     private static final String SPREADHEET_NAME = "My Spreadsheet";
-    private static final int SPREADHEET_ROWS = 10;
+    private static final int SPREADHEET_ROWS = 20;
     private static final int SPREADHEET_COLUMNS = 18;
     private static final int INEXISTANT_SPREADSHEET_ID = 100;
     private static final int INVALID_SPREADSHEET_ID = -1;
@@ -76,8 +76,8 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     private static final String CORRECT_AVG_SINGLE_CELL_RESULT = "3";
     private static final String VALID_AVG_EMPTY_RANGE_FUNCTION  = "=AVG(7;15:8;16)";
     private static final String CORRECT_AVG_EMPTY_RANGE_RESULT = "0";
-    private static final String VALID_AVG_FUNCTIONS_FUNCTION  = "=AVG(7;17:8;18)";
-    private static final String CORRECT_AVG_FUNCTIONS_RESULT = "2";
+    private static final String VALID_AVG_DIV_BY_ZERO_FUNCTION  = "=AVG(7;17:8;18)";
+    private static final String CORRECT_AVG_DIV_BY_ZERO_RESULT = "#VALUE";
     
     
     private static final String VALID_PRD_FUNCTION = "=PRD(7;7:8;8)";
@@ -92,9 +92,14 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     private static final String CORRECT_PRD_SINGLE_CELL_RESULT = "3";
     private static final String VALID_PRD_EMPTY_RANGE_FUNCTION  = "=PRD(7;15:8;16)";
     private static final String CORRECT_PRD_EMPTY_RANGE_RESULT = "1";
-    private static final String VALID_PRD_FUNCTIONS_FUNCTION  = "=PRD(7;17:8;18)";
-    private static final String CORRECT_PRD_FUNCTIONS_RESULT = "12";
+    private static final String VALID_PRD_DIV_BY_ZERO_FUNCTION  = "=PRD(7;17:8;18)";
+    private static final String CORRECT_PRD_DIV_BY_ZERO_RESULT = "#VALUE";
     
+    private static final String VALID_AVG_BINARY_RANGE = "=AVG(7;17:8;17)";
+    
+    private static final String VALID_PRD_BINARY_RANGE = "=PRD(7;17:8;17)";
+	private static final String VALID_AVG_BINARY_RANGE_RESULT = "3";
+	private static final String VALID_PRD_BINARY_RANGE_RESULT = "6";
     
     
     //This is needed throughout the tests
@@ -153,7 +158,7 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     	   bubble.AssignLiteralCell(tokenAuthor, spreadsheetID, 7, 18, 2);
     	   bubble.getSpreadsheetById(spreadsheetID).assignFunctionCell(8, 17, new Add(new Literal(5), new Literal(1)));
     	   bubble.getSpreadsheetById(spreadsheetID).assignFunctionCell(8, 18, new Div(new Literal(5), new Literal(0)));
-
+    	   
     	   //Protect Cell 6;6
     	   bubble.protectSpreadsheetCell(AUTHOR_USERNAME, spreadsheetID, PROTECTED_ROW, PROTECTED_COLUMN);
 
@@ -380,16 +385,31 @@ public class AssignRangeFunctionToCellIntegratorTest extends BubbledocsServiceTe
     //Test case 28
     @Test
     public void successPrdDivByZero() throws BubbledocsException{
-    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_PRD_FUNCTIONS_FUNCTION);
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_PRD_DIV_BY_ZERO_FUNCTION);
     	service.execute();
-    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_PRD_FUNCTIONS_RESULT));
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_PRD_DIV_BY_ZERO_RESULT));
     }
     
     //Test case 29
     @Test
     public void successAvgDivByZero() throws BubbledocsException{
-    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_AVG_FUNCTIONS_FUNCTION);
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_AVG_DIV_BY_ZERO_FUNCTION);
     	service.execute();
-    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_AVG_FUNCTIONS_RESULT));
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_AVG_DIV_BY_ZERO_RESULT));
+    }
+    
+    @Test
+    public void successAvgWithBinary() throws BubbledocsException{
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_AVG_BINARY_RANGE);
+    	service.execute();
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(VALID_AVG_BINARY_RANGE_RESULT));
+    }
+    
+    
+    @Test
+    public void successPrdWithBinary() throws BubbledocsException{
+    	AssignRangeFunctionToCellIntegrator service = new AssignRangeFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_PRD_BINARY_RANGE);
+    	service.execute();
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(VALID_PRD_BINARY_RANGE_RESULT));
     }
 }

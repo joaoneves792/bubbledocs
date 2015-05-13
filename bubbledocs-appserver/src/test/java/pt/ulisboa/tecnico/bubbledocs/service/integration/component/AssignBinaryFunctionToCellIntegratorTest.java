@@ -67,6 +67,8 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     private static final String INVALID_LITERAL_FUNCTION = "=ADD(B,5;5)";
     private static final String INVALID_REFERENCE_FUNCTION = "=ADD(7,5;B)";
     private static final String OUTBOUND_REFERENCE_FUNCTION = "=ADD(7,100;1)";
+	private static final String INVALID = "#VALUE";
+	private static final String DIV_BY_ZERO = "=DIV(5,0)";
     
     
     //This is needed throughout the tests
@@ -80,9 +82,9 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     public void initializeDomain() {
  	   Bubbledocs bubble = Bubbledocs.getBubbledocs();
  	  try{
- 	   User user = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
-       createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
-       createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
+ 	       User user = createUser(AUTHOR_USERNAME, AUTHOR_EMAIL, AUTHOR_NAME);
+           createUser(USERNAME_RO, EMAIL_RO, NAME_RO);
+           createUser(USERNAME_WRITE, EMAIL_WRITE, NAME_WRITE);
       
     	   tokenAuthor = addUserToSession(AUTHOR_USERNAME);
      	   tokenRo = addUserToSession(USERNAME_RO);
@@ -209,7 +211,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     public void successAdd() throws BubbledocsException{
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_ADD_FUNCTION);
     	service.execute();
-    	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_ADD_RESULT);
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_ADD_RESULT));
     }
     
     //Test case 15
@@ -217,7 +219,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     public void successSub() throws BubbledocsException{
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_SUB_FUNCTION);
     	service.execute();
-    	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_SUB_RESULT);
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_SUB_RESULT));
     }
     
     //Test case 16
@@ -225,7 +227,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     public void successMul() throws BubbledocsException{
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_MUL_FUNCTION);
     	service.execute();
-    	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_MUL_RESULT);
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_MUL_RESULT));
     }
     
     //Test case 17
@@ -233,7 +235,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     public void successDiv() throws BubbledocsException{
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_DIV_FUNCTION);
     	service.execute();
-    	assertTrue("Function not calculating the correct result", service.getResult() == CORRECT_DIV_RESULT);
+    	assertTrue("Function not calculating the correct result", service.getResult().equals(CORRECT_DIV_RESULT));
     }
     
     //Test case 18
@@ -250,5 +252,11 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_ADD_FUNCTION);
     	service.execute();
     }
-           
+     
+    @Test
+    public void successDivByZero() throws BubbledocsException{
+    	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, DIV_BY_ZERO);
+    	service.execute();
+    	assertTrue(service.getResult().equals(INVALID));
+    }
 }
