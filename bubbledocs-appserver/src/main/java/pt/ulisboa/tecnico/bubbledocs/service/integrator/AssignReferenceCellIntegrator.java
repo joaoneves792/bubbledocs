@@ -8,7 +8,7 @@ public class AssignReferenceCellIntegrator extends BubbledocsIntegrator {
 	 	private Integer spreadsheetId;
 	    private String myCellId;
 	    private String referencedCell;
-	    private AssignReferenceCell localService;
+	    private AssignReferenceCell service;
 	    
 	    /*
 	     * Assigns a reference to a cell
@@ -22,15 +22,18 @@ public class AssignReferenceCellIntegrator extends BubbledocsIntegrator {
 	    	spreadsheetId = ssId;
 	    	myCellId = cellID;
 	    	referencedCell = cellRef;
-	    	localService = new AssignReferenceCell(userToken, spreadsheetId, myCellId, referencedCell);
+	    	service = new AssignReferenceCell(userToken, spreadsheetId, myCellId, referencedCell);
 	    }
 	@Override
     protected void dispatch() throws BubbledocsException, NumberFormatException {
-		localService.execute();
+		service.execute();
 	}
 	
-	public final Integer getResult() throws BubbledocsException {
-		return localService.getResult();
+	public final String getResult() throws BubbledocsException {
+		Integer n = service.getResult();
+		if(n == null)
+			return service.INVALID;
+		else return n.toString();
 	}
 
 }

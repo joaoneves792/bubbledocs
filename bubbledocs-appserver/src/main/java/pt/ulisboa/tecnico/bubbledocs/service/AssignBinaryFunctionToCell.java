@@ -13,6 +13,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.SimpleContent;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.domain.Sub;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
 
@@ -26,6 +27,7 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     private Integer cellColumn = null;
 	private Integer cellLine = null;
     
+
     
     final static String ZERO = "0"; 
     final static String NEGATIVE = "-(?!0)\\d+";
@@ -128,6 +130,10 @@ public class AssignBinaryFunctionToCell extends BubbledocsService {
     		execute();
     	
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+   	   	try {
+   	   		return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+   	   	} catch (CellDivisionByZeroException e) {
+   	   		return null;
+   	   	}
     }
 }

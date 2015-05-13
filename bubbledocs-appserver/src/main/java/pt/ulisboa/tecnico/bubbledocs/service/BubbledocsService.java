@@ -11,6 +11,8 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.UserNotInSessionException;
 public abstract class BubbledocsService {
 	
 	protected String userToken;
+	
+	public final String INVALID = "#VALUE";
 
     @Atomic
     public final void execute() throws BubbledocsException {

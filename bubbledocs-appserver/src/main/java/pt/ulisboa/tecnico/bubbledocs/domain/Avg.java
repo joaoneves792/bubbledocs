@@ -1,8 +1,8 @@
 package pt.ulisboa.tecnico.bubbledocs.domain;
 
+import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbleCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
-import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 
 public class Avg extends Avg_Base {
     
@@ -16,7 +16,7 @@ public class Avg extends Avg_Base {
     }
     
 	@Override
-	protected final Integer calculate() throws InvalidCellException, InvalidReferenceException, CellDivisionByZeroException{
+	protected final Integer calculate() throws CellDivisionByZeroException{
         Spreadsheet spreadsheet = this.getReferenceOne().getReferencedCell().getSpreadsheet();
 	    Cell cellOne = getReferenceOne().getReferencedCell();
         Cell cellTwo = getReferenceTwo().getReferencedCell();
@@ -28,17 +28,15 @@ public class Avg extends Avg_Base {
         int count = (rowsDelta+1)*(columnsDelta+1);
        
         for(int i=0; i<= columnsDelta; i++)
-            for(int j=0; j<=rowsDelta; j++){
-            	Content content = spreadsheet.getCell(baseRow+j, baseColumn+i).getContent();
-            	if (null != content)
-            		try{
-            			sum += content.calculate();
-            		}catch(InvalidCellException | InvalidReferenceException | CellDivisionByZeroException e){
-            			continue;
-            		}
-			}
-            	
-                
+            for(int j=0; j<=rowsDelta; j++)
+            	try {
+            		Integer n = spreadsheet.getCell(baseRow+j, baseColumn+i).calculate();
+            		sum += n == null ? 0 : n;
+            	} catch (BubbleCellException e) {
+            		count--;
+            		continue;
+            	}
+			
         return sum/count;
 	}
 

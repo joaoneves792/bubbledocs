@@ -9,6 +9,7 @@ import pt.ulisboa.tecnico.bubbledocs.domain.Prd;
 import pt.ulisboa.tecnico.bubbledocs.domain.Reference;
 import pt.ulisboa.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidCellException;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidFunctionException;
 
@@ -101,11 +102,15 @@ public class AssignRangeFunctionToCell extends BubbledocsService {
    		return new Reference(spreadsheet.getCell(referenceRow, referenceColumn));
 	}
     
-    public final Integer getResult() throws BubbledocsException{
+    public final Integer getResult() throws BubbledocsException {
     	if(cellLine == null || cellColumn == null)
     		execute();
     	
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+   	   	try {
+   	   		return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+   	   	} catch (CellDivisionByZeroException e) {
+   	   		return null;
+   	   	}
     }
 }

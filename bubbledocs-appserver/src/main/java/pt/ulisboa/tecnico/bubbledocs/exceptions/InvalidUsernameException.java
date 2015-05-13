@@ -1,6 +1,7 @@
 package pt.ulisboa.tecnico.bubbledocs.exceptions;
 
 public class InvalidUsernameException extends BubbledocsException {
+
 	/**
 	 * 
 	 */
@@ -8,6 +9,6 @@ public class InvalidUsernameException extends BubbledocsException {
 
 	public InvalidUsernameException(String m) {
 		super(m);
-	
 	}
+
 }

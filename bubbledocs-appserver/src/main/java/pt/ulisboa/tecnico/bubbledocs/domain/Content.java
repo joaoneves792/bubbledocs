@@ -8,7 +8,7 @@ import pt.ulisboa.tecnico.bubbledocs.exceptions.InvalidReferenceException;
 //an abstract class
 public abstract class Content extends Content_Base {
     
-	private static final String INVALID = "#VALUE";
+	protected static final String INVALID = "#VALUE";
 	
 	/**
 	 * This constructor should never be called

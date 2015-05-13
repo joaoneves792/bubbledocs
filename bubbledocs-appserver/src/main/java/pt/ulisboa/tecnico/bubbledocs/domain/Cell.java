@@ -25,13 +25,15 @@ public class Cell extends Cell_Base implements Comparable<Cell> {
 
     public Integer calculate() throws BubbleCellException, CellDivisionByZeroException {
         Content content = getContent();
+        
         if(content == null)
                 return null;
+        
         return content.calculate();
-    }
+      }
 
     @Override
-    public String toString(){
+    public String toString() {
         Content content = getContent();
         if(content == null)
                 return EMPTY;

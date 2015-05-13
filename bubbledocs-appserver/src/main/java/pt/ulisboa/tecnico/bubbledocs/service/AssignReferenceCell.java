@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.bubbledocs.service;
 
 import pt.ulisboa.tecnico.bubbledocs.domain.Bubbledocs;
 import pt.ulisboa.tecnico.bubbledocs.exceptions.BubbledocsException;
+import pt.ulisboa.tecnico.bubbledocs.exceptions.CellDivisionByZeroException;
 
 // add needed import declarations
 
@@ -51,6 +52,10 @@ public class AssignReferenceCell extends BubbledocsService {
     		execute();
     	
    	   	Bubbledocs bubble = Bubbledocs.getBubbledocs();
-   	   	return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+   	   	try {
+   	   		return bubble.getSpreadsheetById(spreadsheetId).getCell(cellLine, cellColumn).calculate();
+   	   	} catch (CellDivisionByZeroException e) {
+   	   		return null;
+   	   	}
     }
 }

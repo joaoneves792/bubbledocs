@@ -23,7 +23,10 @@ public class AssignRangeFunctionToCellIntegrator extends BubbledocsIntegrator {
 		service.execute();
 	}
 	    
-	public Integer getResult() throws BubbledocsException {
-	    return service.getResult();
+	public String getResult() throws BubbledocsException {
+		Integer n = service.getResult();
+		if(n == null)
+			return service.INVALID;
+		else return n.toString();
 	}	   
 }
