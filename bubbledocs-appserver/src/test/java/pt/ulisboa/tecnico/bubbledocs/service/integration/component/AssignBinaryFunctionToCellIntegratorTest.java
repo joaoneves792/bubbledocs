@@ -57,13 +57,13 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     
     private static final String INVALID_FUNCTION = "=AVG(7,5;5)";
     private static final String VALID_ADD_FUNCTION = "=ADD(7,5;5)";
-    private static final int CORRECT_ADD_RESULT = 10;
+    private static final String CORRECT_ADD_RESULT = "10";
     private static final String VALID_SUB_FUNCTION = "=SUB(7,5;5)";
-    private static final int CORRECT_SUB_RESULT = 4;
+    private static final String CORRECT_SUB_RESULT = "4";
     private static final String VALID_MUL_FUNCTION = "=MUL(7,5;5)";
-    private static final int CORRECT_MUL_RESULT = 21;
+    private static final String CORRECT_MUL_RESULT = "21";
     private static final String VALID_DIV_FUNCTION = "=DIV(7,5;5)";
-    private static final int CORRECT_DIV_RESULT = 2;
+    private static final String CORRECT_DIV_RESULT = "2";
     private static final String INVALID_LITERAL_FUNCTION = "=ADD(B,5;5)";
     private static final String INVALID_REFERENCE_FUNCTION = "=ADD(7,5;B)";
     private static final String OUTBOUND_REFERENCE_FUNCTION = "=ADD(7,100;1)";
@@ -192,8 +192,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenWrite, spreadsheetID, VALID_CELL_ID, VALID_ADD_FUNCTION);
     	service.execute();
-    	//Can you think of an alternative way to check if the function was assigned to the cell??
-    	assertTrue("Function not assigned to cell", bubble.getSpreadsheetById(spreadsheetID).getCell(VALID_CELL_ROW, VALID_CELL_COL).calculate() == CORRECT_ADD_RESULT);
+    	assertTrue("Function not assigned to cell", bubble.getSpreadsheetById(spreadsheetID).getCell(VALID_CELL_ROW, VALID_CELL_COL).calculate() == Integer.parseInt(CORRECT_ADD_RESULT));
     }
     
     //Test case 13
@@ -202,8 +201,7 @@ public class AssignBinaryFunctionToCellIntegratorTest extends BubbledocsServiceT
     	Bubbledocs bubble = Bubbledocs.getBubbledocs();
     	AssignBinaryFunctionToCellIntegrator service = new AssignBinaryFunctionToCellIntegrator(tokenAuthor, spreadsheetID, VALID_CELL_ID, VALID_ADD_FUNCTION);
     	service.execute();
-    	//Can you think of an alternative way to check if the function was assigned to the cell??
-    	assertTrue("Function not assigned to cell", bubble.getSpreadsheetById(spreadsheetID).getCell(VALID_CELL_ROW, VALID_CELL_COL).calculate() == CORRECT_ADD_RESULT);
+    	assertTrue("Function not assigned to cell", bubble.getSpreadsheetById(spreadsheetID).getCell(VALID_CELL_ROW, VALID_CELL_COL).calculate() == Integer.parseInt(CORRECT_ADD_RESULT));
     }
     
     //Test case 14
